@@ -9,4 +9,6 @@ package dominus;
 
 public class Element2D extends Element {
 
+	
+	
 }
