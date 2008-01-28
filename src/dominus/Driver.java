@@ -3,13 +3,12 @@ package dominus;
 import java.awt.*;
 import java.awt.geom.*;
 import javax.swing.*;
-
+import java.io.*;
 
 public class Driver {
 
 	public static void main(String[] args)
 	{
-		
 		Window w = new Window();
 		w.setVisible(true);
 	}
@@ -21,7 +20,7 @@ class Window extends JFrame {
 	public Window()
 	{
 		this.setSize(640, 480);
-	
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	/**
@@ -31,21 +30,14 @@ class Window extends JFrame {
 	 */
 	public void paint(Graphics g) {
 		
-	
         // Obtain a Graphics2D object
         Graphics2D g2 = (Graphics2D)g;
-        
-        
-        // Set the rendering quality.
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
 
         // dashed rounded rect
         float dash[] = {5.0f};
         BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash, 0.0f);
         g2.setStroke(dashed);
         g2.draw(new RoundRectangle2D.Double(250, 90, 100, 50, 10, 10));
-
         
         // define a linear color gradient
         GradientPaint gp = new GradientPaint(0, 60, Color.red,0, 120, Color.yellow);
@@ -56,20 +48,21 @@ class Window extends JFrame {
         
         // hello world
         // set rotation
-        g2.transform(AffineTransform.getRotateInstance(Math.PI / 4));
-        g2.setFont(new Font("Arial", Font.BOLD, 50));
+        //g2.transform(AffineTransform.getRotateInstance(Math.PI / 4));
+        
+        try{
+        	g2.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("media/slkscr.ttf")).deriveFont(9.0f));
+        }
+        catch(Exception e){
+        	System.out.println(e.getMessage());
+        }
+        
         g2.setPaint(Color.blue);
         // set compositing rule with transparency
         g2.setComposite(AlphaComposite.getInstance(
                                        AlphaComposite.SRC_OVER, 1.0f));
         
         g2.drawString("Hello World!",100,100);
-       
-        
-        
-        
-        
+ 
     }
-	
-
 }
