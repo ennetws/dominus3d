@@ -11,6 +11,9 @@ public class Driver {
 	{
 		Window w = new Window();
 		w.setVisible(true);
+		
+		World world = new World();
+		
 	}
 	
 }
