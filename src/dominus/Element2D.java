@@ -11,8 +11,10 @@ import javax.media.opengl.GL;
 
 public class Element2D extends Element {
 	
-	private int x, y;
-	private int width, height, zIndex;
+	public int x, y;
+	public int width, height, zIndex;
+	
+	private Vertex[] corner = new Vertex[4];
 	
 	public Element2D(String iden, int width, int height, int x, int y, GL gl){
 		this(iden, null, width, height, x, y, gl);
@@ -26,6 +28,12 @@ public class Element2D extends Element {
 		
 		this.x = x;
 		this.y = y;
+		
+		// Create a box shaped polygon
+		this.corner[0] = new Vertex(0,0,0.0f);
+		this.corner[1] = new Vertex(0,height,0.0f);
+		this.corner[2] = new Vertex(width,0,0.0f);
+		this.corner[3] = new Vertex(width,height,0.0f);
 	}
 
 	public Element2D(String iden, Element2D parent, GL gl){
@@ -33,46 +41,15 @@ public class Element2D extends Element {
 	}
 	
 	public void render(){
-		
+		gl.glLoadIdentity();
+        gl.glBegin(GL.GL_TRIANGLE_STRIP);
+        
+        gl.glColor3f(0.0f, 0.0f, 1.0f); 
+        gl.glVertex3f(corner[0].x + x, corner[0].y + y, corner[0].z);
+        gl.glVertex3f(corner[1].x + x, corner[1].y + y, corner[1].z);
+        gl.glVertex3f(corner[2].x + x, corner[2].y + y, corner[2].z);
+        gl.glVertex3f(corner[3].x + x, corner[3].y + y, corner[3].z);
+        
+        gl.glEnd();
 	}
-	
-	public int getWidth(){
-		return width;
-	}
-	
-	public int getHeight(){
-		return height;
-	}
-	
-	public int getX(){
-		return x;
-	}
-	
-	public int getY(){
-		return y;
-	}
-	
-	public void setWidth(int w){
-		width = w;
-	}
-	
-	public void setHeight(int h){
-		height = h;
-	}
-	
-	public void setX(int x){
-		this.x = x;
-	}
-	
-	public void setY(int y){
-		this.y = y;
-	}
-	
-	public int getzIndex(){
-		return zIndex;
-	}
-	public void setzIndex(int z){
-		this.zIndex = z;
-	}
-	
 }

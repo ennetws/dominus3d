@@ -17,7 +17,7 @@ public class Camera {
 	private float farZ;
 	GLU glu;
 	
-	public Camera(GL gl, GLU glu, int height, int width){
+	public Camera(GL gl, GLU glu, int width, int height){
         this.glu = glu;
         
 		fovAngle = 50.0f;
@@ -28,15 +28,6 @@ public class Camera {
         aspectRatio = (float)width / (float)height;
         nearZ = 1.0f;
         farZ = 1000.0f;
-        
-        gl.glMatrixMode(GL.GL_PROJECTION);
-        gl.glLoadIdentity();
-        
-        //set up a perspective projection matrix
-        glu.gluPerspective(fovAngle, aspectRatio , nearZ, farZ);
-        gl.glMatrixMode(GL.GL_MODELVIEW);
-        
-        gl.glLoadIdentity();
 	}
 	
 	public void set(GL gl){
@@ -48,5 +39,21 @@ public class Camera {
         gl.glMatrixMode(GL.GL_MODELVIEW);
         
         gl.glLoadIdentity();
+	}
+	
+	public void setFOV(float fov){
+		this.fovAngle = fov;
+	}
+	
+	public void setAspectRatio(float ratio){
+		this.aspectRatio = ratio;
+	}
+	
+	public void setNear(float near){
+		this.nearZ = near;
+	}
+	
+	public void setFar(float far){
+		this.farZ = far;
 	}
 }

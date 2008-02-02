@@ -20,13 +20,13 @@ import javax.media.opengl.GL;
 
 public abstract class Element {
 	
-	private String id;
+	protected String id;
 	private boolean visible;
 	
-	private Element parent;
-	private Vector<Element> child;
+	protected Element parent;
+	protected Vector<Element> child;
 	
-	private GL gl;
+	protected GL gl;
 	
 	public Element(String iden, GL gl){
 		this(iden, null, gl);
@@ -36,8 +36,12 @@ public abstract class Element {
 		this.id = iden;
 		this.visible = true;
 		this.parent = parent;
-		
+		this.child = new Vector<Element>();
 		this.gl = gl;
+	}
+	
+	public void add(Element e){
+		child.add(e);
 	}
 	
 	public Element getParent(){
@@ -45,6 +49,10 @@ public abstract class Element {
 	}
 	
 	public abstract void render();
+	
+	public void setVisible(boolean b){
+		this.visible = b;
+	}
 	
 	public void renderAll(){
 		if (visible){

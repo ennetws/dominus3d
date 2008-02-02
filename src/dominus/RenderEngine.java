@@ -18,7 +18,9 @@ public class RenderEngine implements GLEventListener{
 	
 	private int width;
 	private int height;
+	
 	private Camera currentCamera;
+	private UI ui;
 	
 	private Color bgColor;
 	 
@@ -51,10 +53,15 @@ public class RenderEngine implements GLEventListener{
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
+        
+        // Create the user interface manager
+        ui = new UI (width, height, gl, glu);
 	}
 	
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
+        
+        currentCamera.set(gl);
         
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
@@ -103,6 +110,9 @@ public class RenderEngine implements GLEventListener{
         gl.glEnd();
         
         rotateT+= 0.05f;
+        
+        // User interface is rendered last
+        ui.render();
 	}
 	
 	public void displayChanged(GLAutoDrawable drawable, 
