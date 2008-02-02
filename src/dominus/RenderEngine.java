@@ -22,6 +22,8 @@ public class RenderEngine implements GLEventListener{
 	
 	private Color bgColor;
 	 
+	private float rotateT = 0.0f;
+	
 	public RenderEngine(int width, int height){
 		bgColor = new Color(0.0f, 0.0f, 0.0f);
 		
@@ -55,19 +57,15 @@ public class RenderEngine implements GLEventListener{
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
         
-        // Clear the viewport
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-    
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glTranslatef(0.0f, 0.0f, -5.0f);
  
-        gl.glRotatef(0.5f, 1.0f, 0.0f, 0.0f);
-        gl.glRotatef(0.5f, 0.0f, 1.0f, 0.0f);
-        gl.glRotatef(0.5f, 0.0f, 0.0f, 1.0f);
-        gl.glRotatef(0.5f, 0.0f, 1.0f, 0.0f);
+        gl.glRotatef(rotateT, 1.0f, 0.0f, 0.0f);
+        gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
+        gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
+        gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
  
         gl.glBegin(GL.GL_TRIANGLES);
  
@@ -104,6 +102,8 @@ public class RenderEngine implements GLEventListener{
         gl.glVertex3f(0.0f, -1.0f, -1.0f);
  
         gl.glEnd();
+ 
+        rotateT += 0.2f;
 	}
 	
 	public void displayChanged(GLAutoDrawable drawable, 
