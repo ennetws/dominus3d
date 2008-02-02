@@ -47,9 +47,8 @@ public class RenderEngine implements GLEventListener{
         gl.glDepthFunc(GL.GL_LEQUAL);
         
         // Set default render settings
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, 
-        			GL.GL_NICEST);
-        
+        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
 	}
@@ -102,8 +101,8 @@ public class RenderEngine implements GLEventListener{
         gl.glVertex3f(0.0f, -1.0f, -1.0f);
  
         gl.glEnd();
- 
-        rotateT += 0.2f;
+        
+        rotateT+= 0.05f;
 	}
 	
 	public void displayChanged(GLAutoDrawable drawable, 
@@ -111,6 +110,7 @@ public class RenderEngine implements GLEventListener{
 		
 	}
 	
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height){
+	public void reshape(GLAutoDrawable drawable, 
+			int x, int y, int width, int height){
 	}
 }
