@@ -1,19 +1,16 @@
 package dominus;
 
-import java.awt.*;
-import java.awt.geom.*;
 import javax.swing.*;
-import java.io.*;
 
 public class Driver {
 
 	public static void main(String[] args)
 	{
 		Window w = new Window();
-		w.setVisible(true);
+	
+		Thread world = new Thread(new World(w, 640, 480));
 		
-		World world = new World();
-		
+		world.start();
 	}
 	
 }

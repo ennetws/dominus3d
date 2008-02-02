@@ -10,7 +10,6 @@ package dominus;
  * @author ibraheem
  *
  */
-//test
 public class UI {
 	
 }
