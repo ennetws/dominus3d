@@ -1,10 +1,6 @@
 package dominus;
 
-import java.io.File;
-
 import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 
 import javax.media.opengl.GL;
@@ -78,7 +74,7 @@ public class Element2D extends Element {
         gl.glBegin(GL_QUADS);
 
         // Bright 2D
-        gl.glColor4f(1.0f, 1.0f, 1.0f, 0.75f);
+        gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy);
         
         gl.glVertex3f(corner[0].x + x + parentX, corner[0].y + y + parentY, corner[0].z + parentZ);
         gl.glTexCoord2f(0, height);
@@ -110,7 +106,7 @@ public class Element2D extends Element {
 		return g;
 	}
 	
-	public void draw(){
+	public void redrawTexture(){
 		texRenderer.markDirty(0, 0, width, height);
 	}
 }

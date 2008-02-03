@@ -1,8 +1,8 @@
 package dominus;
 
-import java.awt.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
+import static javax.media.opengl.GL.*;
 
 /**
  * The RenderEngine class will render all elements within the World
@@ -38,19 +38,18 @@ public class RenderEngine implements GLEventListener{
 	
 	public void init(GLAutoDrawable gLDrawable){
 		gl = gLDrawable.getGL();
-		
-        gl.glShadeModel(GL.GL_SMOOTH);
+        gl.glShadeModel(GL_SMOOTH);
         
         // bgColor contains the background color
         gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
         // Set the OpenGL depth functions
         gl.glClearDepth(1.0f);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL.GL_LEQUAL);
+        gl.glEnable(GL_DEPTH_TEST);
+        gl.glDepthFunc(GL_LEQUAL);
         
         // Set default render settings
-        gl.glHint(GL.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+        gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
@@ -68,8 +67,8 @@ public class RenderEngine implements GLEventListener{
         
         currentCamera.set(gl);
         
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+        gl.glClear(GL_COLOR_BUFFER_BIT);
+        gl.glClear(GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glTranslatef(0.0f, 0.0f, -5.0f);
  
@@ -77,8 +76,10 @@ public class RenderEngine implements GLEventListener{
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
- 
-        gl.glBegin(GL.GL_TRIANGLES);
+        
+        //gl.glEnable(GL_LIGHTING);
+        
+        gl.glBegin(GL_TRIANGLES);
  
         // Front
         gl.glColor3f(0.0f, 1.0f, 1.0f); 
@@ -113,6 +114,8 @@ public class RenderEngine implements GLEventListener{
         gl.glVertex3f(0.0f, -1.0f, -1.0f);
  
         gl.glEnd();
+        
+        //gl.glDisable(GL_LIGHTING);
         
         rotateT+= 0.5f;
         

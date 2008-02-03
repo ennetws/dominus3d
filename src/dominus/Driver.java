@@ -15,6 +15,7 @@ public class Driver {
 	
 }
 
+@SuppressWarnings("serial")
 class Window extends JFrame {
 	
 	public Window()

@@ -22,11 +22,11 @@ public class World implements Runnable{
 	
 	private boolean running;
 	
-	public World(JFrame window, int width, int height){
+	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
 		canvas = new GLCanvas();
 		
-		this.window = window;
+		this.window = w;
             
 		canvas.addGLEventListener(renderer);
 		window.add(canvas);

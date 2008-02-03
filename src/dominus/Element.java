@@ -21,7 +21,8 @@ import javax.media.opengl.GL;
 public abstract class Element {
 	
 	protected String id;
-	private boolean visible;
+	protected boolean visible;
+	protected float transperncy;
 	
 	protected Element parent;
 	protected Vector<Element> child;
@@ -35,6 +36,7 @@ public abstract class Element {
 	public Element(String iden, Element parent, GL gl){
 		this.id = iden;
 		this.visible = true;
+		this.transperncy = 1.0f;
 		this.parent = parent;
 		this.child = new Vector<Element>();
 		this.gl = gl;
@@ -79,7 +81,7 @@ public abstract class Element {
 			
 			Iterator<Element> i = child.listIterator();
 			
-			// Render all child elements
+			// Render all children elements
 			while (i.hasNext()){
 				Element e = (Element)i.next();
 				e.render();
@@ -91,4 +93,7 @@ public abstract class Element {
 		return id;
 	}
 	
+	public void setTransperncy(float t){
+		transperncy = t;
+	}
 }
