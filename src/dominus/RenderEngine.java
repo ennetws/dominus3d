@@ -15,6 +15,7 @@ public class RenderEngine implements GLEventListener{
 	
 	private GL gl;
 	private static final GLU glu = new GLU();
+	private World world;
 	
 	private int width;
 	private int height;
@@ -26,11 +27,13 @@ public class RenderEngine implements GLEventListener{
 	 
 	private float rotateT = 0.0f;
 	
-	public RenderEngine(int width, int height){
+	public RenderEngine(int width, int height, World world){
 		bgColor = new Color(0.0f, 0.0f, 0.0f);
 		
 		this.width = width;
 		this.height = height;
+		
+		this.world = world;
 	}
 	
 	public void init(GLAutoDrawable gLDrawable){
@@ -55,7 +58,7 @@ public class RenderEngine implements GLEventListener{
         currentCamera = new Camera(gl, glu, width, height);
         
         // Create the user interface manager
-        ui = new UI (width, height, gl, glu);
+        ui = new UI (width, height, gl, glu, this.world);
 	}
 	
 	public void display(GLAutoDrawable drawable){

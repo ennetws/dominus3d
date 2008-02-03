@@ -41,11 +41,27 @@ public abstract class Element {
 	}
 	
 	public void add(Element e){
+		e.parent = this;
 		child.add(e);
 	}
 	
 	public Element getParent(){
 		return parent;
+	}
+	
+	public Element getChild(String iden){
+		if (this.id.equals(iden))
+			return this;
+		else{
+			if (child.size() == 0)
+				return null;
+			
+			for (int i = 0; i < child.size(); i++){
+				return (Element)child.get(i).getChild(iden);
+			}
+			
+			return null;
+		}
 	}
 	
 	public abstract void render();

@@ -18,12 +18,12 @@ public class World implements Runnable{
 	
 	private GLCanvas canvas;
 	private RenderEngine renderer;
-	private JFrame window;
+	public JFrame window;
 	
 	private boolean running;
 	
 	public World(JFrame window, int width, int height){
-		renderer = new RenderEngine(width, height);
+		renderer = new RenderEngine(width, height, this);
 		canvas = new GLCanvas();
 		
 		this.window = window;
@@ -39,6 +39,12 @@ public class World implements Runnable{
 	
 	public void run(){	
 		while(running)
-			canvas.display();
+		{
+			try{
+				canvas.display();
+			}catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 }
