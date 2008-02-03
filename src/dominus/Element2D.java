@@ -1,6 +1,7 @@
 package dominus;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 
 import javax.media.opengl.GL;
@@ -60,20 +61,9 @@ public class Element2D extends Element {
         
         gl.glEnable(GL.GL_BLEND);
         gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
-        
-		Graphics2D g2d = texRenderer.createGraphics();
 		
-	    g2d.setColor(Color.yellow);
-		g2d.fillRect(0, 0, 100, 100);
-		g2d.setColor(Color.red);
-		g2d.fillOval(0, 0, 20, 20);
-		g2d.drawLine(0, 0, 50, 50);
-		g2d.setFont(new Font("Arial", Font.PLAIN, 20)); 
-		g2d.drawString("Ibraheem",0, 20);
-		g2d.drawString("Ibraheem",0, 40);
-		
-		 
         Texture tex = texRenderer.getTexture();
+        texRenderer.markDirty(0, 0, width, height);
         
         tex.bind();
         tex.enable();
@@ -86,13 +76,13 @@ public class Element2D extends Element {
         gl.glColor3f(1.0f, 1.0f, 1.0f);
         
         gl.glVertex3f(corner[0].x + x + parentX, corner[0].y + y + parentY, corner[0].z + parentZ);
-        gl.glTexCoord2f(0, 100);
+        gl.glTexCoord2f(0, height);
         
         gl.glVertex3f(corner[1].x + x + parentX, corner[1].y + y + parentY, corner[1].z + parentZ);
-        gl.glTexCoord2f(100, 100);
+        gl.glTexCoord2f(width, height);
         
         gl.glVertex3f(corner[2].x + x + parentX, corner[2].y + y + parentY, corner[2].z + parentZ);
-        gl.glTexCoord2f(100, 0);
+        gl.glTexCoord2f(width, 0);
 
         gl.glVertex3f(corner[3].x + x + parentX, corner[3].y + y + parentY, corner[3].z + parentZ);
         gl.glTexCoord2f(0, 0);
@@ -101,5 +91,9 @@ public class Element2D extends Element {
         
         tex.disable();
         gl.glDisable(GL.GL_BLEND);
+	}
+	
+	public Graphics2D getGraphics(){
+		return texRenderer.createGraphics();
 	}
 }

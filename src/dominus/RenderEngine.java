@@ -23,13 +23,13 @@ public class RenderEngine implements GLEventListener{
 	private Camera currentCamera;
 	private UI ui;
 	
-	private Color bgColor;
-	 
 	private float rotateT = 0.0f;
 	
+	public int fps;
+	private int fpsCounter;
+	private long fpsEnd;
+
 	public RenderEngine(int width, int height, World world){
-		bgColor = new Color(0.0f, 0.0f, 0.0f);
-		
 		this.width = width;
 		this.height = height;
 		
@@ -42,9 +42,7 @@ public class RenderEngine implements GLEventListener{
         gl.glShadeModel(GL.GL_SMOOTH);
         
         // bgColor contains the background color
-        gl.glClearColor(bgColor.getRed()/255, 
-        				bgColor.getGreen()/255, 
-        				bgColor.getBlue()/255, 0.0f);
+        gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
 
         // Set the OpenGL depth functions
         gl.glClearDepth(1.0f);
@@ -59,6 +57,10 @@ public class RenderEngine implements GLEventListener{
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
+        
+        // Initialize FPS counter
+		fpsEnd = System.nanoTime();
+        fpsCounter = 0;
 	}
 	
 	public void display(GLAutoDrawable drawable){
@@ -112,7 +114,10 @@ public class RenderEngine implements GLEventListener{
  
         gl.glEnd();
         
-        rotateT+= 0.05f;
+        rotateT+= 0.5f;
+        
+        // Calculate Frames Per Second
+        calcFPS();
         
         // User interface is rendered last
         ui.render();
@@ -125,5 +130,15 @@ public class RenderEngine implements GLEventListener{
 	
 	public void reshape(GLAutoDrawable drawable, 
 			int x, int y, int width, int height){
+	}
+	
+	public void calcFPS(){
+		fpsCounter++;
+		
+		if (System.nanoTime() > fpsEnd){
+			fps = fpsCounter;
+			fpsEnd = System.nanoTime() + 1000000000l;
+	        fpsCounter = 0;
+		}
 	}
 }

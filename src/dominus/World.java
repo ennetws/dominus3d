@@ -16,9 +16,9 @@ import javax.swing.*;
 
 public class World implements Runnable{
 	
-	private GLCanvas canvas;
-	private RenderEngine renderer;
-	public JFrame window;
+	public GLCanvas canvas;
+	public RenderEngine renderer;
+	private JFrame window;
 	
 	private boolean running;
 	
