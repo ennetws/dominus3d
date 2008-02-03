@@ -27,7 +27,7 @@ public class World implements Runnable{
 		canvas = new GLCanvas();
 		
 		this.window = window;
-		
+            
 		canvas.addGLEventListener(renderer);
 		window.add(canvas);
 		canvas.requestFocus();

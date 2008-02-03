@@ -1,5 +1,8 @@
 package dominus;
 
+import java.io.File;
+
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -7,6 +10,7 @@ import java.awt.Graphics2D;
 import javax.media.opengl.GL;
 import com.sun.opengl.util.texture.*;
 import com.sun.opengl.util.j2d.TextureRenderer;
+import static javax.media.opengl.GL.*;
 
 /**
  * 2D element class for menus, text, object selection, etc.
@@ -21,7 +25,9 @@ public class Element2D extends Element {
 	public int width, height, zIndex;
 		
 	private Vertex[] corner = new Vertex[4];
+	
 	private TextureRenderer texRenderer;
+	private Texture tex;
 	
 	public Element2D(String iden, int width, int height, int x, int y, GL gl){
 		this(iden, null, width, height, x, y, gl);
@@ -46,7 +52,7 @@ public class Element2D extends Element {
 		this.corner[2] = new Vertex(width,height,0.0f);
 		this.corner[3] = new Vertex(width,0,0.0f);
 		
-        texRenderer = new TextureRenderer(width, height, false);
+        texRenderer = new TextureRenderer(width, height, true, true);   
 	}
 
 	public void render(){
@@ -59,21 +65,20 @@ public class Element2D extends Element {
         	parentZ = ((Element2D)parent).zIndex;
         }
         
-        gl.glEnable(GL.GL_BLEND);
-        gl.glBlendFunc(GL.GL_ONE, GL.GL_ONE_MINUS_SRC_ALPHA);
-		
-        Texture tex = texRenderer.getTexture();
-        texRenderer.markDirty(0, 0, width, height);
+        gl.glEnable(GL_BLEND);
+        gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        tex.bind();
+        tex = texRenderer.getTexture();
+
         tex.enable();
+        tex.bind();
         
 		gl.glLoadIdentity();
-		
-        gl.glBegin(GL.GL_QUADS);
+
+        gl.glBegin(GL_QUADS);
 
         // Bright 2D
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glColor4f(1.0f, 1.0f, 1.0f, 0.75f);
         
         gl.glVertex3f(corner[0].x + x + parentX, corner[0].y + y + parentY, corner[0].z + parentZ);
         gl.glTexCoord2f(0, height);
@@ -90,10 +95,22 @@ public class Element2D extends Element {
         gl.glEnd();
         
         tex.disable();
-        gl.glDisable(GL.GL_BLEND);
+        
+        gl.glDisable(GL_BLEND);
 	}
 	
-	public Graphics2D getGraphics(){
-		return texRenderer.createGraphics();
+	public Graphics2D getGraphicsWithAlpha(){
+		Graphics2D g = texRenderer.createGraphics();
+		
+        // Clear with a transparent background
+		g.setComposite(AlphaComposite.Clear);
+        g.fillRect(0, 0, width, height);
+        g.setComposite(AlphaComposite.Src);
+        
+		return g;
+	}
+	
+	public void draw(){
+		texRenderer.markDirty(0, 0, width, height);
 	}
 }

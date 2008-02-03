@@ -4,7 +4,11 @@
 package dominus;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.io.*;
+import javax.imageio.ImageIO;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.*;
 import com.sun.opengl.util.j2d.TextRenderer;
@@ -26,6 +30,10 @@ public class UI {
 	private TextRenderer textEngine;
 	private int width, height;
 	
+	// Sample items
+	private BufferedImage sampleImage;
+	private boolean drawOnce = true;
+	
 	public UI(int width, int height, GL gl, GLU glu, World world){
 		this.gl = gl;
 		this.glu = glu;
@@ -38,8 +46,14 @@ public class UI {
 	    
 		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);
 		
-		// Sample 2D object
-		contentPanel.add(new Element2D("BlueBox", 200, 45, 0, 0, gl));
+		// Sample 2D objects
+		contentPanel.add(new Element2D("ImageBox", 255, 255, 0, 0, gl));
+
+        try{
+            sampleImage = ImageIO.read(new File("media/texture.png"));
+        }catch(Exception e){
+        	System.out.println(e.getMessage());
+        }
 	}
 	
 	public void render(){
@@ -51,26 +65,32 @@ public class UI {
         
 		contentPanel.renderAll();
 		
-        // SAMPLE CODE
-        Element2D e = get("BlueBox");
-        
-        Graphics2D g = e.getGraphics();
-        
-        g.setColor(Color.black);
-        g.fillRect(0, 0, width, height);
-        
-        g.setColor(Color.white);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setFont(new Font("SansSerif", Font.BOLD, 36));
-
-        if (world.canvas.getMousePosition() != null)
-        	g.drawString("x=" + world.canvas.getMousePosition().x+
-        				", y=" + world.canvas.getMousePosition().y, 0, 36);
+        // SAMPLE CODE ##############################
+		
+        // PNG Image loading
+		Element2D e = get("ImageBox");
+		
+		if(drawOnce){
+			
+	        Graphics2D g = e.getGraphicsWithAlpha();
+	      
+	        g.setFont(new Font("SansSerif", Font.BOLD, 36));
+	        g.setColor(Color.red);
+	        g.drawImage(sampleImage, 0, 0, 256, 256, null);
+	       
+	        e.draw();
+	        
+	        drawOnce = false;
+		}
+		
+        if (world.canvas.getMousePosition() != null){
+        	e.x = world.canvas.getMousePosition().x;
+        	e.y = world.canvas.getMousePosition().y;
+        }
         
         writeLine("FPS: " + world.renderer.fps , 0, 65);
         
-        // End of SAMPLE CODE
+        // End of SAMPLE CODE ########################
 	}
 	
 	public Element2D get(String id){

@@ -53,14 +53,16 @@ public abstract class Element {
 		if (this.id.equals(iden))
 			return this;
 		else{
-			if (child.size() == 0)
-				return null;
+			Element result = null;
 			
 			for (int i = 0; i < child.size(); i++){
-				return (Element)child.get(i).getChild(iden);
+				result = (Element)child.get(i).getChild(iden);
+				
+				if (result != null)
+					return result;
 			}
 			
-			return null;
+			return result;
 		}
 	}
 	
