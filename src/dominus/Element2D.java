@@ -2,6 +2,7 @@ package dominus;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 
 import javax.media.opengl.GL;
 import com.sun.opengl.util.texture.*;
@@ -23,8 +24,7 @@ public class Element2D extends Element {
 	private Vertex[] corner = new Vertex[4];
 	
 	private TextureRenderer texRenderer;
-	private Texture tex;
-	
+
 	public Element2D(String iden, int width, int height, int x, int y, GL gl){
 		this(iden, null, width, height, x, y, gl);
 	}
@@ -43,24 +43,23 @@ public class Element2D extends Element {
 		this.y = y;
 		
 		// Create a rectangular shaped polygon
-		/*
+		
 		this.corner[0] = new Vertex(0,0,0.0f);
 		this.corner[1] = new Vertex(0,height,0.0f);
 		this.corner[2] = new Vertex(width,height,0.0f);
-		this.corner[3] = new Vertex(width,0,0.0f);*/
+		this.corner[3] = new Vertex(width,0,0.0f);
 		
         texRenderer = new TextureRenderer(width, height, true);
         
 	}
 
 	public void render(){
-		int parentX, parentY, parentZ;
-        parentX = parentY = parentZ = 0;
+		int parentX, parentY;
+        parentX = parentY = 0;
         
         if (parent != null){
         	parentX = ((Element2D)parent).x;
         	parentY = ((Element2D)parent).y;
-        	parentZ = ((Element2D)parent).zIndex;
         }
         
         Texture tex = texRenderer.getTexture();
@@ -73,10 +72,11 @@ public class Element2D extends Element {
         tex.bind();
         tex.enable();
         
-        gl.glLoadIdentity();
         
+        gl.glLoadIdentity();
+   
         texRenderer.drawOrthoRect(x + parentX, y + parentY, 0, 0, width, height);
-    	
+
         tex.disable();
         
         gl.glDisable(GL_BLEND);
@@ -90,6 +90,13 @@ public class Element2D extends Element {
         g.fillRect(0, 0, width, height);
         g.setComposite(AlphaComposite.Src);
         
+		AffineTransform t = g.getTransform();
+		
+		t.translate( 0 , height );
+		t.scale( 1.0, -1.0 );
+		
+		g.setTransform(t);
+		
 		return g;
 	}
 	

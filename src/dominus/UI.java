@@ -47,7 +47,7 @@ public class UI {
 		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);	
 		
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 0, 0, gl));
-		contentPanel.add(messageBox("Hello, World!", "Title goes here..", "MsgBox1"));
+		contentPanel.add(messageBox("Hello, World!", "Title", "MsgBox1"));
 		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
@@ -104,6 +104,7 @@ public class UI {
 	public Element2D messageBox(String message, String title, String id){
 		int mBoxWidth = 250;
 		int mBoxHeight = 150;
+		int letterSize = 5;
 		
 		int shadowHeight = 3;
 		
@@ -115,24 +116,51 @@ public class UI {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g.setColor(Color.black);
-		
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 		g.fillRoundRect(shadowHeight, shadowHeight, mBoxWidth, mBoxHeight, 20, 20);		
-		
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
 		g.fillRoundRect(0, 0, mBoxWidth, mBoxHeight, 20, 20);		
 		g.fillRoundRect(0, 0, mBoxWidth, 30, 20, 20);		
 	
-		g.setColor(Color.LIGHT_GRAY);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		g.drawString(title, 100, 20);
+		
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawString(title, (mBoxWidth / 2) - (title.length()*letterSize/2), 20);
 		
 		g.setColor(Color.white);
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		g.drawString(message, 100, 100);
+		g.drawString(message, (mBoxWidth / 2) - (message.length()*letterSize/2), 60);
+
+		drawButton(g, "OK", 60, 30, 110, 110);
+
+		drawButton(g, "Cancel", 60, 30, 180, 110);
 		
 		mBox.redrawTexture();
 		
 		return mBox;
+	}
+	
+	public void drawButton(Graphics2D g, String label, int buttonWidth, int buttonHeight, int x, int y){
+		g.translate(x, y);
+		
+		g.setColor(new Color(0.2f,0.2f,0.2f));
+		g.fillRoundRect(0, 0, buttonWidth, buttonHeight, 9, 9);
+		g.setColor(new Color(0.05f,0.05f,0.05f));
+		g.fillRoundRect(1, 1, buttonWidth-2, buttonHeight-2, 9, 9);
+		
+		GradientPaint gradient = new GradientPaint(0, 0, 
+									new Color(0.3f,0.3f,0.3f), 0, buttonHeight, 
+									new Color(0.2f,0.2f,0.2f));
+		g.setPaint(gradient);
+		g.fillRoundRect(2, 2, buttonWidth-4, buttonHeight-4, 9, 9);
+		
+		int letterSize = 6;
+		
+		g.setPaint(null);
+
+		g.setColor(Color.white);
+		g.drawString(label, (buttonWidth / 2) - (label.length()*letterSize/2), 
+				(buttonHeight/2) + letterSize);
+		
+		g.translate(-x, -y);
 	}
 }
