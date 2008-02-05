@@ -44,10 +44,9 @@ public class UI {
 		
 		textEngine = new TextRenderer(new Font("SansSerif", Font.BOLD, 36), true);
 	    
-		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);
+		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);	
 		
-		contentPanel.add(new Element2D("ImageBox", 255, 255, 0, 0, gl));
-
+		contentPanel.add(new Element2D("ImageBox", 256, 256, 0, 0, gl));
 		contentPanel.add(messageBox("Hello, World!", "Title goes here..", "MsgBox1"));
 		
         try{
@@ -79,7 +78,7 @@ public class UI {
 	        g.drawImage(sampleImage, 0, 0, 256, 256, null);
 	       
 	        e.redrawTexture();
-	        e.transperncy = 0.5f;
+	        e.setTransperncy(0.5f);
 	        
 	        drawOnce = false;
 		}

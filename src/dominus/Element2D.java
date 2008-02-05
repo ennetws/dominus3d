@@ -43,16 +43,18 @@ public class Element2D extends Element {
 		this.y = y;
 		
 		// Create a rectangular shaped polygon
+		/*
 		this.corner[0] = new Vertex(0,0,0.0f);
 		this.corner[1] = new Vertex(0,height,0.0f);
 		this.corner[2] = new Vertex(width,height,0.0f);
-		this.corner[3] = new Vertex(width,0,0.0f);
+		this.corner[3] = new Vertex(width,0,0.0f);*/
 		
-        texRenderer = new TextureRenderer(width, height, true, true);   
+        texRenderer = new TextureRenderer(width, height, true);
+        
 	}
 
 	public void render(){
-        int parentX,parentY,parentZ;
+		int parentX, parentY, parentZ;
         parentX = parentY = parentZ = 0;
         
         if (parent != null){
@@ -61,39 +63,24 @@ public class Element2D extends Element {
         	parentZ = ((Element2D)parent).zIndex;
         }
         
+        Texture tex = texRenderer.getTexture();
+        
         gl.glEnable(GL_BLEND);
         gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        tex = texRenderer.getTexture();
-
-        tex.enable();
-        tex.bind();
-        
-		gl.glLoadIdentity();
-
-        gl.glBegin(GL_QUADS);
-
-        // Bright 2D
         gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy);
         
-        gl.glVertex3f(corner[0].x + x + parentX, corner[0].y + y + parentY, corner[0].z + parentZ);
-        gl.glTexCoord2f(0, height);
+        tex.bind();
+        tex.enable();
         
-        gl.glVertex3f(corner[1].x + x + parentX, corner[1].y + y + parentY, corner[1].z + parentZ);
-        gl.glTexCoord2f(width, height);
+        gl.glLoadIdentity();
         
-        gl.glVertex3f(corner[2].x + x + parentX, corner[2].y + y + parentY, corner[2].z + parentZ);
-        gl.glTexCoord2f(width, 0);
-
-        gl.glVertex3f(corner[3].x + x + parentX, corner[3].y + y + parentY, corner[3].z + parentZ);
-        gl.glTexCoord2f(0, 0);
-        
-        gl.glEnd();
-        
+        texRenderer.drawOrthoRect(x + parentX, y + parentY, 0, 0, width, height);
+    	
         tex.disable();
         
         gl.glDisable(GL_BLEND);
-	}
+    }
 	
 	public Graphics2D getGraphicsWithAlpha(){
 		Graphics2D g = texRenderer.createGraphics();
@@ -104,6 +91,10 @@ public class Element2D extends Element {
         g.setComposite(AlphaComposite.Src);
         
 		return g;
+	}
+	
+	public Graphics2D getGraphics(){
+		return texRenderer.createGraphics();
 	}
 	
 	public void redrawTexture(){
