@@ -29,6 +29,11 @@ public class RenderEngine implements GLEventListener{
 	private int fpsCounter;
 	private long fpsEnd;
 
+	private float[] lightAmbient = {1.0f, 0.5f, 0.5f, 1.0f};
+    private float[] lightDiffuse = {1.0f, 1.0f, 1.0f, 1.0f};
+    private float[] lightPosition = {0.0f, 0.0f, 2.0f, 1.0f};
+	
+	
 	public RenderEngine(int width, int height, World world){
 		this.width = width;
 		this.height = height;
@@ -64,6 +69,7 @@ public class RenderEngine implements GLEventListener{
 	
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
+     
         
         currentCamera.set(gl);
         
@@ -77,49 +83,24 @@ public class RenderEngine implements GLEventListener{
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
-        
-        //gl.glEnable(GL_LIGHTING);
-        
-        gl.glBegin(GL_TRIANGLES);
- 
-        // Front
-        gl.glColor3f(0.0f, 1.0f, 1.0f); 
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
-        gl.glColor3f(0.0f, 0.0f, 1.0f); 
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glColor3f(0.0f, 0.0f, 0.0f); 
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
- 
-        // Right Side Facing Front
-        gl.glColor3f(0.0f, 1.0f, 1.0f); 
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
-        gl.glColor3f(0.0f, 0.0f, 1.0f); 
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glColor3f(0.0f, 0.0f, 0.0f); 
-        gl.glVertex3f(0.0f, -1.0f, -1.0f);
- 
-        // Left Side Facing Front
-        gl.glColor3f(0.0f, 1.0f, 1.0f); 
-        gl.glVertex3f(0.0f, 1.0f, 0.0f);
-        gl.glColor3f(0.0f, 0.0f, 1.0f); 
-        gl.glVertex3f(0.0f, -1.0f, -1.0f);
-        gl.glColor3f(0.0f, 0.0f, 0.0f); 
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
- 
-        // Bottom
-        gl.glColor3f(0.0f, 0.0f, 0.0f); 
-        gl.glVertex3f(-1.0f, -1.0f, 1.0f);
-        gl.glColor3f(0.1f, 0.1f, 0.1f); 
-        gl.glVertex3f(1.0f, -1.0f, 1.0f);
-        gl.glColor3f(0.2f, 0.2f, 0.2f); 
-        gl.glVertex3f(0.0f, -1.0f, -1.0f);
- 
-        gl.glEnd();
+       
+        Element3D domino = new Element3D("Domino", gl);
+     
+        domino = domino.createDomino("Domino", gl);
+        domino.render();
         
         Element3D e = new Element3D("Grid", gl);
         e = e.createGrid("Grid", 1, 1, gl);
         
         e.render();
+        
+     //   Light light = new Light(gl);
+        
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, lightAmbient, 0);
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, lightDiffuse, 0);
+        gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPosition, 0);
+        gl.glEnable(GL.GL_LIGHT1);
+        gl.glEnable(GL.GL_LIGHTING);	
         
         //gl.glDisable(GL_LIGHTING);
         

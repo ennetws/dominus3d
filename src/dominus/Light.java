@@ -12,7 +12,7 @@ import javax.media.opengl.glu.*;
 
 public class Light {
 
-	private boolean lightEnabled; 	// turn light on / off
+	private boolean lightEnabled = true; 	// turn light on / off
 	
 	private float[] lightAmbient;	// R G B A float vals for ambient light	
 	private float[] lightDiffuse;	// R G B A float vals for diffuse light	
@@ -38,6 +38,10 @@ public class Light {
 		
 	}
 	
+	public void lightState(boolean state) {
+		lightEnabled = !lightEnabled;
+	}
+	
 	public boolean switchLight(Light light) {
 		
 		lightEnabled = !lightEnabled;
@@ -46,25 +50,38 @@ public class Light {
 		
 	}
 	
-	public void setAmbient(float amRed, float amGreen, float amBlue, float amAlpha) {
+	public float[] createAmbient(float amRed, float amGreen, float amBlue, float amAlpha) {
 		
 		lightAmbient[0] = amRed;
 		lightAmbient[1] = amGreen;
 		lightAmbient[2] = amBlue;
 		lightAmbient[3] = amAlpha;
 		
+		return lightAmbient;
 	}
 	
-	public void setDiffuse(float difRed, float difGreen, float difBlue, float difAlpha) {
+	public float[] createDiffuse(float difRed, float difGreen, float difBlue, float difAlpha) {
 		
 		lightDiffuse[0] = difRed;
 		lightDiffuse[1] = difGreen;
 		lightDiffuse[2] = difBlue;
 		lightDiffuse[3] = difAlpha;
 		
+		return lightDiffuse;
 	}
 	
-	public Vertex setPosition(float x, float y, float z) {
+	// float arr version
+	public float[] createPosition(float leftX, float rightX, float upY, float downY) {
+		
+		lightPosition[0] = leftX;
+		lightPosition[1] = rightX;
+		lightPosition[2] = upY;
+		lightPosition[3] = downY;
+		
+		return lightPosition;
+	}
+	
+	public Vertex createPosition(float x, float y, float z) {
 		
 		Vertex vertex = new Vertex(x, y, z);
 		

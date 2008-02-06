@@ -58,4 +58,50 @@ public class Element3D extends Element {
 		
 		return e;
 	}
+	
+	// TODO: have domino create dots
+	public Element3D createDomino(String id, GL gl) {
+		
+		Element3D domino = new Element3D(id, gl);
+		
+		domino.vertices = new Vector<Vertex>();
+		
+		// front
+		domino.vertices.add(new Vertex(0, 0, 0));
+		domino.vertices.add(new Vertex(1, 0, 0));
+		domino.vertices.add(new Vertex(1, 2, 0));
+		domino.vertices.add(new Vertex(0, 2, 0));
+		
+		//back
+		domino.vertices.add(new Vertex(1, 0, 1));
+		domino.vertices.add(new Vertex(0, 0, 1));
+		domino.vertices.add(new Vertex(0, 2, 1));
+		domino.vertices.add(new Vertex(1, 2, 1));
+		
+		// left
+		domino.vertices.add(new Vertex(0, 0, 0));
+		domino.vertices.add(new Vertex(0, 2, 0));
+		domino.vertices.add(new Vertex(0, 2, 1));
+		domino.vertices.add(new Vertex(0, 0, 1));
+		
+		// right
+		domino.vertices.add(new Vertex(1, 0, 0));
+		domino.vertices.add(new Vertex(1, 0, 1));
+		domino.vertices.add(new Vertex(1, 2, 1));
+		domino.vertices.add(new Vertex(0, 2, 0));
+		
+		// top
+		domino.vertices.add(new Vertex(0, 2, 0));
+		domino.vertices.add(new Vertex(1, 2, 0));
+		domino.vertices.add(new Vertex(1, 2, 1));
+		domino.vertices.add(new Vertex(0, 2, 1));
+		
+		// bottom
+		domino.vertices.add(new Vertex(0, 0, 0));
+		domino.vertices.add(new Vertex(1, 0, 0));
+		domino.vertices.add(new Vertex(1, 0, 1));
+		domino.vertices.add(new Vertex(0, 0, 1));
+		
+		return domino;
+	}
 }
