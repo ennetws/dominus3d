@@ -29,9 +29,11 @@ public class RenderEngine implements GLEventListener{
 	private int fpsCounter;
 	private long fpsEnd;
 
-	private float[] lightAmbient = {1.0f, 0.5f, 0.5f, 1.0f};
-    private float[] lightDiffuse = {1.0f, 1.0f, 1.0f, 1.0f};
-    private float[] lightPosition = {0.0f, 0.0f, 2.0f, 1.0f};
+	
+	// ax these one the Light class is working properly
+	private float[] lightAmbient = { 0.5f, 0.5f, 1.0f, 1.0f };
+    private float[] lightDiffuse = { 0.5f, 0.5f, 1.0f, 1.0f };
+    private float[] lightPosition = { 0.0f, 0.0f, 1.0f, 1.0f };
 	
 	
 	public RenderEngine(int width, int height, World world){
@@ -78,12 +80,12 @@ public class RenderEngine implements GLEventListener{
         gl.glLoadIdentity();
         
         gl.glTranslatef(0.0f, 0.0f, -5.0f);
- 
+
         gl.glRotatef(rotateT, 1.0f, 0.0f, 0.0f);
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
-       
+   
         Element3D domino = new Element3D("Domino", gl);
      
         domino = domino.createDomino("Domino", gl);
@@ -94,7 +96,13 @@ public class RenderEngine implements GLEventListener{
         
         e.render();
         
-     //   Light light = new Light(gl);
+        /*
+        Light light = new Light();
+        
+        lightAmbient = light.createAmbient(1.0f, 0.5f, 0.5f, 1.0f);
+        lightDiffuse = light.createDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+        lightPosition = light.createPosition(0.0f, 0.0f, 2.0f, 1.0f);
+        */
         
         gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, lightAmbient, 0);
         gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, lightDiffuse, 0);
