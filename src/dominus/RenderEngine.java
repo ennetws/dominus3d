@@ -70,6 +70,7 @@ public class RenderEngine implements GLEventListener{
         gl.glClear(GL_COLOR_BUFFER_BIT);
         gl.glClear(GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
+        
         gl.glTranslatef(0.0f, 0.0f, -5.0f);
  
         gl.glRotatef(rotateT, 1.0f, 0.0f, 0.0f);
@@ -114,6 +115,11 @@ public class RenderEngine implements GLEventListener{
         gl.glVertex3f(0.0f, -1.0f, -1.0f);
  
         gl.glEnd();
+        
+        Element3D e = new Element3D("Grid", gl);
+        e = e.createGrid("Grid", 1, 1, gl);
+        
+        e.render();
         
         //gl.glDisable(GL_LIGHTING);
         
