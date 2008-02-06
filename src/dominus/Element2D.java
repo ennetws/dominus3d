@@ -64,6 +64,7 @@ public class Element2D extends Element {
         
         Texture tex = texRenderer.getTexture();
         
+        gl.glDisable(GL_LIGHTING);
         gl.glEnable(GL_BLEND);
         gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         

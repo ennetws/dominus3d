@@ -86,16 +86,6 @@ public class RenderEngine implements GLEventListener{
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
    
-        Element3D domino = new Element3D("Domino", gl);
-     
-        domino = domino.createDomino("Domino", gl);
-        domino.render();
-        
-        Element3D e = new Element3D("Grid", gl);
-        e = e.createGrid("Grid", 1, 1, gl);
-        
-        e.render();
-        
         /*
         Light light = new Light();
         
@@ -110,8 +100,17 @@ public class RenderEngine implements GLEventListener{
         gl.glEnable(GL.GL_LIGHT1);
         gl.glEnable(GL.GL_LIGHTING);	
         
-        //gl.glDisable(GL_LIGHTING);
         
+        Element3D domino = new Element3D("Domino", gl);
+     
+        domino = domino.createDomino("Domino", gl);
+        domino.render();
+        
+        Element3D e = new Element3D("Grid", gl);
+        e = e.createGrid("Grid", 1, 1, gl);
+        
+        e.render();
+      
         rotateT+= 0.5f;
         
         // Calculate Frames Per Second
