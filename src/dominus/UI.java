@@ -6,6 +6,7 @@ package dominus;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
+import java.awt.geom.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 
@@ -104,7 +105,6 @@ public class UI {
 	public Element2D messageBox(String message, String title, String id){
 		int mBoxWidth = 250;
 		int mBoxHeight = 150;
-		int letterSize = 5;
 		
 		int shadowHeight = 3;
 		
@@ -124,14 +124,16 @@ public class UI {
 	
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 		
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(title, (mBoxWidth / 2) - (title.length()*letterSize/2), 20);
+		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(title,g);
 		
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawString(title, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 20);
+		
+		textBounds = g.getFontMetrics().getStringBounds(message,g);
 		g.setColor(Color.white);
-		g.drawString(message, (mBoxWidth / 2) - (message.length()*letterSize/2), 60);
+		g.drawString(message, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 60);
 
 		drawButton(g, "OK", 60, 30, 110, 110);
-
 		drawButton(g, "Cancel", 60, 30, 180, 110);
 		
 		mBox.redrawTexture();
@@ -152,15 +154,19 @@ public class UI {
 									new Color(0.2f,0.2f,0.2f));
 		g.setPaint(gradient);
 		g.fillRoundRect(2, 2, buttonWidth-4, buttonHeight-4, 9, 9);
-		
-		int letterSize = 6;
-		
+
 		g.setPaint(null);
 
 		g.setColor(Color.white);
-		g.drawString(label, (buttonWidth / 2) - (label.length()*letterSize/2), 
-				(buttonHeight/2) + letterSize);
+		
+		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(label,g);
+		g.drawString(label, (buttonWidth / 2) - (int)textBounds.getCenterX(), 
+				(buttonHeight/2) - (int)(textBounds.getY()/2) - 2);
 		
 		g.translate(-x, -y);
+	}
+	
+	public void add(Element2D e){
+		contentPanel.add(e);
 	}
 }
