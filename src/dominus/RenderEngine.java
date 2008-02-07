@@ -15,13 +15,14 @@ public class RenderEngine implements GLEventListener{
 	
 	private GL gl;
 	private static final GLU glu = new GLU();
-	private World world;
 	
+	private World world;
 	private int width;
 	private int height;
 	
 	private Camera currentCamera;
 	private UI ui;
+	private Element3D axis;
 	
 	private float rotateT = 0.0f;
 	
@@ -61,6 +62,9 @@ public class RenderEngine implements GLEventListener{
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
+        
+        // Create Axis object
+        axis = Element3D.createAxis("MainAxis", 2.0f, gl);
         
         // Initialize FPS counter
 		fpsEnd = System.currentTimeMillis();
@@ -103,6 +107,8 @@ public class RenderEngine implements GLEventListener{
 
         e.setTransperncy(0.5f);
         e.renderWireframe();
+        
+        axis.render();
       
         rotateT+= 0.1f;
         
