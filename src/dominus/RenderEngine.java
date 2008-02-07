@@ -29,12 +29,10 @@ public class RenderEngine implements GLEventListener{
 	private int fpsCounter;
 	private long fpsEnd;
 
-	
 	// ax these one the Light class is working properly
-	private float[] lightAmbient = { 0.5f, 0.5f, 1.0f, 1.0f };
+	private float[] lightAmbient = { 0.25f, 0.25f, 1.0f, 1.0f };
     private float[] lightDiffuse = { 0.5f, 0.5f, 1.0f, 1.0f };
     private float[] lightPosition = { 0.0f, 0.0f, 1.0f, 1.0f };
-	
 	
 	public RenderEngine(int width, int height, World world){
 		this.width = width;
@@ -65,27 +63,21 @@ public class RenderEngine implements GLEventListener{
         ui = new UI (width, height, gl, glu, this.world);
         
         // Initialize FPS counter
-		fpsEnd = System.nanoTime();
+		fpsEnd = System.currentTimeMillis();
         fpsCounter = 0;
 	}
 	
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
-     
-        
-        currentCamera.set(gl);
-        
+      
         gl.glClear(GL_COLOR_BUFFER_BIT);
         gl.glClear(GL_DEPTH_BUFFER_BIT);
-        gl.glLoadIdentity();
         
-        gl.glTranslatef(0.0f, 0.0f, -5.0f);
-
-        gl.glRotatef(rotateT, 1.0f, 0.0f, 0.0f);
-        gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
+        currentCamera.set(gl);
+        currentCamera.lookFrom(new Vertex(10,10,10));
+        
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
-        gl.glRotatef(rotateT, 0.0f, 1.0f, 0.0f);
-   
+        
         /*
         Light light = new Light();
         
@@ -100,18 +92,19 @@ public class RenderEngine implements GLEventListener{
         gl.glEnable(GL.GL_LIGHT1);
         gl.glEnable(GL.GL_LIGHTING);	
         
-        
-        Element3D domino = new Element3D("Domino", gl);
-     
-        domino = domino.createDomino("Domino", gl);
-        domino.render();
-        
-        Element3D e = new Element3D("Grid", gl);
-        e = e.createGrid("Grid", 1, 1, gl);
-        
-        e.render();
+        for(int i = 0 ; i < 10 ; i++){
+        	Element3D e = Element3D.createDomino("Domino"+i, gl);
+        	e.moveTo(new Vertex(i*1.5f,i*1.5f,0));
+        	e.rotateTo(new Vertex(0,0,i*5));
+        	e.render();
+        }
+  
+        Element3D e = Element3D.createGrid("Grid", 8, 1.0f, gl);
+
+        e.setTransperncy(0.5f);
+        e.renderWireframe();
       
-        rotateT+= 0.5f;
+        rotateT+= 0.1f;
         
         // Calculate Frames Per Second
         calcFPS();
@@ -132,9 +125,11 @@ public class RenderEngine implements GLEventListener{
 	public void calcFPS(){
 		fpsCounter++;
 		
-		if (System.nanoTime() > fpsEnd){
+		long currTime = System.currentTimeMillis();
+		
+		if (currTime > fpsEnd){
 			fps = fpsCounter;
-			fpsEnd = System.nanoTime() + 1000000000l;
+			fpsEnd = currTime + 1000;
 	        fpsCounter = 0;
 		}
 	}

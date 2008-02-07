@@ -50,6 +50,10 @@ public class UI {
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 0, 0, gl));
 		contentPanel.add(messageBox("Hello, World!", "Title", "MsgBox1"));
 		
+		get("MsgBox1").x = 20;
+		get("MsgBox1").y = 300;
+		
+		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
         }catch(Exception e){
