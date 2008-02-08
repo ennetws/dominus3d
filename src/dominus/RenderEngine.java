@@ -21,6 +21,8 @@ public class RenderEngine implements GLEventListener{
 	private int height;
 	
 	private Camera currentCamera;
+	private Light currentLight;
+	private Light light2;
 	private UI ui;
 	private Element3D axis;
 	
@@ -29,11 +31,6 @@ public class RenderEngine implements GLEventListener{
 	public int fps;
 	private int fpsCounter;
 	private long fpsEnd;
-
-	// ax these one the Light class is working properly
-	private float[] lightAmbient = { 0.25f, 0.25f, 1.0f, 1.0f };
-    private float[] lightDiffuse = { 0.5f, 0.5f, 1.0f, 1.0f };
-    private float[] lightPosition = { 0.0f, 0.0f, 1.0f, 1.0f };
 	
 	public RenderEngine(int width, int height, World world){
 		this.width = width;
@@ -59,12 +56,15 @@ public class RenderEngine implements GLEventListener{
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
+
+        currentLight = new Light();
+        light2 = new Light();
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
         
-        // Create Axis object
-        axis = Element3D.createAxis("MainAxis", 2.0f, gl);
+        // Create Axis object   -- commented out my chris so i could commit the light and domino changes
+   //     axis = Element3D.createAxis("MainAxis", 2.0f, gl);
         
         // Initialize FPS counter
 		fpsEnd = System.currentTimeMillis();
@@ -82,19 +82,19 @@ public class RenderEngine implements GLEventListener{
         
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         
-        /*
-        Light light = new Light();
+        // create Ambient, Diffuse light and also create the light's position
+        currentLight.createAmbient(gl, GL.GL_LIGHT1, 1.0f, 0.0f, 0.0f, 1.0f);
+        currentLight.createDiffuse(gl, GL.GL_LIGHT1, 1.0f, 1.0f, 1.0f, 1.0f);
+        currentLight.createPosition(gl, GL.GL_LIGHT1, 0.0f, 0.0f, 2.0f, 1.0f);
+       
+        // turn lighting on
+        currentLight.lightState(gl, GL.GL_LIGHT1, true);
+        currentLight.lightState(gl, GL.GL_LIGHTING, true);
         
-        lightAmbient = light.createAmbient(1.0f, 0.5f, 0.5f, 1.0f);
-        lightDiffuse = light.createDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-        lightPosition = light.createPosition(0.0f, 0.0f, 2.0f, 1.0f);
+        /* turn lighting off
+        currentLight.lightState(gl, GL.GL_LIGHT1, true);
+        currentLight.lightState(gl, GL.GL_LIGHTING, true);
         */
-        
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_AMBIENT, lightAmbient, 0);
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, lightDiffuse, 0);
-        gl.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPosition, 0);
-        gl.glEnable(GL.GL_LIGHT1);
-        gl.glEnable(GL.GL_LIGHTING);	
         
         for(int i = 0 ; i < 10 ; i++){
         	Element3D e = Element3D.createDomino("Domino"+i, gl);
