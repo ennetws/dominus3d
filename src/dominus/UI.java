@@ -43,11 +43,11 @@ public class UI {
 		this.width = width;
 		this.height = height;
 		
-		textEngine = new TextRenderer(new Font("SansSerif", Font.BOLD, 36), true);
+		textEngine = new TextRenderer(new Font("SansSerif", Font.BOLD, 18), true);
 	    
 		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);	
 		
-		contentPanel.add(new Element2D("ImageBox", 256, 256, 0, 0, gl));
+		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
 		contentPanel.add(messageBox("Hello, World!", "Title", "MsgBox1"));
 		
 		get("MsgBox1").x = 20;
@@ -88,7 +88,7 @@ public class UI {
 	        drawOnce = false;
 		}
         
-        writeLine("FPS: " + world.renderer.fps , 0, 65);
+        writeLine("FPS: " + world.renderer.fps , 0, 20);
         
         // End of SAMPLE CODE ########################
 	}
@@ -100,7 +100,7 @@ public class UI {
 	public void writeLine(String text, int x, int y){
 		textEngine.beginRendering(width, height);
 		   
-		textEngine.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		textEngine.setColor(0.0f, 0.25f, 0.25f, 1.0f);
 		textEngine.draw(text, x, height-y);
 		   
 		textEngine.endRendering();

@@ -1,7 +1,12 @@
 package dominus;
 
 import javax.media.opengl.GL;
+
+import com.sun.opengl.util.j2d.TextRenderer;
+
+import java.awt.Font;
 import java.util.*;
+
 import static javax.media.opengl.GL.*;
 
 /**
@@ -15,8 +20,10 @@ public class Element3D extends Element {
 	private Vertex center;
 	private Vertex rotate;
 	
+	private int polyType = GL.GL_QUADS;
+	
 	public Element3D(String iden, GL gl){
-		super(iden, null, gl);
+		this(iden, null, gl);
 	}
 	
 	public Element3D(String iden, Element3D parent, GL gl){
@@ -24,10 +31,22 @@ public class Element3D extends Element {
 		
 		center = new Vertex(0,0,0);
 		rotate = new Vertex(0,0,0);
+		
+		vertices = new Vector<Vertex>();
 	}
 	
 	public void placeElement(){
-		gl.glTranslatef(center.x, center.y, center.z);
+		float parentX, parentY, parentZ;
+		
+        parentX = parentY = parentZ = 0;
+        
+        if (parent != null){
+        	parentX = ((Element3D)parent).center.x;
+        	parentY = ((Element3D)parent).center.y;
+        	parentZ = ((Element3D)parent).center.z;
+        }
+        
+		gl.glTranslatef(center.x + parentX, center.y + parentY, center.z + parentZ);
 		
 		gl.glRotatef(rotate.x, 1, 0, 0);
 		gl.glRotatef(rotate.y, 0, 1, 0);
@@ -35,7 +54,7 @@ public class Element3D extends Element {
 	}
 	
 	public void render(){
-		if (vertices == null)
+		if (!visible)
 			return;
 		
 		gl.glPushMatrix();
@@ -44,7 +63,7 @@ public class Element3D extends Element {
 		
         gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
         
-        gl.glBegin(GL.GL_QUADS);
+        gl.glBegin(GL_QUADS);
         renderAllVertices();
 		gl.glEnd();
 		
@@ -59,7 +78,7 @@ public class Element3D extends Element {
     	gl.glDisable(GL_LIGHTING);
     	gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     	
-    	gl.glBegin(GL.GL_QUADS);
+    	gl.glBegin(polyType);
     	
         gl.glColor4f(0.75f, 0.75f, 0.75f, transperncy); 
         
@@ -80,7 +99,7 @@ public class Element3D extends Element {
 		}
 	}
 	
-	public void moveTo(Vertex v){
+	public void moveTo(Vertex v){ 
 		center = v;
 	}
 	
@@ -90,11 +109,6 @@ public class Element3D extends Element {
 	
 	public static Element3D createGrid(String id, float length, float spacing, GL gl){
 		Element3D e = new Element3D(id, gl);
-		
-		e.center = new Vertex(0,0,0);
-		e.rotate = new Vertex(0,0,0);
-		
-		e.vertices = new Vector<Vertex>();
 
 		for (float y = 0 ; y < length; y += spacing){
 			for (float x = 0; x < length; x += spacing){
@@ -113,52 +127,79 @@ public class Element3D extends Element {
 		
 		Element3D e = new Element3D(id, gl);
 		
-		e.center = new Vertex(0,0,0);
-		e.rotate = new Vertex(0,0,0);
+		e.vertices = Element3D.box(1.0f, 0.5f, 2.5f);
 		
-		e.vertices = new Vector<Vertex>();
-		
-		
-		// bottom
-		e.vertices.add(new Vertex(0, 0, 0));
-		e.vertices.add(new Vertex(1, 0, 0));
-		e.vertices.add(new Vertex(1, 0.5f, 0));
-		e.vertices.add(new Vertex(0, 0.5f, 0));
-		
-		
-		//top
-		e.vertices.add(new Vertex(1, 0, 2));
-		e.vertices.add(new Vertex(0, 0, 2));
-		e.vertices.add(new Vertex(0, 0.5f, 2));
-		e.vertices.add(new Vertex(1, 0.5f, 2));
-		
-		
-		// left
-		e.vertices.add(new Vertex(0, 0, 0));
-		e.vertices.add(new Vertex(0, 0.5f, 0));
-		e.vertices.add(new Vertex(0, 0.5f, 2));
-		e.vertices.add(new Vertex(0, 0, 2));
-		
-		
-		// right
-		e.vertices.add(new Vertex(1, 0, 0));
-		e.vertices.add(new Vertex(1, 0, 2));
-		e.vertices.add(new Vertex(1, 0.5f, 2));
-		e.vertices.add(new Vertex(1, 0.5f, 0));
-		
-		
-		// back
-		e.vertices.add(new Vertex(0, 0.5f, 0));
-		e.vertices.add(new Vertex(1, 0.5f, 0));
-		e.vertices.add(new Vertex(1, 0.5f, 2));
-		e.vertices.add(new Vertex(0, 0.5f, 2));
-		
-		// front
-		e.vertices.add(new Vertex(0, 0, 0));
-		e.vertices.add(new Vertex(1, 0, 0));
-		e.vertices.add(new Vertex(1, 0, 2));
-		e.vertices.add(new Vertex(0, 0, 2));
-	
 		return e;
+	}
+	
+	public static Vector<Vertex> box(float width, float length, float height){
+		Vector<Vertex> v = new Vector<Vertex>();
+		
+		width /= 2;
+		length /= 2;
+		
+		v.add(new Vertex(width, length, 0));	// Bottom
+		v.add(new Vertex(-width, length, 0));
+		v.add(new Vertex(-width, -length, 0));
+		v.add(new Vertex(width, -length, 0));
+		
+		v.add(new Vertex(width, length, height)); // Top
+		v.add(new Vertex(-width, length, height));
+		v.add(new Vertex(-width, -length, height));
+		v.add(new Vertex(width, -length, height));
+		
+		v.add(new Vertex(width, -length, 0)); // Side1
+		v.add(new Vertex(width, -length, height));
+		v.add(new Vertex(width, length, height));
+		v.add(new Vertex(width, length, 0));
+		
+		v.add(new Vertex(width, length, 0)); // Side2
+		v.add(new Vertex(width, length, height));
+		v.add(new Vertex(-width, length, height));
+		v.add(new Vertex(-width, length, 0));
+
+		v.add(new Vertex(-width, -length, 0)); // Side3
+		v.add(new Vertex(-width, -length, height));
+		v.add(new Vertex(-width, length, height));
+		v.add(new Vertex(-width, length, 0));
+		
+		v.add(new Vertex(width, -length, 0)); // Side4
+		v.add(new Vertex(width, -length, height));
+		v.add(new Vertex(-width, -length, height));
+		v.add(new Vertex(-width, -length, 0));
+		
+		return v;
+	}
+	
+	public static Element3D createBox(String id, float width, 
+			float length, float height, GL gl){
+		
+		Element3D e = new Element3D(id, gl);
+		
+		e.vertices = Element3D.box(width, length, height);
+		
+		return e;
+	}
+	
+	public static Element3D createAxis(String id, float length, GL gl){
+		Element3D e = new Element3D(id, gl);
+
+		Element3D x = Element3D.createBox("X-Axis", length, 0.2f, 	0.2f , gl);
+		Element3D y = Element3D.createBox("Y-Axis", 0.2f, 	length, 0.2f , gl);
+		Element3D z = Element3D.createBox("Z-Axis", 0.2f, 	0.2f, 	length, gl);
+		
+		x.moveTo(new Vertex(length/2,0,0));
+		e.add(x);
+		
+		y.moveTo(new Vertex(0,length/2,0));
+		e.add(y);
+		
+		e.add(z);
+		
+		return e;
+	}
+	
+	public void setPolyType(int pType){
+		this.polyType = pType;
 	}
 }

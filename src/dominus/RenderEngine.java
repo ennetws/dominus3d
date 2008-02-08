@@ -63,8 +63,8 @@ public class RenderEngine implements GLEventListener{
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
         
-        // Create Axis object   -- commented out my chris so i could commit the light and domino changes
-   //     axis = Element3D.createAxis("MainAxis", 2.0f, gl);
+        // Create Axis object
+        axis = Element3D.createAxis("MainAxis", 3.0f, gl);
         
         // Initialize FPS counter
 		fpsEnd = System.currentTimeMillis();
@@ -82,10 +82,18 @@ public class RenderEngine implements GLEventListener{
         
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         
+        float x = 1.0f;
+        float y = 1.0f;
+        
+        if (world.canvas.getMousePosition() != null){
+        	x = (float) world.canvas.getMousePosition().x / 100;
+        	y = (float) world.canvas.getMousePosition().y / 100;
+        }
+        
         // create Ambient, Diffuse light and also create the light's position
-        currentLight.createAmbient(gl, GL.GL_LIGHT1, 1.0f, 0.0f, 0.0f, 1.0f);
-        currentLight.createDiffuse(gl, GL.GL_LIGHT1, 1.0f, 1.0f, 1.0f, 1.0f);
-        currentLight.createPosition(gl, GL.GL_LIGHT1, 0.0f, 0.0f, 2.0f, 1.0f);
+        currentLight.createAmbient(gl, GL.GL_LIGHT1, 0.0f, 0.0f, 0.0f, 1.0f);
+        currentLight.createDiffuse(gl, GL.GL_LIGHT1, 2.0f, 1.0f, 1.0f, 1.0f);
+        currentLight.createPosition(gl, GL.GL_LIGHT1, x , x, y, 1.0f);
        
         // turn lighting on
         currentLight.lightState(gl, GL.GL_LIGHT1, true);
@@ -98,8 +106,8 @@ public class RenderEngine implements GLEventListener{
         
         for(int i = 0 ; i < 10 ; i++){
         	Element3D e = Element3D.createDomino("Domino"+i, gl);
-        	e.moveTo(new Vertex(i*1.5f,i*1.5f,0));
-        	e.rotateTo(new Vertex(0,0,i*5));
+        	e.moveTo(new Vertex((i*1.25f) - (1.5f*5),0,0));
+        	e.rotateTo(new Vertex(0,0,i*10));
         	e.render();
         }
   
@@ -108,7 +116,8 @@ public class RenderEngine implements GLEventListener{
         e.setTransperncy(0.5f);
         e.renderWireframe();
         
-        axis.render();
+        axis.moveTo(new Vertex(-5,-5,0));
+        axis.renderAll();
       
         rotateT+= 0.1f;
         
