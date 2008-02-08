@@ -1,7 +1,7 @@
 package dominus;
 
 import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
+import javax.media.opengl.GL;
 
 /** Lighting class allows a mixture of ambient and diffuse lighting
  * Light position uses Vertex (x, y, z)
@@ -18,6 +18,10 @@ public class Light {
 	
 	// only one light currently implemented: lightAmbient w/ lightDiffuse
 	public Light() {
+
+		lightAmbient = new float[4];
+		lightDiffuse = new float[4];
+		lightPosition = new float[4];
 		
 		lightAmbient[0] = 1.0f;
 		lightAmbient[1] = 1.0f;
@@ -33,38 +37,53 @@ public class Light {
 		lightPosition[1] = 0.0f;
 		lightPosition[2] = 2.0f;
 		lightPosition[3] = 1.0f;
-
-	}
 	
-	public float[] createAmbient(float amRed, float amGreen, float amBlue, float amAlpha) {
+	}
+
+	public void createAmbient(GL gl, int type, float amRed, float amGreen, float amBlue, float amAlpha) {
 		
 		lightAmbient[0] = amRed;
 		lightAmbient[1] = amGreen;
 		lightAmbient[2] = amBlue;
 		lightAmbient[3] = amAlpha;
 		
-		return lightAmbient;
+		gl.glLightfv(type, GL.GL_AMBIENT, lightAmbient, 0);
+	  
 	}
 	
-	public float[] createDiffuse(float difRed, float difGreen, float difBlue, float difAlpha) {
+	public void createDiffuse(GL gl, int type, float difRed, float difGreen, float difBlue, float difAlpha) {
 		
 		lightDiffuse[0] = difRed;
 		lightDiffuse[1] = difGreen;
 		lightDiffuse[2] = difBlue;
 		lightDiffuse[3] = difAlpha;
 		
-		return lightDiffuse;
+		gl.glLightfv(type, GL.GL_DIFFUSE, lightDiffuse, 0);
+		
 	}
 	
 	// float arr version
-	public float[] createPosition(float leftX, float rightX, float upY, float downY) {
+	public void createPosition(GL gl, int type, float leftX, float rightX, float upY, float downY) {
 		
 		lightPosition[0] = leftX;
 		lightPosition[1] = rightX;
 		lightPosition[2] = upY;
 		lightPosition[3] = downY;
 		
-		return lightPosition;
+	    gl.glLightfv(type, GL.GL_POSITION, lightPosition, 0);	
+	    
+	}
+
+	// turn light on or off
+	public void lightState(GL gl, int lightType, boolean state) {
+		
+		if (state == true) {
+			 gl.glEnable(lightType);
+		}
+		else {
+			gl.glDisable(lightType);
+		}
+
 	}
 	
 }
