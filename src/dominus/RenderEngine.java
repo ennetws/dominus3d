@@ -21,8 +21,10 @@ public class RenderEngine implements GLEventListener{
 	private int height;
 	
 	private Camera currentCamera;
-	private Light currentLight;
-	private Light light2;
+	
+	private Light worldLight;
+	private static Light currentLight;
+	
 	private UI ui;
 	private Element3D axis;
 	
@@ -58,7 +60,7 @@ public class RenderEngine implements GLEventListener{
         currentCamera = new Camera(gl, glu, width, height);
 
         currentLight = new Light();
-        light2 = new Light();
+        worldLight = new Light();
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
@@ -90,19 +92,7 @@ public class RenderEngine implements GLEventListener{
         	y = (float) world.canvas.getMousePosition().y / 100;
         }
         
-        // create Ambient, Diffuse light and also create the light's position
-        currentLight.createAmbient(gl, GL.GL_LIGHT1, 0.0f, 0.0f, 0.0f, 1.0f);
-        currentLight.createDiffuse(gl, GL.GL_LIGHT1, 2.0f, 1.0f, 1.0f, 1.0f);
-        currentLight.createPosition(gl, GL.GL_LIGHT1, x , x, y, 1.0f);
-       
-        // turn lighting on
-        currentLight.lightState(gl, GL.GL_LIGHT1, true);
-        currentLight.lightState(gl, GL.GL_LIGHTING, true);
-        
-        /* turn lighting off
-        currentLight.lightState(gl, GL.GL_LIGHT1, true);
-        currentLight.lightState(gl, GL.GL_LIGHTING, true);
-        */
+        worldLight.createWorldLight(gl);
         
         for(int i = 0 ; i < 10 ; i++){
         	Element3D e = Element3D.createDomino("Domino"+i, gl);
