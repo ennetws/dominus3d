@@ -31,6 +31,11 @@ public class UI {
 	private TextRenderer textEngine;
 	private int width, height;
 	
+	private Element2D consoleBox;
+	Font consoleFont = new Font("SansSerif", Font.BOLD, 12);
+	private int consoleNumLines = 4;
+	public String[] console = new String[consoleNumLines];
+	
 	// Sample items
 	private BufferedImage sampleImage;
 	private boolean drawOnce = true;
@@ -43,11 +48,16 @@ public class UI {
 		this.width = width;
 		this.height = height;
 		
-		textEngine = new TextRenderer(new Font("SansSerif", Font.BOLD, 18), true);
-	    
 		contentPanel = new Element2D("contentPanel", 1, 1, -1, -1, gl);	
 		
+		// Setup console
+		textEngine = new TextRenderer(consoleFont, true, true);
+		consoleBox = new Element2D("ConsoleBox", width, 60, 0, 420, gl);
+		setupConsole(consoleBox);
+		clearConsole();
+
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
+		
 		contentPanel.add(messageBox("Hello, World!", "Title", "MsgBox1"));
 		
 		get("MsgBox1").x = 20;
@@ -70,6 +80,8 @@ public class UI {
         
 		contentPanel.renderAll();
 		
+		drawConsole();
+		
         // SAMPLE CODE ##############################
 		
         // PNG Image loading
@@ -88,7 +100,11 @@ public class UI {
 	        drawOnce = false;
 		}
         
-        writeLine("FPS: " + world.renderer.fps , 0, 20);
+		// Draw FPS
+		textEngine.beginRendering(width, height);
+		textEngine.setColor(0.0f, 0.25f, 0.25f, 1.0f);
+		textEngine.draw("FPS: " + world.renderer.fps , 0, height-10);  
+		textEngine.endRendering();
         
         // End of SAMPLE CODE ########################
 	}
@@ -97,13 +113,39 @@ public class UI {
 		return (Element2D)contentPanel.getChild(id);
 	}
 	
-	public void writeLine(String text, int x, int y){
+	public void clearConsole(){
+		for (int i = 0; i < consoleNumLines; i++){
+			console[i] = "";
+		}
+	}
+	
+	public void setupConsole(Element2D con){
+		Graphics2D g = con.getGraphicsWithAlpha();
+		g.setColor(Color.black);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.fillRoundRect(0, 0, width, con.height, 20, 20);		
+		con.redrawTexture();
+	}
+	
+	public void drawConsole(){
+		consoleBox.render();
+		
 		textEngine.beginRendering(width, height);
-		   
-		textEngine.setColor(0.0f, 0.25f, 0.25f, 1.0f);
-		textEngine.draw(text, x, height-y);
+		textEngine.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+		
+		for(int i = 0; i < consoleNumLines; i++)
+			textEngine.draw(console[i], 10, 
+					(height-consoleBox.y) - (consoleFont.getSize() * (i) + 15));
 		   
 		textEngine.endRendering();
+	}
+	
+	public void writeLine(String text){
+		for(int i = 0; i < consoleNumLines - 1; i++)
+			console[i] = console[i+1];
+		
+		console[consoleNumLines-1] = text;
 	}
 	
 	public Element2D messageBox(String message, String title, String id){

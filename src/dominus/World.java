@@ -20,6 +20,7 @@ public class World implements Runnable{
 	
 	public GLCanvas canvas;
 	public RenderEngine renderer;
+	public InputEngine input;
 	private JFrame window;
 	
 	private boolean running;
@@ -30,14 +31,20 @@ public class World implements Runnable{
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
+		input = new InputEngine(this);
+		
 		canvas = new GLCanvas();
 		
 		this.window = w;
-            
+
 		canvas.addGLEventListener(renderer);
+		
+		canvas.addMouseMotionListener(input.mouse);
+		canvas.addMouseListener(input.mouse);
+		canvas.addKeyListener(input.keyboard);
+		
 		window.add(canvas);
 		canvas.requestFocus();
-		
 		window.setVisible(true);
 		
 		superObject = new Element3D("SuperObject", null, renderer.gl);
@@ -48,11 +55,7 @@ public class World implements Runnable{
 	public void run(){	
 		while(running)
 		{
-			try{
-				canvas.display();
-			}catch(Exception e){
-				System.out.println(e.getMessage());
-			}
+			canvas.display();
 		}
 	}
 	
@@ -81,5 +84,9 @@ public class World implements Runnable{
         axis.renderAll();
       
         rotateT+= 0.1f;       		
+	}
+	
+	public void add(Element3D e){
+		superObject.add(e);
 	}
 }

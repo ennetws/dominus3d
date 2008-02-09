@@ -1,10 +1,6 @@
 package dominus;
 
 import javax.media.opengl.GL;
-
-import com.sun.opengl.util.j2d.TextRenderer;
-
-import java.awt.Font;
 import java.util.*;
 
 import static javax.media.opengl.GL.*;

@@ -4,8 +4,6 @@ import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 import static javax.media.opengl.GL.*;
 
-import java.awt.*;
-
 /**
  * The RenderEngine class will render all elements within the World
  * 
@@ -24,7 +22,7 @@ public class RenderEngine implements GLEventListener{
 	
 	private Camera currentCamera;
 	
-	private UI ui;
+	public UI ui;
 	
 	public int fps;
 	private int fpsCounter;
