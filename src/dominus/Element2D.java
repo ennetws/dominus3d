@@ -50,7 +50,7 @@ public class Element2D extends Element {
 		this.corner[3] = new Vertex(width,0,0.0f);
 		
         texRenderer = new TextureRenderer(width, height, true);
-        
+        //texRenderer.setSmoothing(false);
 	}
 
 	public void render(){
@@ -62,7 +62,7 @@ public class Element2D extends Element {
         	parentY = ((Element2D)parent).y;
         }
         
-        Texture tex = texRenderer.getTexture();
+        Texture tex = texRenderer.getTexture();   
         
         gl.glDisable(GL_LIGHTING);
         gl.glEnable(GL_BLEND);
@@ -72,7 +72,6 @@ public class Element2D extends Element {
         
         tex.bind();
         tex.enable();
-        
         
         gl.glLoadIdentity();
    
@@ -107,5 +106,13 @@ public class Element2D extends Element {
 	
 	public void redrawTexture(){
 		texRenderer.markDirty(0, 0, width, height);
+	}
+	
+	public boolean isInside(int pointX, int pointY){
+		if ((pointX > x && pointX < (x+width)) 
+				&& (pointY > y && pointY < (y+height)))
+			return true;
+
+		return false;
 	}
 }

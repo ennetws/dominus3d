@@ -6,7 +6,6 @@ package dominus;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
-import java.awt.geom.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 
@@ -58,11 +57,11 @@ public class UI {
 
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
 		
-		contentPanel.add(messageBox("Hello, World!", "Title", "MsgBox1"));
+		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
+				"Hello again 3D world!", width, height,gl));
 		
-		get("MsgBox1").x = 20;
-		get("MsgBox1").y = 300;
-		
+		//get("MsgBox1").x = 20;
+		//get("MsgBox1").y = 300;
 		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
@@ -146,70 +145,6 @@ public class UI {
 			console[i] = console[i+1];
 		
 		console[consoleNumLines-1] = text;
-	}
-	
-	public Element2D messageBox(String message, String title, String id){
-		int mBoxWidth = 250;
-		int mBoxHeight = 150;
-		
-		int shadowHeight = 3;
-		
-		Element2D mBox = new Element2D(id, mBoxWidth+shadowHeight, mBoxHeight+shadowHeight, 
-				(width/2)-(mBoxWidth/2), (mBoxHeight/2)+(mBoxHeight/2), contentPanel.gl);
-		
-		Graphics2D g = mBox.getGraphicsWithAlpha();
-		
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		g.setColor(Color.black);
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
-		g.fillRoundRect(shadowHeight, shadowHeight, mBoxWidth, mBoxHeight, 20, 20);		
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
-		g.fillRoundRect(0, 0, mBoxWidth, mBoxHeight, 20, 20);		
-		g.fillRoundRect(0, 0, mBoxWidth, 30, 20, 20);		
-	
-		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-		
-		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(title,g);
-		
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(title, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 20);
-		
-		textBounds = g.getFontMetrics().getStringBounds(message,g);
-		g.setColor(Color.white);
-		g.drawString(message, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 60);
-
-		drawButton(g, "OK", 60, 30, 110, 110);
-		drawButton(g, "Cancel", 60, 30, 180, 110);
-		
-		mBox.redrawTexture();
-		
-		return mBox;
-	}
-	
-	public void drawButton(Graphics2D g, String label, int buttonWidth, int buttonHeight, int x, int y){
-		g.translate(x, y);
-		
-		g.setColor(new Color(0.2f,0.2f,0.2f));
-		g.fillRoundRect(0, 0, buttonWidth, buttonHeight, 9, 9);
-		g.setColor(new Color(0.05f,0.05f,0.05f));
-		g.fillRoundRect(1, 1, buttonWidth-2, buttonHeight-2, 9, 9);
-		
-		GradientPaint gradient = new GradientPaint(0, 0, 
-									new Color(0.3f,0.3f,0.3f), 0, buttonHeight, 
-									new Color(0.2f,0.2f,0.2f));
-		g.setPaint(gradient);
-		g.fillRoundRect(2, 2, buttonWidth-4, buttonHeight-4, 9, 9);
-
-		g.setPaint(null);
-
-		g.setColor(Color.white);
-		
-		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(label,g);
-		g.drawString(label, (buttonWidth / 2) - (int)textBounds.getCenterX(), 
-				(buttonHeight/2) - (int)(textBounds.getY()/2) - 2);
-		
-		g.translate(-x, -y);
 	}
 	
 	public void add(Element2D e){

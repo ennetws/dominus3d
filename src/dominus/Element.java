@@ -84,7 +84,7 @@ public abstract class Element {
 			// Render all children elements
 			while (i.hasNext()){
 				Element e = (Element)i.next();
-				e.render();
+				e.renderAll();
 			}
 		}
 	}

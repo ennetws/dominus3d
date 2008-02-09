@@ -30,6 +30,9 @@ class Mouse extends MouseInputAdapter{
 	
 	public void mouseMoved(MouseEvent e) {
 		world.renderer.ui.writeLine("x="+ e.getX() + ", y=" + e.getY());
+		
+		if (world.renderer.ui.get("MsgBox1").isInside(e.getX()+16, e.getY()+16))
+				world.renderer.ui.writeLine("Inside Box!");
 	}
 	
 	public void mousePressed(MouseEvent e){
