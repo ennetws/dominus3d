@@ -16,6 +16,11 @@ public class Element3D extends Element {
 	private Vertex center;
 	private Vertex rotate;
 	
+	// min and max verticies for element's bounding box
+	private Vertex min;
+	private Vertex max;
+	
+	
 	private int polyType = GL_QUADS;
 	private int shadeMode = GL_SMOOTH;
 	
@@ -199,6 +204,68 @@ public class Element3D extends Element {
 		
 		return e;
 	}
+	
+	public static Element3D boundBox(Element3D e, GL gl) {
+		
+		Vertex v;
+		Element3D bounds = new Element3D("bounds", gl);
+		int numVectors = 0;
+		
+		float minX = 10000;
+		float minY = 10000;
+		float minZ = 10000; 
+		float maxX = -10000;
+		float maxY = -10000; 
+		float maxZ = -10000;
+		float width;
+		float height;
+		float length;
+		
+		numVectors = e.vertices.size();
+		
+		for (int i = 0; i < numVectors; i++) {
+		
+			v = e.vertices.get(i);
+			
+			// get min verts
+			minX = getMinVertex(minX, v.x);
+			minY = getMinVertex(minY, v.y);
+			minZ = getMinVertex(minZ, v.z);
+			
+			// get max verts
+			maxX = getMaxVertex(maxX, v.x);
+			maxY = getMaxVertex(maxY, v.y);
+			maxZ = getMaxVertex(maxZ, v.z);
+		}
+		
+		width = Math.abs(maxX - minX);
+		height = Math.abs(maxZ - minZ);
+		length = Math.abs(maxY - minY);
+		
+		bounds = createBox("Bounds", width, length, height, gl);
+		
+		return bounds;
+		
+	}
+	
+	public static float getMinVertex(float min, float test) {
+		
+		if (test < min) {
+			min = test;
+		}
+		
+		return min;
+	}
+	
+	public static float getMaxVertex(float max, float test) {
+		
+		if (test > max) {
+			max = test;
+		}
+		
+		return max;
+	}
+	
 	
 	public void setPolyType(int pType){
 		this.polyType = pType;

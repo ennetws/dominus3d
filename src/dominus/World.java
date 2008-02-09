@@ -29,6 +29,10 @@ public class World implements Runnable{
 	private Element3D axis;
 	private float rotateT = 0.0f;
 	
+	private int numOfDominoes = 10;
+	
+	private Element3D[] collisionArr;
+	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
 		input = new InputEngine(this);
@@ -62,11 +66,14 @@ public class World implements Runnable{
 	public void render(GL gl){
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         
-        for(int i = 0 ; i < 10 ; i++){
+        collisionArr = new Element3D[numOfDominoes];
+        
+        for(int i = 0 ; i < numOfDominoes; i++){
         	Element3D e = Element3D.createDomino("Domino"+i, gl);
         	e.moveTo(new Vertex(i* 0.5f,0,0));
         	e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
+        	
         	e.render();
         }
         

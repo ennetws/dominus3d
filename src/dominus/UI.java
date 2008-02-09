@@ -59,7 +59,7 @@ public class UI {
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
 		
 		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
-				"Hello again 3D world!", width, height,gl));
+				"Hello again 3D world!", width, height, gl));
 		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
