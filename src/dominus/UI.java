@@ -27,6 +27,7 @@ public class UI {
 	private World world;
 	
 	private Element2D contentPanel;
+	private Element2D currentElement;
 	private TextRenderer textEngine;
 	private int width, height;
 	
@@ -60,9 +61,6 @@ public class UI {
 		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
 				"Hello again 3D world!", width, height,gl));
 		
-		//get("MsgBox1").x = 20;
-		//get("MsgBox1").y = 300;
-		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
         }catch(Exception e){
@@ -88,11 +86,9 @@ public class UI {
 
 		if(drawOnce){
 	        Graphics2D g = e.getGraphicsWithAlpha();
-	      
-	        g.setFont(new Font("SansSerif", Font.BOLD, 36));
-	        g.setColor(Color.red);
+	        
 	        g.drawImage(sampleImage, 0, 0, 256, 256, null);
-	       
+	     
 	        e.redrawTexture();
 	        e.setTransperncy(0.5f);
 	        
@@ -149,5 +145,31 @@ public class UI {
 	
 	public void add(Element2D e){
 		contentPanel.add(e);
+	}
+	
+	public void manage(){
+		if (currentElement != null){
+			if (!currentElement.inside(world.input.x+16, world.input.y+16)){
+				if (currentElement instanceof ElementGUI){
+					ElementGUI eleGUI = (ElementGUI)currentElement;
+					eleGUI.setStyle(1);
+				}
+			}
+		}
+		
+		currentElement = (Element2D) contentPanel.isInside(world.input.x+16, world.input.y+16);
+		
+		if (currentElement != null){
+			writeLine(currentElement.id);
+			
+			if (currentElement instanceof Button){
+				Button ele = (Button)currentElement;
+
+				if(!world.input.MouseButtonPressed)
+					ele.setStyle(Button.HOVER);
+				else
+					ele.setStyle(Button.PRESSED);
+			}
+		}		
 	}
 }

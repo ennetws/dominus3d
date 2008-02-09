@@ -18,6 +18,11 @@ import javax.media.opengl.GL;
  *
  */
 public abstract class ElementGUI extends Element2D{
+	public static final int NORMAL = 1;
+	
+	protected boolean mouseOver = false;
+	protected boolean mousePressed = false;
+	protected int currentStyle = NORMAL;
 	
 	public static final Font DefaultFont = new Font("LucidaBrightDemiBold", Font.BOLD, 14);
 	
@@ -26,6 +31,17 @@ public abstract class ElementGUI extends Element2D{
 	}
 	
 	public abstract void action();
+
+	public void clear(){
+		mouseOver = false;
+		mousePressed = false;
+		
+		currentStyle = 1;
+	}
+	
+	public void setStyle(int style){
+		
+	}
 }
 
 class MessageBox extends ElementGUI{
@@ -84,15 +100,23 @@ class MessageBox extends ElementGUI{
 }
 
 class Button extends ElementGUI{
+
 	private static final int buttonWidth = 60;
 	private static final int buttonHeight = 30;
 	
 	private String label;
 	
+	public static final int HOVER = 2;
+	public static final int PRESSED = 3;
+	
 	public Button(String blabel, Element2D parent, int x, int y, GL gl){
 		super(parent.id+"-"+blabel, parent, buttonWidth, buttonHeight , x, y, gl);
 		this.label = blabel;
 		
+		drawNormal();
+	}
+	
+	public void drawNormal(){
 		Graphics2D g = getGraphicsWithAlpha();
 		
 		g.setFont(ElementGUI.DefaultFont);
@@ -117,11 +141,6 @@ class Button extends ElementGUI{
 				(buttonHeight/2) - (int)(textBounds.getY()/2) - 2);
 		
 		this.redrawTexture();
-		drawPressed();
-	}
-	
-	public void action(){
-
 	}
 	
 	public void drawHover(){
@@ -144,7 +163,6 @@ class Button extends ElementGUI{
 				(buttonHeight/2) - (int)(textBounds.getY()/2) - 2);
 		
 		this.redrawTexture();
-
 	}
 	
 	public void drawPressed(){
@@ -167,5 +185,27 @@ class Button extends ElementGUI{
 				1+(buttonHeight/2) - (int)(textBounds.getY()/2) - 2);
 		
 		this.redrawTexture();
+	}
+	
+	public void action(){
+		
+	}
+	
+	public void setStyle(int style){
+		switch (style){
+		case 1:
+			if (currentStyle != Button.NORMAL)
+				drawNormal();
+			break;
+		case 2:
+			if (currentStyle != Button.HOVER)
+				drawHover();
+			break;
+		case 3:
+			if (currentStyle != Button.PRESSED)
+				drawPressed();
+			break;
+		}
+		currentStyle = style;
 	}
 }

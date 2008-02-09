@@ -15,6 +15,12 @@ public class InputEngine{
 	public Mouse mouse;
 	public Keyboard keyboard;
 	
+	public int x = 0;
+	public int y = 0;
+	
+	public boolean MouseButtonPressed;
+	public int MouseButtonNumber;
+	
 	public InputEngine(World world){
 		mouse = new Mouse(world);
 		keyboard = new Keyboard(world);
@@ -29,16 +35,27 @@ class Mouse extends MouseInputAdapter{
 	}
 	
 	public void mouseMoved(MouseEvent e) {
-		world.renderer.ui.writeLine("x="+ e.getX() + ", y=" + e.getY());
+		world.input.x = e.getX();
+		world.input.y = e.getY();
+		world.renderer.ui.manage();
 		
-		if (world.renderer.ui.get("MsgBox1").isInside(e.getX()+16, e.getY()+16))
-				world.renderer.ui.writeLine("Inside Box!");
+		world.renderer.ui.writeLine("x="+ world.input.x + ", y=" +world.input.y);
 	}
 	
 	public void mousePressed(MouseEvent e){
+		world.input.MouseButtonPressed = true;
+		world.input.MouseButtonNumber = e.getButton();
+		world.renderer.ui.manage();
+		
 		world.renderer.ui.writeLine("Button pressed="+ e.getButton());
 	}
 	
+	public void mouseReleased(MouseEvent e){
+		world.input.MouseButtonPressed = false;
+		world.renderer.ui.manage();
+		
+		world.renderer.ui.writeLine("Button Released.");
+	}
 }
 
 class Keyboard extends KeyAdapter{

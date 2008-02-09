@@ -3,6 +3,7 @@ package dominus;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import com.sun.opengl.util.texture.*;
@@ -108,11 +109,43 @@ public class Element2D extends Element {
 		texRenderer.markDirty(0, 0, width, height);
 	}
 	
-	public boolean isInside(int pointX, int pointY){
-		if ((pointX > x && pointX < (x+width)) 
-				&& (pointY > y && pointY < (y+height)))
+	public Element2D isInside(int pointX, int pointY){
+		for (int i = child.size() - 1; i >= 0; i--){
+			Element2D e = (Element2D) child.get(i);
+			e = e.isInside(pointX, pointY);
+			
+			if (e != null)
+				return e;
+		}
+		
+		int parentX, parentY;
+        parentX = parentY = 0;
+        
+        if (parent != null){
+        	parentX = ((Element2D)parent).x;
+        	parentY = ((Element2D)parent).y;
+        }
+		
+		if ((pointX > x+parentX && pointX < (x+width+parentX)) 
+				&& (pointY > y+parentY && pointY < (y+height+parentY)))
+			return this;
+		
+		return null;
+	}
+	
+	public boolean inside(int pointX, int pointY){
+		int parentX, parentY;
+        parentX = parentY = 0;
+        
+        if (parent != null){
+        	parentX = ((Element2D)parent).x;
+        	parentY = ((Element2D)parent).y;
+        }
+		
+		if ((pointX > x+parentX && pointX < (x+width+parentX)) 
+				&& (pointY > y+parentY && pointY < (y+height+parentY)))
 			return true;
-
+		
 		return false;
 	}
 }
