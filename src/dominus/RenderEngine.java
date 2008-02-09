@@ -4,6 +4,8 @@ import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 import static javax.media.opengl.GL.*;
 
+import java.awt.*;
+
 /**
  * The RenderEngine class will render all elements within the World
  * 
@@ -13,7 +15,7 @@ import static javax.media.opengl.GL.*;
 
 public class RenderEngine implements GLEventListener{
 	
-	private GL gl;
+	public GL gl;
 	private static final GLU glu = new GLU();
 	
 	private World world;
@@ -22,13 +24,7 @@ public class RenderEngine implements GLEventListener{
 	
 	private Camera currentCamera;
 	
-	private Light worldLight;
-	private static Light currentLight;
-	
 	private UI ui;
-	private Element3D axis;
-	
-	private float rotateT = 0.0f;
 	
 	public int fps;
 	private int fpsCounter;
@@ -43,7 +39,6 @@ public class RenderEngine implements GLEventListener{
 	
 	public void init(GLAutoDrawable gLDrawable){
 		gl = gLDrawable.getGL();
-        gl.glShadeModel(GL_SMOOTH);
         
         // bgColor contains the background color
         gl.glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
@@ -58,16 +53,10 @@ public class RenderEngine implements GLEventListener{
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
-
-        currentLight = new Light();
-        worldLight = new Light();
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
-        
-        // Create Axis object
-        axis = Element3D.createAxis("MainAxis", 3.0f, gl);
-        
+
         // Initialize FPS counter
 		fpsEnd = System.currentTimeMillis();
         fpsCounter = 0;
@@ -82,35 +71,12 @@ public class RenderEngine implements GLEventListener{
         currentCamera.set(gl);
         currentCamera.lookFrom(new Vertex(10,10,10));
         
-        gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
+        Light point1 = new Light(1);
+        point1.pointLight(gl, new Vertex(10,10,5));
         
-        float x = 1.0f;
-        float y = 1.0f;
-        
-        if (world.canvas.getMousePosition() != null){
-        	x = (float) world.canvas.getMousePosition().x / 100;
-        	y = (float) world.canvas.getMousePosition().y / 100;
-        }
-        
-        worldLight.createWorldLight(gl);
-        
-        for(int i = 0 ; i < 10 ; i++){
-        	Element3D e = Element3D.createDomino("Domino"+i, gl);
-        	e.moveTo(new Vertex((i*1.25f) - (1.5f*5),0,0));
-        	e.rotateTo(new Vertex(0,0,i*10));
-        	e.render();
-        }
-  
-        Element3D e = Element3D.createGrid("Grid", 8, 1.0f, gl);
-
-        e.setTransperncy(0.5f);
-        e.renderWireframe();
-        
-        axis.moveTo(new Vertex(-5,-5,0));
-        axis.renderAll();
-      
-        rotateT+= 0.1f;
-        
+        // Render all objects
+        world.render(gl);
+ 
         // Calculate Frames Per Second
         calcFPS();
         

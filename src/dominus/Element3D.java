@@ -20,7 +20,8 @@ public class Element3D extends Element {
 	private Vertex center;
 	private Vertex rotate;
 	
-	private int polyType = GL.GL_QUADS;
+	private int polyType = GL_QUADS;
+	private int shadeMode = GL_SMOOTH;
 	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
@@ -60,9 +61,9 @@ public class Element3D extends Element {
 		gl.glPushMatrix();
 
 		placeElement();
-		
+
         gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
-        
+        gl.glShadeModel(shadeMode);
         gl.glBegin(GL_QUADS);
         renderAllVertices();
 		gl.glEnd();
@@ -95,6 +96,7 @@ public class Element3D extends Element {
 
 		while (i.hasNext()){
 			Vertex v = i.next();
+
 			gl.glVertex3f(v.x, v.y, v.z);
 		}
 	}
@@ -138,7 +140,7 @@ public class Element3D extends Element {
 		width /= 2;
 		length /= 2;
 		
-		v.add(new Vertex(width, length, 0));	// Bottom
+		v.add(new Vertex(width, length, 0)); // Bottom
 		v.add(new Vertex(-width, length, 0));
 		v.add(new Vertex(-width, -length, 0));
 		v.add(new Vertex(width, -length, 0));
@@ -189,11 +191,14 @@ public class Element3D extends Element {
 		Element3D z = Element3D.createBox("Z-Axis", 0.2f, 	0.2f, 	length, gl);
 		
 		x.moveTo(new Vertex(length/2,0,0));
+		x.shadeMode = GL_FLAT;
 		e.add(x);
 		
 		y.moveTo(new Vertex(0,length/2,0));
+		y.shadeMode = GL_FLAT;
 		e.add(y);
 		
+		z.shadeMode = GL_FLAT;
 		e.add(z);
 		
 		return e;
@@ -201,5 +206,9 @@ public class Element3D extends Element {
 	
 	public void setPolyType(int pType){
 		this.polyType = pType;
+	}
+	
+	public void setShadeMode(int mode){
+		shadeMode = mode;
 	}
 }
