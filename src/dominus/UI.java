@@ -56,10 +56,13 @@ public class UI {
 		setupConsole(consoleBox);
 		clearConsole();
 
-		contentPanel.add(new Element2D("ImageBox", 256, 256, 0, 0, gl));
+		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
 		
-		// contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
-		//		"Hello again 3D world!", width, height, gl));
+		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
+				"Hello again 3D world!", width, height,gl));
+		
+		get("MsgBox1").x = 20;
+		get("MsgBox1").y = 230;
 		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
@@ -148,27 +151,29 @@ public class UI {
 	}
 	
 	public void manage(){
+		// Optimize
 		if (currentElement != null){
-			if (!currentElement.inside(world.input.x+16, world.input.y+16)){
-				if (currentElement instanceof ElementGUI){
-					ElementGUI eleGUI = (ElementGUI)currentElement;
-					eleGUI.setStyle(1);
+			if (currentElement instanceof ElementGUI){
+				ElementGUI eleGUI = (ElementGUI)currentElement;
+				
+				if (!eleGUI.inside(world.input.x, world.input.y+32)){
+					eleGUI.setStyle(1);  // Mouse is out of the object
 				}
 			}
 		}
 		
-		currentElement = (Element2D) contentPanel.isInside(world.input.x+16, world.input.y+16);
+		currentElement = (Element2D) contentPanel.isInside(world.input.x, world.input.y+32);
 		
 		if (currentElement != null){
 			writeLine(currentElement.id);
 			
-			if (currentElement instanceof Button){
-				Button ele = (Button)currentElement;
+			if (currentElement instanceof ElementGUI){
+				ElementGUI eleGUI = (ElementGUI)currentElement;
 
-				if(!world.input.MouseButtonPressed)
-					ele.setStyle(Button.HOVER);
+				if(world.input.MouseButtonPressed)
+					eleGUI.setStyle(ElementGUI.PRESSED);
 				else
-					ele.setStyle(Button.PRESSED);
+					eleGUI.setStyle(ElementGUI.HOVER);
 			}
 		}		
 	}
