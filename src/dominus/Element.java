@@ -25,7 +25,7 @@ public abstract class Element {
 	protected float transperncy;
 	
 	protected Element parent;
-	protected Vector<Element> child;
+	protected Vector<Element> child = new Vector<Element>();
 	
 	protected GL gl;
 	
@@ -38,7 +38,6 @@ public abstract class Element {
 		this.visible = true;
 		this.transperncy = 1.0f;
 		this.parent = parent;
-		this.child = new Vector<Element>();
 		this.gl = gl;
 	}
 	

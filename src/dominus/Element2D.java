@@ -3,7 +3,6 @@ package dominus;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
-import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import com.sun.opengl.util.texture.*;

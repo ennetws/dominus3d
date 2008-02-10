@@ -20,6 +20,7 @@ public class InputEngine{
 	
 	public boolean MouseButtonPressed;
 	public int MouseButtonNumber;
+	public boolean MouseDragged;
 	
 	public InputEngine(World world){
 		mouse = new Mouse(world);
@@ -37,9 +38,12 @@ class Mouse extends MouseInputAdapter{
 	public void mouseMoved(MouseEvent e) {
 		world.input.x = e.getX();
 		world.input.y = e.getY();
-		world.renderer.ui.manage();
 		
-		world.renderer.ui.writeLine("x="+ world.input.x + ", y=" +world.input.y);
+		if (world.renderer.ui != null){
+			world.renderer.ui.manage();
+		
+			world.renderer.ui.writeLine("x="+ world.input.x + ", y=" +world.input.y);
+		}
 	}
 	
 	public void mousePressed(MouseEvent e){
@@ -52,9 +56,18 @@ class Mouse extends MouseInputAdapter{
 	
 	public void mouseReleased(MouseEvent e){
 		world.input.MouseButtonPressed = false;
+		world.input.MouseDragged = false;
 		world.renderer.ui.manage();
 		
 		world.renderer.ui.writeLine("Button Released.");
+	}
+	
+	public void mouseDragged(MouseEvent e){
+		world.input.MouseButtonPressed = true;
+		world.input.MouseDragged = true;
+		world.renderer.ui.manage();
+		
+		world.renderer.ui.writeLine("Mouse Dragged.");
 	}
 }
 

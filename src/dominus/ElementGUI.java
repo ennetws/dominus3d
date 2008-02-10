@@ -19,10 +19,13 @@ import javax.media.opengl.GL;
  */
 public abstract class ElementGUI extends Element2D{
 	public static final int NORMAL = 1;
+	public static final int HOVER = 2;
+	public static final int PRESSED = 3;
+	public static final int DRAGGED = 4;
 	
 	protected boolean mouseOver = false;
 	protected boolean mousePressed = false;
-	protected int currentStyle = NORMAL;
+	public int currentStyle = NORMAL;
 	
 	public static final Font DefaultFont = new Font("LucidaBrightDemiBold", Font.BOLD, 14);
 	
@@ -40,7 +43,7 @@ public abstract class ElementGUI extends Element2D{
 	}
 	
 	public void setStyle(int style){
-		
+
 	}
 }
 
@@ -105,9 +108,6 @@ class Button extends ElementGUI{
 	private static final int buttonHeight = 30;
 	
 	private String label;
-	
-	public static final int HOVER = 2;
-	public static final int PRESSED = 3;
 	
 	public Button(String blabel, Element2D parent, int x, int y, GL gl){
 		super(parent.id+"-"+blabel, parent, buttonWidth, buttonHeight , x, y, gl);
@@ -193,15 +193,15 @@ class Button extends ElementGUI{
 	
 	public void setStyle(int style){
 		switch (style){
-		case 1:
+		case NORMAL:
 			if (currentStyle != Button.NORMAL)
 				drawNormal();
 			break;
-		case 2:
+		case HOVER:
 			if (currentStyle != Button.HOVER)
 				drawHover();
 			break;
-		case 3:
+		case PRESSED:
 			if (currentStyle != Button.PRESSED)
 				drawPressed();
 			break;
