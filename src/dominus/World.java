@@ -23,10 +23,10 @@ public class World implements Runnable{
 	public InputEngine input;
 	private JFrame window;
 	
+	private boolean loading = true;
 	private boolean running;
 	private Element3D superObject;
 
-	private Element3D axis;
 	private float rotateT = 0.0f;
 	
 	private int numOfDominoes = 10;
@@ -51,8 +51,6 @@ public class World implements Runnable{
 		canvas.requestFocus();
 		window.setVisible(true);
 		
-		superObject = new Element3D("SuperObject", null, renderer.gl);
-		
 		running = true;
 	}
 	
@@ -60,39 +58,55 @@ public class World implements Runnable{
 		while(running)
 		{
 			canvas.display();
+			
+			if (loading){
+				loadWorld();
+				loading = false;
+			}
 		}
 	}
 	
 	public void render(GL gl){
+		if (loading)
+			return;
+		
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
+
+        superObject.renderAll();
+
+        rotateT+= 0.1f;       		
+	}
+	
+	public void loadWorld(){
+		superObject = new Element3D("SuperObject", null, renderer.gl);
+
+	//## Sample Objects ##########################
+        Element3D e = Element3D.createBox("", 6, 6, -1, renderer.gl);
+        superObject.add(e);
+        
+        e = Element3D.createGrid("Grid", 8, 1.0f, renderer.gl);
+        e.setTransperncy(0.5f);
+        e.setWireframe(true);
+        superObject.add(e);
         
         domCollisionArray = new Element3D[numOfDominoes];
-        
-        for (int i = 0 ; i < numOfDominoes; i++) {
-        	Element3D e = Element3D.createDomino("Domino"+i, gl);
-        	e.moveTo(new Vertex(i* 0.5f,0,0));
+      
+        for(int i = 0 ; i < 10 ; i++){
+        	e = Element3D.createDomino("Domino"+i, renderer.gl);
+        	e.moveTo(new Vertex(i*0.5f,0,0));
         	e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
         	
-        	domCollisionArray[i] = Element3D.boundBox(e, gl);
+        	//domCollisionArray[i] = Element3D.boundBox(e, gl);
         	
-        	e.render();
+        	superObject.add(e);
         }
         
-        Element3D e2 = Element3D.createBox("", 6, 6, -1, gl);
-        e2.render();
-        
-        Element3D e = Element3D.createGrid("Grid", 8, 1.0f, gl);
-
-        e.setTransperncy(0.5f);
-        e.renderWireframe();
-        
         // Create Axis object
-        axis = Element3D.createAxis("MainAxis", 3.0f, gl);
-        axis.moveTo(new Vertex(-5,-5,0));
-        axis.renderAll();
-      
-        rotateT+= 0.0f;       		
+        e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
+        e.moveTo(new Vertex(-5,-5,0));
+        superObject.add(e);
+	//#########################################        
 	}
 	
 	public void add(Element3D e){

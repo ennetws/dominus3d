@@ -12,7 +12,7 @@ import static javax.media.opengl.GL.*;
  */
 public class Element3D extends Element {
 	
-	private Vector<Vertex> vertices;
+	private Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vertex center;
 	private Vertex rotate;
 	
@@ -23,9 +23,11 @@ public class Element3D extends Element {
 	
 	private int polyType = GL_QUADS;
 	private int shadeMode = GL_SMOOTH;
+	private boolean wireFrame = false;
 	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
+		
 	}
 	
 	public Element3D(String iden, Element3D parent, GL gl){
@@ -33,8 +35,6 @@ public class Element3D extends Element {
 		
 		center = new Vertex(0,0,0);
 		rotate = new Vertex(0,0,0);
-		
-		vertices = new Vector<Vertex>();
 	}
 	
 	public void placeElement(){
@@ -58,6 +58,11 @@ public class Element3D extends Element {
 	public void render(){
 		if (!visible)
 			return;
+		
+		if (wireFrame){
+			renderWireframe();
+			return;
+		}
 		
 		gl.glPushMatrix();
 
@@ -268,10 +273,14 @@ public class Element3D extends Element {
 	
 	
 	public void setPolyType(int pType){
-		this.polyType = pType;
+		polyType = pType;
 	}
 	
 	public void setShadeMode(int mode){
 		shadeMode = mode;
+	}
+	
+	public void setWireframe(boolean b){
+		wireFrame = b;
 	}
 }
