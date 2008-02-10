@@ -31,7 +31,7 @@ public class World implements Runnable{
 	
 	private int numOfDominoes = 10;
 	
-	private Element3D[] collisionArr;
+	private Element3D[] domCollisionArray;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -66,13 +66,15 @@ public class World implements Runnable{
 	public void render(GL gl){
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         
-        collisionArr = new Element3D[numOfDominoes];
+        domCollisionArray = new Element3D[numOfDominoes];
         
-        for(int i = 0 ; i < numOfDominoes; i++){
+        for (int i = 0 ; i < numOfDominoes; i++) {
         	Element3D e = Element3D.createDomino("Domino"+i, gl);
         	e.moveTo(new Vertex(i* 0.5f,0,0));
         	e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
+        	
+        	domCollisionArray[i] = Element3D.boundBox(e, gl);
         	
         	e.render();
         }
@@ -90,7 +92,7 @@ public class World implements Runnable{
         axis.moveTo(new Vertex(-5,-5,0));
         axis.renderAll();
       
-        rotateT+= 0.1f;       		
+        rotateT+= 0.0f;       		
 	}
 	
 	public void add(Element3D e){
