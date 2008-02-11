@@ -28,6 +28,8 @@ public class RenderEngine implements GLEventListener{
 	private int fpsCounter;
 	private long fpsEnd;
 	
+	float rotateT = 0.0f;
+	
 	public RenderEngine(int width, int height, World world){
 		this.width = width;
 		this.height = height;
@@ -69,8 +71,11 @@ public class RenderEngine implements GLEventListener{
         currentCamera.set(gl);
         currentCamera.lookFrom(new Vertex(10,10,10));
         
+        gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
+        rotateT+= 0.1f; 
+        
         Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(10,10,5));
+        point1.pointLight(gl, new Vertex(4,4,4));
         
         // Render all objects
         world.render(gl);

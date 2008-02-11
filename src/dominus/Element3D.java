@@ -1,6 +1,9 @@
 package dominus;
 
 import javax.media.opengl.GL;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 import static javax.media.opengl.GL.*;
@@ -15,6 +18,7 @@ public class Element3D extends Element {
 	private Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vertex center;
 	private Vertex rotate;
+	private float scale = 1;
 	
 	// min and max verticies for element's bounding box
 	private Vertex min;
@@ -53,6 +57,8 @@ public class Element3D extends Element {
 		gl.glRotatef(rotate.x, 1, 0, 0);
 		gl.glRotatef(rotate.y, 0, 1, 0);
 		gl.glRotatef(rotate.z, 0, 0, 1);
+		
+		gl.glScalef(scale, scale, scale);
 	}
 	
 	public void render(){
@@ -113,6 +119,10 @@ public class Element3D extends Element {
 	
 	public void rotateTo(Vertex v){
 		rotate = v;
+	}
+	
+	public void scaleTo(float s){
+		scale = s;
 	}
 	
 	public static Element3D createGrid(String id, float length, float spacing, GL gl){
@@ -271,7 +281,6 @@ public class Element3D extends Element {
 		return max;
 	}
 	
-	
 	public void setPolyType(int pType){
 		polyType = pType;
 	}
@@ -282,5 +291,75 @@ public class Element3D extends Element {
 	
 	public void setWireframe(boolean b){
 		wireFrame = b;
+	}
+	
+	public static Element3D loadObj(String fileName, 
+			String textureFile, String iden, GL gl){
+		return Element3D.loadObj(fileName, textureFile, iden, 1.0f, gl);
+	}
+	
+	public static Element3D loadObj(String fileName, 
+			String textureFile, String iden, float size, GL gl){
+		Element3D e = new Element3D(iden, gl);
+		
+		e.vertices = loadObjFile(fileName, textureFile, size);
+		
+		return e;
+	}
+	
+	private static Vector<Vertex> loadObjFile(String fileName, String textureFile, float size){
+		try{
+			Vector<Vertex> vertices = new Vector<Vertex>();
+			Vector<Vertex> texCordinate = new Vector<Vertex>();
+			Vector<Vertex> finalVertices = new Vector<Vertex>();	
+			
+			StringTokenizer st;
+			String type;
+			
+			BufferedReader data = new BufferedReader(new FileReader(fileName));
+
+			String line = data.readLine();
+			
+			while (line != null){
+				st = new StringTokenizer(line, " ");
+				type = "";	
+				
+				if (st.hasMoreElements()) 
+					type = st.nextToken();
+
+				if (type.equals("v")){
+					float x = Float.valueOf(st.nextToken()) * size;
+					float y = Float.valueOf(st.nextToken()) * size;
+					float z = Float.valueOf(st.nextToken()) * size;
+					
+					vertices.add(new Vertex(x,z,y));
+				}
+				
+				if (type.equals("vt")){
+					texCordinate.add(new Vertex(
+							Float.valueOf(st.nextToken()),
+							Float.valueOf(st.nextToken()),
+							Float.valueOf(st.nextToken())));
+				}
+				
+				if (type.equals("f")){
+					int faceType = st.countTokens();
+					
+					for(int i = 0 ; i < faceType; i++){
+						StringTokenizer num = new StringTokenizer(st.nextToken(), "/");
+						finalVertices.add(vertices.get(Integer.valueOf(num.nextToken())-1));
+					}
+				}
+				
+				line = data.readLine();
+			}
+			
+			data.close();
+			return finalVertices;
+			
+		}catch(Exception e){
+			System.out.println("Cannot load file:" + fileName + "("+e.getMessage()+")");
+			return null;
+		}
 	}
 }
