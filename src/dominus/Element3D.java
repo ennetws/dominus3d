@@ -24,10 +24,6 @@ public class Element3D extends Element {
 	private Vertex rotate;
 	private float scale = 1;
 	
-	// min and max verticies for element's bounding box
-	private Vertex min;
-	private Vertex max;
-	
 	private Texture texture = null;
 	
 	private int polyType = GL_QUADS;
