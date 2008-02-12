@@ -393,6 +393,9 @@ public class Element3D extends Element {
 	
 	public static Texture loadTexture(String textureFile){
 		try{
+			if (textureFile.length() == 0)
+				return null;
+			
 			Texture t = TextureIO.newTexture(new File(textureFile), false);
             t.setTexParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             t.setTexParameteri(GL_TEXTURE_MAG_FILTER, GL_LINEAR);

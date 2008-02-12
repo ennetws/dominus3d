@@ -91,7 +91,7 @@ public class World implements Runnable{
         e.moveTo(new Vertex(-5,-5,0));
         superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/teapot.obj", "media/wood.jpg", "LoadedObj2",0.4f, renderer.gl);
+        e = Element3D.loadObj("media/objects/teapot.obj", "", "LoadedObj2",0.4f, renderer.gl);
         e.moveTo(new Vertex(-5,5,0));
         superObject.add(e);
         
