@@ -401,4 +401,16 @@ public class Element3D extends Element {
 			return null;
 		}
 	}
+	
+	public int getNumVertices() {
+	
+		return vertices.size();
+	
+	}
+	
+	public Vertex getVertexIndex(int i) {
+		
+		return vertices.get(i);
+	}
+	
 }
