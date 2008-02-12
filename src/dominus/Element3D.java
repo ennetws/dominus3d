@@ -5,7 +5,9 @@ import javax.media.opengl.GL;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+import java.io.*;
 
+import com.sun.opengl.util.texture.*;
 import static javax.media.opengl.GL.*;
 
 /**
@@ -16,6 +18,8 @@ import static javax.media.opengl.GL.*;
 public class Element3D extends Element {
 	
 	private Vector<Vertex> vertices = new Vector<Vertex>();
+	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
+	
 	private Vertex center;
 	private Vertex rotate;
 	private float scale = 1;
@@ -24,6 +28,7 @@ public class Element3D extends Element {
 	private Vertex min;
 	private Vertex max;
 	
+	private Texture texture = null;
 	
 	private int polyType = GL_QUADS;
 	private int shadeMode = GL_SMOOTH;
@@ -31,7 +36,6 @@ public class Element3D extends Element {
 	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
-		
 	}
 	
 	public Element3D(String iden, Element3D parent, GL gl){
@@ -62,7 +66,7 @@ public class Element3D extends Element {
 	}
 	
 	public void render(){
-		if (!visible)
+		if (!visible || vertices.size() == 0)
 			return;
 		
 		if (wireFrame){
@@ -70,17 +74,44 @@ public class Element3D extends Element {
 			return;
 		}
 		
+        if (texture != null){  	
+	    	texture.enable();
+	    	texture.bind();
+        }
+		
 		gl.glPushMatrix();
-
 		placeElement();
 
         gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
         gl.glShadeModel(shadeMode);
         gl.glBegin(GL_QUADS);
-        renderAllVertices();
+	
+	    renderAllVertices();
+        
 		gl.glEnd();
-		
 		gl.glPopMatrix();
+		
+		if (texture != null){
+			texture.disable();
+		}
+	}
+	
+	private void renderAllVertices(){
+		Iterator<Vertex> i = vertices.iterator();
+		Iterator<Vertex> texCoord = texCoordinates.iterator();
+		
+		while (i.hasNext()){
+			Vertex v = i.next();
+			
+			if (texCoord.hasNext() && texture != null){
+				Vertex uv = texCoord.next();
+				
+				gl.glTexCoord2f(uv.x*texture.getWidth(),
+								uv.y*texture.getHeight());
+			}
+			
+			gl.glVertex3f(v.x, v.y, v.z);
+		}
 	}
 	
 	public void renderWireframe(){
@@ -95,22 +126,12 @@ public class Element3D extends Element {
     	
         gl.glColor4f(0.75f, 0.75f, 0.75f, transperncy); 
         
-    	renderAllVertices();
+        renderAllVertices();
     	
 		gl.glEnd();
 		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		gl.glEnable(GL_LIGHTING);
 		gl.glPopMatrix();
-	}
-	
-	private void renderAllVertices(){
-		Iterator<Vertex> i = vertices.iterator();
-
-		while (i.hasNext()){
-			Vertex v = i.next();
-
-			gl.glVertex3f(v.x, v.y, v.z);
-		}
 	}
 	
 	public void moveTo(Vertex v){ 
@@ -300,18 +321,20 @@ public class Element3D extends Element {
 	
 	public static Element3D loadObj(String fileName, 
 			String textureFile, String iden, float size, GL gl){
-		Element3D e = new Element3D(iden, gl);
-		
-		e.vertices = loadObjFile(fileName, textureFile, size);
+
+		Element3D e = loadObjFile(iden, gl, fileName, textureFile, size);
+		e.texture = loadTexture(textureFile);
 		
 		return e;
 	}
 	
-	private static Vector<Vertex> loadObjFile(String fileName, String textureFile, float size){
+	private static Element3D loadObjFile(String iden, GL gl, String fileName, String textureFile, float size){
 		try{
+			Element3D e = new Element3D(iden, gl);
 			Vector<Vertex> vertices = new Vector<Vertex>();
-			Vector<Vertex> texCordinate = new Vector<Vertex>();
-			Vector<Vertex> finalVertices = new Vector<Vertex>();	
+			Vector<Vertex> texCoord = new Vector<Vertex>();
+			Vector<Vertex> finalVertices = new Vector<Vertex>();
+			Vector<Vertex> finalTexCoord = new Vector<Vertex>();	
 			
 			StringTokenizer st;
 			String type;
@@ -336,10 +359,9 @@ public class Element3D extends Element {
 				}
 				
 				if (type.equals("vt")){
-					texCordinate.add(new Vertex(
+					texCoord.add(new Vertex(
 							Float.valueOf(st.nextToken()),
-							Float.valueOf(st.nextToken()),
-							Float.valueOf(st.nextToken())));
+							Float.valueOf(st.nextToken()),0));
 				}
 				
 				if (type.equals("f")){
@@ -347,7 +369,11 @@ public class Element3D extends Element {
 					
 					for(int i = 0 ; i < faceType; i++){
 						StringTokenizer num = new StringTokenizer(st.nextToken(), "/");
+
 						finalVertices.add(vertices.get(Integer.valueOf(num.nextToken())-1));
+						
+						if (texCoord.size() > 0)
+							finalTexCoord.add(texCoord.get(Integer.valueOf(num.nextToken())-1));
 					}
 				}
 				
@@ -355,10 +381,24 @@ public class Element3D extends Element {
 			}
 			
 			data.close();
-			return finalVertices;
+			e.vertices = finalVertices;
+			e.texCoordinates = finalTexCoord;
 			
+			return e;
 		}catch(Exception e){
 			System.out.println("Cannot load file:" + fileName + "("+e.getMessage()+")");
+			return null;
+		}
+	}
+	
+	public static Texture loadTexture(String textureFile){
+		try{
+			Texture t = TextureIO.newTexture(new File(textureFile), false);
+            t.setTexParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            t.setTexParameteri(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			return t;
+		}catch(Exception e){
+			System.out.println(e.getMessage());
 			return null;
 		}
 	}

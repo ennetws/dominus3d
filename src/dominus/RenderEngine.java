@@ -60,6 +60,9 @@ public class RenderEngine implements GLEventListener{
         // Initialize FPS counter
 		fpsEnd = System.currentTimeMillis();
         fpsCounter = 0;
+        
+        // Load the world's objects
+        world.loadWorld();
 	}
 	
 	public void display(GLAutoDrawable drawable){

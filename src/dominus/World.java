@@ -22,8 +22,7 @@ public class World implements Runnable{
 	public RenderEngine renderer;
 	public InputEngine input;
 	private JFrame window;
-	
-	private boolean loading = true;
+
 	private boolean running;
 	private Element3D superObject;
 	
@@ -54,36 +53,25 @@ public class World implements Runnable{
 	
 	public void run(){	
 		while(running)
-		{
 			canvas.display();
-			
-			if (loading){
-				loadWorld();
-				loading = false;
-			}
-		}
 	}
 	
 	public void render(GL gl){
-		if (loading)
-			return;
- 	
         superObject.renderAll();
-       	
 	}
 	
 	public void loadWorld(){
 		superObject = new Element3D("SuperObject", null, renderer.gl);
 
 	//## Sample Objects ##########################
-        Element3D e = Element3D.createBox("", 6, 6, -1, renderer.gl);
-        e.setShadeMode(GL_FLAT);
-        superObject.add(e);
+		Element3D e;
         
+		/*
         e = Element3D.createGrid("Grid", 8, 1.0f, renderer.gl);
         e.setTransperncy(0.5f);
         e.setWireframe(true);
         superObject.add(e);
+        */
         
         domCollisionArray = new Element3D[numOfDominoes];
       
@@ -103,12 +91,12 @@ public class World implements Runnable{
         e.moveTo(new Vertex(-5,-5,0));
         superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/vace.obj", "", "LoadedObj1",0.04f, renderer.gl);
-        e.moveTo(new Vertex(5,-5,0));
+        e = Element3D.loadObj("media/objects/teapot.obj", "media/wood.jpg", "LoadedObj2",0.4f, renderer.gl);
+        e.moveTo(new Vertex(-5,5,0));
         superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/teapot.obj", "", "LoadedObj2",0.4f, renderer.gl);
-        e.moveTo(new Vertex(-5,5,0));
+        e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",5, renderer.gl);
+        e.moveTo(new Vertex(0,0,0));
         superObject.add(e);
         
 	//#########################################        
