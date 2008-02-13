@@ -1,8 +1,6 @@
 package dominus;
 
 import javax.media.opengl.GL;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  * PhysicsEngine contains all physic related methods (gravity, collision, projectile motion, etc)
@@ -13,18 +11,27 @@ import java.awt.event.KeyEvent;
 
 public class PhysicsEngine {
 
+	private World world;
 	private float gravity;
 	private float friction;
 	
-	public PhysicsEngine() {
+	
+	
+	public PhysicsEngine(World world) {
 		
+		this.world = world;
 		gravity = -9.8f;
 		friction = 1;
 		
 	}
 	
-	public void move(Element3D e, boolean pressed) {
+	public void move() {
+	
+		Vertex v = new Vertex(0,0,0);
 		
+		v = world.domCollisionArray[1].getVertexIndex(1);
+
+		// update display to move dominoes
 	}
 	
 	public Element3D boundBox(Element3D e, GL gl) {
