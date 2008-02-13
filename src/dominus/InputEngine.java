@@ -78,8 +78,19 @@ class Keyboard extends KeyAdapter{
 		this.world = world;
 	}
 	
-	public void keyPressed(KeyEvent e){
+	public void keyPressed(KeyEvent e) {
+
 		world.renderer.ui.writeLine("Key pressed="+ e.getKeyChar());
+		
+		switch (e.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			
+			world.renderer.ui.writeLine("Move domino");
+			world.physics.move();
+             
+            break;
+		}
+		
 	}
 	
 }
