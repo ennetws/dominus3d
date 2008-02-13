@@ -20,6 +20,7 @@ public class World implements Runnable{
 	
 	public GLCanvas canvas;
 	public RenderEngine renderer;
+	public PhysicsEngine physics;
 	public InputEngine input;
 	private JFrame window;
 
@@ -28,11 +29,13 @@ public class World implements Runnable{
 	
 	private int numOfDominoes = 10;
 	
-	private Element3D[] domCollisionArray;
+
+	public Element3D[] domCollisionArray;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
 		input = new InputEngine(this);
+		physics = new PhysicsEngine(this);
 		
 		canvas = new GLCanvas();
 		
@@ -81,7 +84,7 @@ public class World implements Runnable{
         	e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
         	
-        	//domCollisionArray[i] = Element3D.boundBox(e, gl);
+        	domCollisionArray[i] = physics.boundBox(e, renderer.gl);
         	
         	superObject.add(e);
         }
