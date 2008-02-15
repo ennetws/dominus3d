@@ -25,7 +25,7 @@ public class RenderEngine implements GLEventListener{
 	public UI ui;
 	
 	public int fps;
-	private int fpsCounter;
+	public int fpsCounter;
 	private long fpsEnd;
 	
 	float rotateT = 0.0f;

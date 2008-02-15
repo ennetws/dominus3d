@@ -86,7 +86,7 @@ class Keyboard extends KeyAdapter{
 		case KeyEvent.VK_LEFT:
 			
 			world.renderer.ui.writeLine("Move domino");
-			world.physics.move();
+			world.physics.move(world.get("Domino1"));
              
             break;
 		}

@@ -21,4 +21,14 @@ public class Vertex{
 		this.z = z;
 	}
 	
+	
+	public static float getMaxVertex(float max, float test) {
+		
+		if (test > max) {
+			max = test;
+		}
+		
+		return max;
+	}
+	
 }

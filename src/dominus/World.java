@@ -27,10 +27,9 @@ public class World implements Runnable{
 	private boolean running;
 	private Element3D superObject;
 	
-	private int numOfDominoes = 10;
+	public int numOfDominoes = 2;
 	
 
-	public Element3D[] domCollisionArray;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -57,6 +56,7 @@ public class World implements Runnable{
 	public void run(){	
 		while(running)
 			canvas.display();
+			physics.run();
 	}
 	
 	public void render(GL gl){
@@ -76,15 +76,15 @@ public class World implements Runnable{
         superObject.add(e);
         */
         
-        domCollisionArray = new Element3D[numOfDominoes];
+        physics.domCollision = new Element3D[numOfDominoes];
       
-        for(int i = 0 ; i < 10 ; i++){
+        for(int i = 0 ; i < numOfDominoes ; i++){
         	e = Element3D.createDomino("Domino"+i, renderer.gl);
-        	e.moveTo(new Vertex(i*0.5f,0,0));
-        	e.rotateTo(new Vertex(0,0,i*10));
+        	e.moveTo(new Vertex(i*2.0f,0,0));
+        	// e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
         	
-        	domCollisionArray[i] = physics.boundBox(e, renderer.gl);
+        	physics.domCollision[i] = physics.boundBox(e, renderer.gl);
         	
         	superObject.add(e);
         }
@@ -108,4 +108,9 @@ public class World implements Runnable{
 	public void add(Element3D e){
 		superObject.add(e);
 	}
+	
+	public Element3D get(String id){
+		return (Element3D)superObject.getChild(id);
+	}
+	
 }

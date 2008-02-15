@@ -14,8 +14,7 @@ public class PhysicsEngine {
 	private World world;
 	private float gravity;
 	private float friction;
-	
-	
+	public Element3D[] domCollision;
 	
 	public PhysicsEngine(World world) {
 		
@@ -25,12 +24,33 @@ public class PhysicsEngine {
 		
 	}
 	
-	public void move() {
 	
-		Vertex v = new Vertex(0,0,0);
+	public void run() {
 		
-		v = world.domCollisionArray[1].getVertexIndex(1);
+		while (world.renderer.fpsCounter < 60) {
+		// collisionSolver();
+		}
+	
+	}
 
+	/*
+	private void collisionSolver() {
+		
+		for (int i = 0; i < world.numOfDominoes; i++) {
+			for (int j = 0; j < world.numOfDominoes; j++) {
+				
+				if (collision(domCollision[i].)) {
+					
+				}
+
+			}
+			
+		}
+	}
+	*/
+	public void move(Element3D e) {
+	
+		e.moveTo(new Vertex(-5, -5, 0));
 		// update display to move dominoes
 	}
 	
@@ -79,7 +99,7 @@ public class PhysicsEngine {
 		
 	}
 	
-	public static float getMinVertex(float min, float test) {
+public static float getMinVertex(float min, float test) {
 		
 		if (test < min) {
 			min = test;
@@ -88,7 +108,8 @@ public class PhysicsEngine {
 		return min;
 	}
 	
-	public static float getMaxVertex(float max, float test) {
+	
+public static float getMaxVertex(float max, float test) {
 		
 		if (test > max) {
 			max = test;
@@ -96,6 +117,7 @@ public class PhysicsEngine {
 		
 		return max;
 	}
+	
 	
 	
 	public boolean collision(Vertex min1, Vertex max1, Vertex p) {
