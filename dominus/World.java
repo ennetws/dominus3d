@@ -29,8 +29,6 @@ public class World implements Runnable{
 	
 	public int numOfDominoes = 2;
 	
-
-	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
 		input = new InputEngine(this);
@@ -54,13 +52,15 @@ public class World implements Runnable{
 	}
 	
 	public void run(){	
-		while(running)
+		while(running){
 			canvas.display();
-			physics.run();
+		}
 	}
 	
 	public void render(GL gl){
         superObject.renderAll();
+        
+		physics.run();
 	}
 	
 	public void loadWorld(){
@@ -68,24 +68,12 @@ public class World implements Runnable{
 
 	//## Sample Objects ##########################
 		Element3D e;
-        
-		/*
-        e = Element3D.createGrid("Grid", 8, 1.0f, renderer.gl);
-        e.setTransperncy(0.5f);
-        e.setWireframe(true);
-        superObject.add(e);
-        */
-        
-        physics.domCollision = new Element3D[numOfDominoes];
-      
+
         for(int i = 0 ; i < numOfDominoes ; i++){
         	e = Element3D.createDomino("Domino"+i, renderer.gl);
         	e.moveTo(new Vertex(i*2.0f,0,0));
-        	// e.rotateTo(new Vertex(0,0,i*10));
         	e.setShadeMode(GL_FLAT);
-        	
-        	physics.domCollision[i] = physics.boundBox(e, renderer.gl);
-        	
+        	 	
         	superObject.add(e);
         }
         

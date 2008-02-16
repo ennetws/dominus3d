@@ -25,25 +25,39 @@ public class PhysicsEngine {
 	}
 	
 	public void run() {
-		
-		while (world.renderer.fpsCounter < 60) {
-			collisionSolver();
-		}
-	
+		collisionSolver();
 	}
 	
 	private void collisionSolver() {
 		for (int i = 0; i < world.numOfDominoes; i++) {
+			Element3D cur = world.get("Domino" + i);
+			
+			Element3D plane1 = plane(cur);	
+			plane1.renderWireframe();
+			
 			for (int j = 0; j < world.numOfDominoes; j++) {
+				if(i == j)
+					break;
+					
+				Element3D plane2 = plane(cur);
+				plane2.renderWireframe();
 				
+				world.renderer.ui.writeLine("Coll: "+intersect(plane1, plane2));
 			}
 		}
 	}
 	
-	public void move(Element3D e) {
-	
-		e.moveX(1);
-		// update display to move dominoes
+	private Element3D plane(Element3D e){
+		Element3D p;
+		p = Element3D.createPlane("Plane", e.length, e.height, world.renderer.gl);
+		
+		p.center = e.center.shiftedX(e.width/2);
+		
+		return p;
 	}
 	
+	private boolean intersect(Element3D p1, Element3D p2){
+		
+		return false;
+	}
 }

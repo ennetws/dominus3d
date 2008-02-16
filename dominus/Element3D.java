@@ -20,10 +20,14 @@ public class Element3D extends Element {
 	private Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
 	
-	private Vertex center;
-	private Vertex rotate;
+	public Vertex center;
+	public Vertex rotate;
 	private float scale = 1;
 	
+	public float width = 0;
+	public float length = 0;
+	public float height = 0;
+
 	private Texture texture = null;
 	
 	private int polyType = GL_QUADS;
@@ -175,10 +179,7 @@ public class Element3D extends Element {
 	
 	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
-		
-		Element3D e = new Element3D(id, gl);
-		
-		e.vertices = Element3D.box(1.0f, 0.5f, 2.5f);
+		Element3D e = Element3D.createBox(id,1.0f, 0.5f, 2.5f, gl);
 		
 		return e;
 	}
@@ -229,6 +230,21 @@ public class Element3D extends Element {
 		
 		e.vertices = Element3D.box(width, length, height);
 		
+		e.width = width;
+		e.length = length;
+		e.height = height;
+		
+		return e;
+	}
+	
+	public static Element3D createPlane(String id, float width, float length, GL gl){
+		Element3D e = new Element3D(id, gl);
+
+		e.vertices.add(new Vertex(width, length, 0)); 
+		e.vertices.add(new Vertex(-width, length, 0));
+		e.vertices.add(new Vertex(-width, -length, 0));
+		e.vertices.add(new Vertex(width, -length, 0));
+		
 		return e;
 	}
 	
@@ -251,67 +267,6 @@ public class Element3D extends Element {
 		e.add(z);
 		
 		return e;
-	}
-	
-	public static Element3D boundBox(Element3D e, GL gl) {
-		
-		Vertex v;
-		Element3D bounds = new Element3D("bounds", gl);
-		int numVectors = 0;
-		
-		float minX = 10000;
-		float minY = 10000;
-		float minZ = 10000; 
-		float maxX = -10000;
-		float maxY = -10000; 
-		float maxZ = -10000;
-		float width;
-		float height;
-		float length;
-		
-		numVectors = e.vertices.size();
-		
-		for (int i = 0; i < numVectors; i++) {
-		
-			v = e.vertices.get(i);
-			
-			// get min verts
-			minX = getMinVertex(minX, v.x);
-			minY = getMinVertex(minY, v.y);
-			minZ = getMinVertex(minZ, v.z);
-			
-			// get max verts
-			maxX = getMaxVertex(maxX, v.x);
-			maxY = getMaxVertex(maxY, v.y);
-			maxZ = getMaxVertex(maxZ, v.z);
-		}
-		
-		width = Math.abs(maxX - minX);
-		height = Math.abs(maxZ - minZ);
-		length = Math.abs(maxY - minY);
-		
-		bounds = createBox("Bounds", width, length, height, gl);
-		
-		return bounds;
-		
-	}
-	
-	public static float getMinVertex(float min, float test) {
-		
-		if (test < min) {
-			min = test;
-		}
-		
-		return min;
-	}
-	
-	public static float getMaxVertex(float max, float test) {
-		
-		if (test > max) {
-			max = test;
-		}
-		
-		return max;
 	}
 	
 	public void setPolyType(int pType){
@@ -417,16 +372,4 @@ public class Element3D extends Element {
 			return null;
 		}
 	}
-	
-	public int getNumVertices() {
-	
-		return vertices.size();
-	
-	}
-	
-	public Vertex getVertexIndex(int i) {
-		
-		return vertices.get(i);
-	}
-	
 }
