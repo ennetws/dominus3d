@@ -14,5 +14,23 @@ public class Vertex{
 		this.y = y;
 		this.z = z;
 	}
+	
+	public Vertex shiftedX(float offset){
+		Vertex v = new Vertex(x,y,z);
+		v.x += offset;
+		return v;
+	}
+	
+	public Vertex shiftedY(float offset){
+		Vertex v = new Vertex(x,y,z);
+		v.y += offset;
+		return v;
+	}
+	
+	public Vertex shiftedZ(float offset){
+		Vertex v = new Vertex(x,y,z);
+		v.z += offset;
+		return v;
+	}
 }
 
