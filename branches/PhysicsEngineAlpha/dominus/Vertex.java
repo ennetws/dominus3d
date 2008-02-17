@@ -34,3 +34,15 @@ public class Vertex{
 	}
 }
 
+class Vertex4 extends Vertex{
+	float w = 1;
+	public Vertex4(float x, float y, float z, float w){
+		super(x,y,z);
+		this.w = w;
+	}
+	
+	public Vertex4(Vertex4 src){
+		this(src.x,src.y,src.z,src.w);
+	}
+}
+

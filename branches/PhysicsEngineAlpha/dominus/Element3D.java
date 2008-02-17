@@ -17,7 +17,7 @@ import static javax.media.opengl.GL.*;
  */
 public class Element3D extends Element {
 	
-	private Vector<Vertex> vertices = new Vector<Vertex>();
+	public Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
 	
 	public Vertex center;
