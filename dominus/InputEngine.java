@@ -100,11 +100,11 @@ class Keyboard extends KeyAdapter{
             break;
             
 		case KeyEvent.VK_PAGE_UP:
-			world.get("Domino1").rotateX(1);
+			world.get("Domino1").rotateX(5);
             break;   
             
 		case KeyEvent.VK_PAGE_DOWN:
-			world.get("Domino1").rotateX(-1);
+			world.get("Domino1").rotateX(-5);
             break;  
 		}
 		
