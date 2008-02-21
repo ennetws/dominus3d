@@ -1,6 +1,6 @@
 package dominus;
 
-import java.util.Iterator;
+import java.util.*;
 
 import javax.media.opengl.GL;
 
@@ -19,11 +19,9 @@ public class PhysicsEngine {
 	public Element3D[] domCollision;
 	
 	public PhysicsEngine(World world) {
-		
 		this.world = world;
 		gravity = -9.8f;
-		friction = 1;
-		
+		friction = 1;		
 	}
 	
 	public void run() {
@@ -31,87 +29,135 @@ public class PhysicsEngine {
 	}
 	
 	private void collisionSolver() {
+		Element3D e;
+		BoundingBox b1, b2;
+		
 		for (int i = 0; i < world.numOfDominoes; i++) {
-			Element3D cur = world.get("Domino" + i);
-			
-			Element3D plane1 = plane(cur);	
-			plane1.renderWireframe();
+			e = world.get("Domino" + i);
+			b1 = new BoundingBox(e);
+			b1.render();
 			
 			for (int j = 0; j < world.numOfDominoes; j++) {
-				if(i == j)
+				if (i == j)
 					break;
-					
-				Element3D plane2 = plane(cur);
-				plane2.renderWireframe();
 				
-				world.renderer.ui.writeLine("Coll: "+intersect(plane1, plane2));
+				e = world.get("Domino" + j);	
+				b2 = new BoundingBox(e);	
+				b2.render();
+				
+				// Find if they collide	
+				boolean collide = intersect(b1, b2);
+				world.renderer.ui.writeLine(b1 + " + " + b2 + " = " + collide);
 			}
 		}
 	}
-	
-	private Element3D plane(Element3D e){
-		Element3D p;
-		p = createPlane("Plane", e.length, e.height, world.renderer.gl);
-		
-		p.center = e.center;
 
-		Iterator<Vertex> i = p.vertices.iterator();
-		
-		while (i.hasNext()){
-			Vertex v = i.next();
-			
-			Vertex A = new Vertex(0,1,0);
-			Vertex4 R = new Vertex4(A.x * sin(e.rotate.x), 
-									A.y * sin(e.rotate.x), 
-									A.z * sin(e.rotate.x), 
-									cos(e.rotate.x));
-			Vertex4 Rc = conj(R);
-			Vertex4 V = new Vertex4(v.x, v.y, v.z, 1);
-			
-			Vertex4 W = mult(R, V);
-			
-			v.x = W.x;
-			v.y = W.y;
-			v.z = W.z;
-		}
-		
-		return p;
-	}
-	
-	public Vertex4 conj(Vertex4 v){
-		Vertex4 result = new Vertex4(-v.x,-v.y,-v.z,-v.w);
-		return result;
-	}
-	
-	public float sin(float angle){
-		return (float)Math.sin(Math.toRadians(angle));
-	}
-	public float cos(float angle){
-		return (float)Math.cos(Math.toRadians(angle));
-	}
-	
-	public Vertex4 mult(Vertex4 A, Vertex4 B){
-		Vertex4 C = new Vertex4(1,1,1,1);
-		C.x = A.w*B.x + A.x*B.w + A.y*B.z - A.z*B.y;
-		C.y = A.w*B.y - A.x*B.z + A.y*B.w + A.z*B.x;
-		C.z = A.w*B.z + A.x*B.y - A.y*B.x + A.z*B.w;
-		C.w = A.w*B.w - A.x*B.x - A.y*B.y - A.z*B.z;
-		return C;
-	}
-	
-	public Element3D createPlane(String id, float width, float length, GL gl){
-		Element3D e = new Element3D(id, gl);
-
-		e.vertices.add(new Vertex(width, length, 0)); 
-		e.vertices.add(new Vertex(-width, length, 0));
-		e.vertices.add(new Vertex(-width, -length, 0));
-		e.vertices.add(new Vertex(width, -length, 0));
-		
-		return e;
-	}
-	
-	private boolean intersect(Element3D p1, Element3D p2){
+	private boolean intersect(BoundingBox b1, BoundingBox b2){
 		
 		return false;
+	}
+}
+
+class BoundingBox{
+	Element3D face[] = new Element3D[6];
+	private String id;
+	
+	public BoundingBox(Element3D e){
+		
+		float width = e.width / 2;
+		float length = e.length / 2;
+		float height = e.height;
+		
+		// Create all faces and align them
+		// Top - Bottom - Front - Back - Left - Right
+		
+		Element3D top = new Element3D("BBox-TOP-" + e.id, e.gl);
+		top.vertices.add(new Vertex(width, length, height)); 
+		top.vertices.add(new Vertex(-width, length, height));
+		top.vertices.add(new Vertex(-width, -length, height));
+		top.vertices.add(new Vertex(width, -length, height));
+	
+		Element3D bottom = new Element3D("BBox-BOTTOM-" + e.id, e.gl);
+		bottom.vertices.add(new Vertex(width, length, 0)); 
+		bottom.vertices.add(new Vertex(-width, length, 0));
+		bottom.vertices.add(new Vertex(-width, -length, 0));
+		bottom.vertices.add(new Vertex(width, -length, 0));
+		
+		Element3D front = new Element3D("BBox-FRONT-" + e.id, e.gl);
+		front.vertices.add(new Vertex(width, -length, 0)); 
+		front.vertices.add(new Vertex(width, -length, height));
+		front.vertices.add(new Vertex(width, length, height));
+		front.vertices.add(new Vertex(width, length, 0));
+		
+		Element3D back = new Element3D("BBox-BACK-" + e.id, e.gl);
+		back.vertices.add(new Vertex(-width, -length, 0)); 
+		back.vertices.add(new Vertex(-width, -length, height));
+		back.vertices.add(new Vertex(-width, length, height));
+		back.vertices.add(new Vertex(-width, length, 0));
+
+		Element3D left = new Element3D("BBox-LEFT-" + e.id, e.gl);
+		left.vertices.add(new Vertex(width, length, 0)); 
+		left.vertices.add(new Vertex(width, length, height));
+		left.vertices.add(new Vertex(-width, length, height));
+		left.vertices.add(new Vertex(-width, length, 0));
+		
+		Element3D right = new Element3D("BBox-RIGHT-" + e.id, e.gl);
+		right.vertices.add(new Vertex(width, -length, 0)); 
+		right.vertices.add(new Vertex(width, -length, height));
+		right.vertices.add(new Vertex(-width, -length, height));
+		right.vertices.add(new Vertex(-width, -length, 0));
+	
+		face[0] = top;
+		face[1] = bottom;
+		face[2] = front;
+		face[3] = back;
+		face[4] = left;
+		face[5] = right;
+		
+		alignFaces(e);
+		
+		id = "BBox-" + e.id;
+	}
+	
+	public String toString(){
+		return id;
+	}
+	
+	public void render(){
+		for (int i = 0 ; i < 6; i++)
+			face[i].renderWireframe();
+	}
+
+	public void alignFaces(Element3D e){
+		GL gl = e.gl;
+		
+		float[] m = new float[16];
+
+		for (int f = 0 ; f < 6 ; f++){
+			Iterator<Vertex> i = face[f].vertices.iterator();
+		
+			while (i.hasNext()){
+				Vertex v = i.next();
+				
+				gl.glPushMatrix();
+				gl.glLoadIdentity();	
+				gl.glTranslatef(e.center.x, e.center.y, e.center.z);
+	
+				gl.glRotatef(e.rotate.x, 1, 0, 0);
+				gl.glRotatef(e.rotate.y, 0, 1, 0);
+				gl.glRotatef(e.rotate.z, 0, 0, 1);
+				
+				gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, m, 0);
+				gl.glPopMatrix();
+	
+				float X = v.x;
+				float Y = v.y;
+				float Z = v.z;
+				
+				v.x = X * m[0] + Y * m[4] + Z * m[8] + m[12];
+				v.y = X * m[1] + Y * m[5] + Z * m[9] + m[13];
+				v.z = X * m[2] + Y * m[6] + Z * m[10] + m[14];
+			}
+		}
 	}
 }
