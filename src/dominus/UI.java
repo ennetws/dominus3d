@@ -32,7 +32,7 @@ public class UI {
 	public int width, height;
 	
 	private Element2D consoleBox;
-	Font consoleFont = new Font("SansSerif", Font.BOLD, 12);
+	Font consoleFont = new Font("SansSerif", Font.PLAIN, 12);
 	private int consoleNumLines = 4;
 	public String[] console = new String[consoleNumLines];
 	
@@ -58,10 +58,10 @@ public class UI {
 
 		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
 		
-		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Title",
-				"Hello again 3D world!", width, height,gl));
+		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Welcome :)",
+				"Press 'Space' to start, 'r' to reset", width, height,gl));
 		
-		get("MsgBox1").x = 20;
+		get("MsgBox1").x = -50;
 		get("MsgBox1").y = 230;
 		
         try{
@@ -100,7 +100,7 @@ public class UI {
         
 		// Draw FPS
 		textEngine.beginRendering(width, height);
-		textEngine.setColor(0.0f, 0.25f, 0.25f, 1.0f);
+		textEngine.setColor(0.75f, 0.75f, 0.75f, 1.0f);
 		textEngine.draw("FPS: " + world.renderer.fps , 0, height-10);  
 		textEngine.endRendering();
         

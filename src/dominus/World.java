@@ -29,13 +29,16 @@ public class World implements Runnable{
 
 	private Element3D superObject;
 	
-	public int fpsCap = 75;
+	public int fpsCap = 80;
 
 	public Vector<Element3D> dominoes = new Vector<Element3D>();
 	public static final int NORTH = 10;
 	public static final int SOUTH = 20;
 	public static final int EAST = 30;
 	public static final int WEST = 40;
+	
+	public int startX = 0;
+	public int startY = 0;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -96,7 +99,7 @@ public class World implements Runnable{
         
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
-        e.moveTo(new Vertex(-5,-5,0));
+        e.moveTo(new Vertex(-20,-20,0));
         superObject.add(e);
         
         e = Element3D.loadObj("media/objects/teapot.obj", "", "LoadedObj2",0.4f, renderer.gl);
@@ -104,7 +107,7 @@ public class World implements Runnable{
         //superObject.add(e);
         
         e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",10, renderer.gl);
-        e.moveTo(new Vertex(0,0,0));
+        e.moveTo(new Vertex(-5,-5,0));
         superObject.add(e);
         
 	//#########################################        
@@ -127,6 +130,9 @@ public class World implements Runnable{
 		if (dominoes.size() > 1){
 			x = dominoes.get(dominoes.size()-1).center.x;
 			y = dominoes.get(dominoes.size()-1).center.y;
+		}else{
+			x = startX;
+			y = startY;
 		}
 		
 		for (int i = 0; i < number; i++){

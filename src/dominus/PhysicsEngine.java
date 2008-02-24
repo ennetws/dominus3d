@@ -76,8 +76,9 @@ public class PhysicsEngine {
 				}
 			}
 	
-			if (!world.dominoes.get(world.dominoes.size() - 1).alive)
+			if (!world.dominoes.get(world.dominoes.size() - 1).alive){
 				simulationRunning = false;
+			}
 		}
 	}
 	

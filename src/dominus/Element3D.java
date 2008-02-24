@@ -7,8 +7,15 @@ import java.io.FileReader;
 import java.util.*;
 import java.io.*;
 
+import java.awt.RenderingHints;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.geom.AffineTransform;
+
+import com.sun.opengl.util.j2d.TextureRenderer;
 import com.sun.opengl.util.texture.*;
 import static javax.media.opengl.GL.*;
+
 
 /**
  * This class represent all visible 3D objects in the world.
@@ -188,8 +195,78 @@ public class Element3D extends Element {
 	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
 		Element3D e = Element3D.createBox(id, 1.0f, 0.5f, 2.5f, gl);
-    	//e.setShadeMode(GL_FLAT);
+    	
+		createDominoTexture(e);
+		e.setShadeMode(GL_FLAT);
+		
 		return e;
+	}
+	
+	private static void createDominoTexture(Element3D e){
+		Color[] colors = {Color.red, Color.blue, Color.green, 
+							Color.yellow, Color.orange, Color.blue, Color.blue};
+		
+		Random r = new Random();
+		int number = r.nextInt(6);
+		
+		int dotSize = 15;
+		
+		int centerX = 64;
+		int centerY = 32;
+		int center2Y = 96;
+		
+		TextureRenderer texRenderer = new TextureRenderer(128,128,true);
+		Graphics2D g = texRenderer.createGraphics();
+		
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		        RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g.transform(AffineTransform.getScaleInstance(2.5f, 1));
+		
+		g.setColor(colors[number].darker().darker());
+		g.fillRect(0, 0, 128, 128);
+		
+		g.setColor(Color.white);
+		
+		switch(number){
+		case 1:
+			g.fillOval(centerX - dotSize, centerY - dotSize, dotSize, dotSize);
+			break;
+		case 2:
+			g.fillOval(centerX - dotSize*1, centerY - dotSize, dotSize, dotSize);
+			g.fillOval(centerX - dotSize*2, centerY - dotSize, dotSize, dotSize);
+			break;
+		case 3:
+			g.fillOval(centerX - dotSize*1, centerY - dotSize, dotSize, dotSize);
+			g.fillOval(centerX - dotSize*2, centerY - dotSize, dotSize, dotSize);
+			g.fillOval(centerX - dotSize*3, centerY - dotSize, dotSize, dotSize);
+		}
+		
+		texRenderer.markDirty(0, 0, 128, 128);
+		
+		e.texture = texRenderer.getTexture();
+		
+		Vector<Vertex> v = e.texCoordinates;
+		
+		// Unused faces
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		
+		// Front
+		v.add(new Vertex(1, 0, 0)); v.add(new Vertex(1, 1, 0));
+		v.add(new Vertex(0, 1, 0)); v.add(new Vertex(0, 0, 0));
+
+		// Not used
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		v.add(new Vertex(0, 0, 0));v.add(new Vertex(0, 0, 0));
+		
+		// Back
+		v.add(new Vertex(1, 0, 0)); v.add(new Vertex(1, 1, 0));
+		v.add(new Vertex(0, 1, 0)); v.add(new Vertex(0, 0, 0));
 	}
 	
 	public static Vector<Vertex> box(float width, float length, float height){

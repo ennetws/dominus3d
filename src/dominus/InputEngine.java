@@ -77,6 +77,15 @@ class Keyboard extends KeyAdapter{
 		world.renderer.ui.writeLine("Key pressed="+ e.getKeyChar());
 		
 		switch (e.getKeyCode()) {
+		case KeyEvent.VK_R:
+			for (int i = 0; i < world.dominoes.size(); i++){
+				Element3D ele = world.dominoes.get(i);
+				ele.rotate.x = 0;
+				ele.rotate.y = 0;
+				ele.alive = true;
+			}
+			break;
+		
 		case KeyEvent.VK_LEFT:
 			world.get("Domino1").moveX(0.25f);
 			break;

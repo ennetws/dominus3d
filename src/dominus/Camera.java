@@ -18,8 +18,8 @@ public class Camera {
 	private float nearZ;
 	private float farZ;
 	
-	private Vertex lookAt;
-	private Vertex lookFrom;
+	public Vertex lookAt;
+	public Vertex lookFrom;
 	
 	public Camera(GL gl, GLU glu, int width, int height){
         this.glu = glu;

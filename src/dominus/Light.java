@@ -20,6 +20,7 @@ public class Light {
     float lightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
 	float lightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
     float lightPosition[] = {0, 0, 0, 1.0f};
+    float lightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
     
     boolean isON = true;
     
@@ -44,10 +45,10 @@ public class Light {
         lightDiffuse[0] = lightColor.getRed()/255;
         lightDiffuse[1] = lightColor.getGreen()/255;
         lightDiffuse[2] = lightColor.getBlue()/255;
-        
-        
+
         gl.glLightfv(lightNumber, GL_AMBIENT, lightAmbient, 0);
         gl.glLightfv(lightNumber, GL_DIFFUSE, lightDiffuse, 0);
+        gl.glLightfv(lightNumber, GL_SPECULAR, lightSpecular, 0);
         gl.glLightfv(lightNumber, GL_POSITION, lightPosition, 0);
 		
         gl.glEnable(GL_LIGHTING);
