@@ -2,8 +2,11 @@ package dominus;
 
 import static javax.media.opengl.GL.GL_FLAT;
 
+import com.sun.opengl.util.*;
+
 import javax.media.opengl.*;
 import javax.swing.*;
+import java.util.Vector;
 
 /**
  * “The most incomprehensible thing about the world is 
@@ -24,11 +27,15 @@ public class World implements Runnable{
 	public InputEngine input;
 	private JFrame window;
 
-	private boolean running;
 	private Element3D superObject;
 	
-	public int numOfDominoes = 2;
-	
+	public int fpsCap = 75;
+
+	public Vector<Element3D> dominoes = new Vector<Element3D>();
+	public static final int NORTH = 10;
+	public static final int SOUTH = 20;
+	public static final int EAST = 30;
+	public static final int WEST = 40;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -48,13 +55,12 @@ public class World implements Runnable{
 		window.add(canvas);
 		canvas.requestFocus();
 		window.setVisible(true);
-		
-		running = true;
 	}
 	
 	public void run(){	
-		while(running)
-			canvas.display();
+		FPSAnimator animator = new FPSAnimator(canvas, fpsCap);
+	    animator.setRunAsFastAsPossible( true );
+	    animator.start();
 	}
 	
 	public void render(GL gl){
@@ -74,15 +80,13 @@ public class World implements Runnable{
         e.setWireframe(true);
         superObject.add(e);
         */
-
-        for(int i = 0 ; i < numOfDominoes ; i++){
-        	e = Element3D.createDomino("Domino"+i, renderer.gl);
-        	e.moveTo(new Vertex(i*2.0f,0,0));
-        	// e.rotateTo(new Vertex(0,0,i*10));
-        	e.setShadeMode(GL_FLAT);
-
-        	superObject.add(e);
-        }
+		addLineDominoes(5, NORTH);
+		addLineDominoes(5, NORTH);
+		
+		addLineDominoes(5, EAST);
+		addLineDominoes(5, EAST);
+		addLineDominoes(5, SOUTH);
+		addLineDominoes(5, WEST);
         
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
@@ -93,7 +97,7 @@ public class World implements Runnable{
         e.moveTo(new Vertex(-5,5,0));
         superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",5, renderer.gl);
+        e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",10, renderer.gl);
         e.moveTo(new Vertex(0,0,0));
         superObject.add(e);
         
@@ -106,6 +110,52 @@ public class World implements Runnable{
 	
 	public Element3D get(String id){
 		return (Element3D)superObject.getChild(id);
+	}
+	
+	public void addLineDominoes(int number, int direction){
+		Element3D e;
+		
+		float x = 0;
+		float y = 0;
+		
+		if (dominoes.size() > 1){
+			x = dominoes.get(dominoes.size()-1).center.x;
+			y = dominoes.get(dominoes.size()-1).center.y;
+		}
+		
+		for (int i = 0; i < number; i++){
+        	e = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
+        	
+			switch(direction){
+			
+			case NORTH:
+	        	e.moveTo(new Vertex(x,(i*-1.5f) + y,0));
+	        	break;
+	        	
+			case SOUTH:
+	        	e.moveTo(new Vertex(x,(i*1.5f) + y,0));
+	        	e.rotate.z = 180;
+	        	break;
+			
+			case EAST:
+	        	e.moveTo(new Vertex(x + (i*1.5f),y,0));
+	        	e.rotate.z = 90;
+	        	break;
+	        	
+			case WEST:
+	        	e.moveTo(new Vertex(x + (i*-1.5f),y,0));
+	        	e.rotate.z = -90;
+	        	break;
+	        	
+			}
+			
+        	dominoes.add(e);
+        	superObject.add(e);
+		}	
+	}
+	
+	public void addCurveDominoes(int number, int direction, float x, float y){
+		
 	}
 	
 }

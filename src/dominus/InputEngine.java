@@ -116,6 +116,10 @@ class Keyboard extends KeyAdapter{
 		case KeyEvent.VK_END:
 			world.get("Domino1").rotateZ(5);
 	        break;    
+	        
+		case KeyEvent.VK_SPACE:
+			world.physics.simulationRunning = !world.physics.simulationRunning;
+			break;
 		}
 	}
 }

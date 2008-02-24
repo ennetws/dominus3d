@@ -2,6 +2,9 @@ package dominus;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
+
+import com.sun.opengl.util.FPSAnimator;
+
 import static javax.media.opengl.GL.*;
 
 /**
@@ -72,13 +75,13 @@ public class RenderEngine implements GLEventListener{
         gl.glClear(GL_DEPTH_BUFFER_BIT);
         
         currentCamera.set(gl);
-        currentCamera.lookFrom(new Vertex(10,10,10));
+        currentCamera.lookFrom(new Vertex(20,20,20));
         
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         //rotateT+= 0.1f; 
         
         Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(4,4,4));
+        point1.pointLight(gl, new Vertex(1,1,9));
         
         // Render all objects
         world.render(gl);

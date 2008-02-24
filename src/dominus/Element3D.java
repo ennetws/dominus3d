@@ -186,7 +186,7 @@ public class Element3D extends Element {
 	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
 		Element3D e = Element3D.createBox(id, 1.0f, 0.5f, 2.5f, gl);
-		
+    	//e.setShadeMode(GL_FLAT);
 		return e;
 	}
 	
