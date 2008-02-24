@@ -38,12 +38,6 @@ class Mouse extends MouseInputAdapter{
 	public void mouseMoved(MouseEvent e) {
 		world.input.x = e.getX();
 		world.input.y = e.getY();
-		
-		if (world.renderer.ui != null){
-			world.renderer.ui.manage();
-		
-			world.renderer.ui.writeLine("x="+ world.input.x + ", y=" +world.input.y);
-		}
 	}
 	
 	public void mousePressed(MouseEvent e){
@@ -84,13 +78,44 @@ class Keyboard extends KeyAdapter{
 		
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
+			world.get("Domino1").moveX(0.25f);
+			break;
 			
-			world.renderer.ui.writeLine("Move domino");
-			world.physics.move(world.get("Domino1"));
-             
+		case KeyEvent.VK_RIGHT:
+			world.get("Domino1").moveX(-0.25f);
             break;
+            
+		case KeyEvent.VK_UP:
+			world.get("Domino1").moveY(-0.25f);
+            break;
+            
+		case KeyEvent.VK_DOWN:
+			world.get("Domino1").moveY(0.25f);
+            break;
+            
+		case KeyEvent.VK_HOME:
+			world.get("Domino1").moveZ(0.25f);
+	        break;  
+	        
+		case KeyEvent.VK_INSERT:
+			world.get("Domino1").moveZ(-0.25f);
+	        break;  
+	        
+		case KeyEvent.VK_PAGE_UP:
+			world.get("Domino1").rotateX(5);
+            break;   
+            
+		case KeyEvent.VK_F:
+			world.get("Domino0").rotateX(5);
+            break;
+            
+		case KeyEvent.VK_PAGE_DOWN:
+			world.get("Domino1").rotateY(5);
+            break;  
+            
+		case KeyEvent.VK_END:
+			world.get("Domino1").rotateZ(5);
+	        break;    
 		}
-		
 	}
-	
 }

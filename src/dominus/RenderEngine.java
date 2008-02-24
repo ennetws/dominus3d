@@ -75,7 +75,7 @@ public class RenderEngine implements GLEventListener{
         currentCamera.lookFrom(new Vertex(10,10,10));
         
         gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
-        rotateT+= 0.1f; 
+        //rotateT+= 0.1f; 
         
         Light point1 = new Light(1);
         point1.pointLight(gl, new Vertex(4,4,4));
