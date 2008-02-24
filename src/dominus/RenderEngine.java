@@ -81,7 +81,10 @@ public class RenderEngine implements GLEventListener{
         //rotateT+= 0.1f; 
         
         Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(1,1,9));
+        point1.pointLight(gl, new Vertex(10,10,9));
+        
+        Light point2 = new Light(2);
+        point1.pointLight(gl, new Vertex(-10,-10,9));
         
         // Render all objects
         world.render(gl);
@@ -95,7 +98,6 @@ public class RenderEngine implements GLEventListener{
 	
 	public void displayChanged(GLAutoDrawable drawable, 
 			boolean modeChanged, boolean deviceChanged){
-		
 	}
 	
 	public void reshape(GLAutoDrawable drawable, 

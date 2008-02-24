@@ -46,46 +46,38 @@ public class PhysicsEngine {
 		if (simulationRunning){
 			Element3D first = world.dominoes.get(0);
 			
-			first.rotate.x += rotation * speed * Math.cos(Math.toRadians(first.rotate.z));
-			first.rotate.y += rotation * speed * Math.sin(Math.toRadians(first.rotate.z));
+			if (first.alive){
+				first.rotate.x += rotation * speed * Math.cos(Math.toRadians(first.rotate.z));
+				first.rotate.y += rotation * speed * Math.sin(Math.toRadians(first.rotate.z));
+			}			
 			
 			for (int i = 0; i < world.dominoes.size(); i++) {
 				Element3D d = world.dominoes.get(i);
-					
+	
+				
 				// Do rotations
-				if ((Math.abs(d.rotate.x) > 24 || Math.abs(d.rotate.y) > 24) 
-						&& (i+1) < world.dominoes.size()){
-					d.center.z += 0.05f * speed;
+				if ((Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 24) 
+						&& (i+1) < world.dominoes.size())
+				{
 					Element3D nextD = world.dominoes.get(i+1);
 					
-					nextD.rotate.x += rotation * speed * Math.cos(Math.toRadians(nextD.rotate.z));	
-					nextD.rotate.y += rotation * speed * Math.sin(Math.toRadians(nextD.rotate.z));	
-				}
-				
-				// Limit X Rotations
-				if (Math.abs(d.rotate.x) > 70){
-					if ((i) !=  world.dominoes.size()-1){
-						d.rotate.x = 70 * (float)Math.cos(Math.toRadians(d.rotate.z));
-					}
-					else if(Math.abs(d.rotate.x) > 80){
-						d.rotate.x = 80 * (float)Math.cos(Math.toRadians(d.rotate.z));
+					if (nextD.alive){
+						nextD.rotate.x += rotation * speed * Math.cos(Math.toRadians(nextD.rotate.z));	
+						nextD.rotate.y += rotation * speed * Math.sin(Math.toRadians(nextD.rotate.z));	
 					}
 				}
 				
-				// Limit Y Rotations
-				if (Math.abs(d.rotate.y) > 70){
-					if ((i) !=  world.dominoes.size()-1){
-						d.rotate.y = 70 * (float)Math.sin(Math.toRadians(d.rotate.z));
-					}
-					else if(Math.abs(d.rotate.y) > 80){
-						d.rotate.y = 80 * (float)Math.sin(Math.toRadians(d.rotate.z));
-					}
+				// Limit Rotations
+				if (Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 70){
+					if ((i) !=  world.dominoes.size()-1)
+						d.alive = false;
+					else if(Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 80)
+						d.alive = false;
 				}
-				
-				// Limit moving up
-				if (d.center.z > 0.1f)
-					d.center.z = 0.1f;
 			}
+	
+			if (!world.dominoes.get(world.dominoes.size() - 1).alive)
+				simulationRunning = false;
 		}
 	}
 	

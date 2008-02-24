@@ -29,7 +29,7 @@ public class UI {
 	private Element2D contentPanel;
 	private Element2D currentElement;
 	private TextRenderer textEngine;
-	private int width, height;
+	public int width, height;
 	
 	private Element2D consoleBox;
 	Font consoleFont = new Font("SansSerif", Font.BOLD, 12);

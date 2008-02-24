@@ -34,6 +34,8 @@ public class Element3D extends Element {
 	private int shadeMode = GL_SMOOTH;
 	private boolean wireFrame = false;
 	
+	public boolean alive = true;
+	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
 	}
@@ -124,7 +126,7 @@ public class Element3D extends Element {
     	
     	gl.glBegin(polyType);
     	
-        gl.glColor4f(0.75f, 0.75f, 0.75f, transperncy); 
+        gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
         
         renderAllVertices();
     	

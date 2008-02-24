@@ -80,13 +80,19 @@ public class World implements Runnable{
         e.setWireframe(true);
         superObject.add(e);
         */
+		
 		addLineDominoes(5, NORTH);
 		addLineDominoes(5, NORTH);
 		
-		addLineDominoes(5, EAST);
-		addLineDominoes(5, EAST);
-		addLineDominoes(5, SOUTH);
 		addLineDominoes(5, WEST);
+		addLineDominoes(5, WEST);
+		addLineDominoes(5, WEST);
+		addLineDominoes(5, SOUTH);
+		addLineDominoes(5, EAST);
+		
+		addCurveDominoes(10, 0);
+		addLineDominoes(5, SOUTH);
+		addCurveDominoes(20, 90);
         
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
@@ -95,7 +101,7 @@ public class World implements Runnable{
         
         e = Element3D.loadObj("media/objects/teapot.obj", "", "LoadedObj2",0.4f, renderer.gl);
         e.moveTo(new Vertex(-5,5,0));
-        superObject.add(e);
+        //superObject.add(e);
         
         e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",10, renderer.gl);
         e.moveTo(new Vertex(0,0,0));
@@ -127,26 +133,24 @@ public class World implements Runnable{
         	e = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
         	
 			switch(direction){
-			
-			case NORTH:
-	        	e.moveTo(new Vertex(x,(i*-1.5f) + y,0));
-	        	break;
-	        	
-			case SOUTH:
-	        	e.moveTo(new Vertex(x,(i*1.5f) + y,0));
-	        	e.rotate.z = 180;
-	        	break;
-			
-			case EAST:
-	        	e.moveTo(new Vertex(x + (i*1.5f),y,0));
-	        	e.rotate.z = 90;
-	        	break;
-	        	
-			case WEST:
-	        	e.moveTo(new Vertex(x + (i*-1.5f),y,0));
-	        	e.rotate.z = -90;
-	        	break;
-	        	
+				case NORTH:
+		        	e.moveTo(new Vertex(x,(i*-1.5f) + y,0));
+		        break;
+		        	
+				case SOUTH:
+		        	e.moveTo(new Vertex(x,(i*1.5f) + y,0));
+		        	e.rotate.z = 180;
+		        break;
+				
+				case EAST:
+		        	e.moveTo(new Vertex(x + (i*1.5f),y,0));
+		        	e.rotate.z = 90;
+		        break;
+		        	
+				case WEST:
+		        	e.moveTo(new Vertex(x + (i*-1.5f),y,0));
+		        	e.rotate.z = -90;
+		        break;        	
 			}
 			
         	dominoes.add(e);
@@ -154,8 +158,39 @@ public class World implements Runnable{
 		}	
 	}
 	
-	public void addCurveDominoes(int number, int direction, float x, float y){
+	public void addCurveDominoes(float radius, float angle){
+		Element3D e;
 		
+		float x = 0;
+		float y = 0;
+		
+		float angleZ = 90 + angle;
+		
+		if (dominoes.size() > 1){
+			x = dominoes.get(dominoes.size()-1).center.x;
+			y = dominoes.get(dominoes.size()-1).center.y;
+		}
+		
+		int number = (int)radius;
+		
+		float angleStep = (angle + 90) / number;
+		
+		for (int i = 1; i < number + 1; i++){
+			angle += angleStep;
+			angleZ += angleStep;
+			
+        	e = Element3D.createDomino("Domino" + dominoes.size(), renderer.gl);
+        	
+        	x += Math.cos(Math.toRadians(angle));
+        	y += Math.sin(Math.toRadians(angle));
+        	
+        	e.moveTo(new Vertex(x, y, 0));
+	
+        	e.rotate.z = angleZ;
+        	
+        	dominoes.add(e);
+        	superObject.add(e);
+		}
 	}
 	
 }
