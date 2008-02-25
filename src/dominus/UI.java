@@ -52,16 +52,16 @@ public class UI {
 		
 		// Setup console
 		textEngine = new TextRenderer(consoleFont, true, true);
-		consoleBox = new Element2D("ConsoleBox", width, 60, 0, 420, gl);
+		consoleBox = new Element2D("ConsoleBox", width, 60, 0, height - 60, gl);
 		setupConsole(consoleBox);
 		clearConsole();
 
-		contentPanel.add(new Element2D("ImageBox", 256, 256, 450, 0, gl));
+		contentPanel.add(new Element2D("ImageBox", 256, 256, width - 256, 0, gl));
 		
 		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Welcome :)",
 				"Press 'Space' to start, 'r' to reset", width, height,gl));
 		
-		get("MsgBox1").x = -50;
+		get("MsgBox1").x = 10;
 		get("MsgBox1").y = 230;
 		
         try{

@@ -53,7 +53,6 @@ public class PhysicsEngine {
 			
 			for (int i = 0; i < world.dominoes.size(); i++) {
 				Element3D d = world.dominoes.get(i);
-	
 				
 				// Do rotations
 				if ((Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 24) 
@@ -62,16 +61,17 @@ public class PhysicsEngine {
 					Element3D nextD = world.dominoes.get(i+1);
 					
 					if (nextD.alive){
+						nextD.center.z += 0.01f;
 						nextD.rotate.x += rotation * speed * Math.cos(Math.toRadians(nextD.rotate.z));	
 						nextD.rotate.y += rotation * speed * Math.sin(Math.toRadians(nextD.rotate.z));	
 					}
 				}
 				
 				// Limit Rotations
-				if (Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 70){
+				if (Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 60){
 					if ((i) !=  world.dominoes.size()-1)
 						d.alive = false;
-					else if(Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 80)
+					else if(Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 70)
 						d.alive = false;
 				}
 			}
@@ -215,7 +215,7 @@ class BoundingBox{
 		float width = e.width / 2;
 		float length = e.length / 2;
 		
-		bound[0] = new Vertex(width,length,0);			// Roof
+		bound[0] = new Vertex(width,length,0);	// Roof
 		bound[1] = new Vertex(width,-length,0);
 		bound[2] = new Vertex(-width,length,0);
 		bound[3] = new Vertex(-width,-length,0);

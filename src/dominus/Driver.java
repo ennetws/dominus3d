@@ -8,7 +8,7 @@ public class Driver {
 	{
 		Window w = new Window();
 	
-		Thread world = new Thread(new World(w, 640, 480));
+		Thread world = new Thread(new World(w, 800, 600));
 		
 		world.start();
 	}
@@ -20,7 +20,7 @@ class Window extends JFrame {
 	
 	public Window()
 	{
-		this.setSize(640, 480);
+		this.setSize(800, 600);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	

@@ -203,47 +203,45 @@ public class Element3D extends Element {
 	}
 	
 	private static void createDominoTexture(Element3D e){
-		Color[] colors = {Color.red, Color.blue, Color.green, 
-							Color.yellow, Color.orange, Color.blue, Color.blue};
-		
-		Random r = new Random();
-		int number = r.nextInt(6);
-		
-		int dotSize = 15;
-		
-		int centerX = 64;
-		int centerY = 32;
-		int center2Y = 96;
-		
 		TextureRenderer texRenderer = new TextureRenderer(128,128,true);
 		Graphics2D g = texRenderer.createGraphics();
 		
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		        RenderingHints.VALUE_ANTIALIAS_ON);
 
-		g.transform(AffineTransform.getScaleInstance(2.5f, 1));
+		Color[] colors = {Color.red, Color.blue, Color.green, 
+				Color.yellow, Color.orange, Color.blue, Color.blue};
+
+		Random r = new Random();
+		int number = r.nextInt(6);
 		
-		g.setColor(colors[number].darker().darker());
-		g.fillRect(0, 0, 128, 128);
+		int width, height;
+		width = height = 128;
+
+		//g.setColor(colors[number].darker());
 		
 		g.setColor(Color.white);
+		g.fillRect(0, 0, width, height);
+
+		AffineTransform t = g.getTransform();
 		
-		switch(number){
-		case 1:
-			g.fillOval(centerX - dotSize, centerY - dotSize, dotSize, dotSize);
-			break;
-		case 2:
-			g.fillOval(centerX - dotSize*1, centerY - dotSize, dotSize, dotSize);
-			g.fillOval(centerX - dotSize*2, centerY - dotSize, dotSize, dotSize);
-			break;
-		case 3:
-			g.fillOval(centerX - dotSize*1, centerY - dotSize, dotSize, dotSize);
-			g.fillOval(centerX - dotSize*2, centerY - dotSize, dotSize, dotSize);
-			g.fillOval(centerX - dotSize*3, centerY - dotSize, dotSize, dotSize);
-		}
+		t.translate( 0 , height);
+		t.scale( 2, -1.0);
 		
-		texRenderer.markDirty(0, 0, 128, 128);
+		g.setTransform(t);
+		g.setColor(Color.black);
 		
+		number = r.nextInt(7);
+		drawPattern(0, 0, number, width/2, height/2, g);
+		
+		number = r.nextInt(7);
+		drawPattern(0, height/2, number, width/2, height/2, g);
+		
+		g.translate(0, -height/2);
+		g.setColor(Color.black);
+		g.fillRect(0, (height/2) - 2, width, 4);
+		
+		texRenderer.markDirty(0, 0, width, height);
 		e.texture = texRenderer.getTexture();
 		
 		Vector<Vertex> v = e.texCoordinates;
@@ -267,6 +265,58 @@ public class Element3D extends Element {
 		// Back
 		v.add(new Vertex(1, 0, 0)); v.add(new Vertex(1, 1, 0));
 		v.add(new Vertex(0, 1, 0)); v.add(new Vertex(0, 0, 0));
+	}
+
+	private static void drawPattern(int x, int y, int number, int width, int height, Graphics2D g){
+		int dotSize = 15;
+		
+		int centerX = width / 2;
+		int centerY = height / 2;
+		
+		int quarterX = width / 4;
+		int quarterY = width / 4;
+		
+		g.translate(x, y);
+		
+		switch(number){
+		case 1:
+			drawCircle(centerX, centerY, dotSize, g);
+			break;
+		case 2:
+			drawCircle(quarterX, centerY, dotSize, g);
+			drawCircle(quarterX * 3, centerY, dotSize, g);
+			break;
+		case 3:
+			drawCircle(quarterX, quarterY, dotSize, g);
+			drawCircle(centerX, centerY, dotSize, g);
+			drawCircle(quarterX * 3, quarterY * 3, dotSize, g);
+			break;
+		case 4:
+			drawCircle(quarterX, quarterY, dotSize, g);
+			drawCircle(quarterX, quarterX * 3, dotSize, g);
+			drawCircle(quarterX * 3, quarterY, dotSize, g);
+			drawCircle(quarterX * 3, quarterX * 3, dotSize, g);
+			break;
+		case 5:
+			drawCircle(centerX, centerY, dotSize, g);
+			drawCircle(quarterX, quarterY, dotSize, g);
+			drawCircle(quarterX, quarterX * 3, dotSize, g);
+			drawCircle(quarterX * 3, quarterY, dotSize, g);
+			drawCircle(quarterX * 3, quarterX * 3, dotSize, g);
+			break;
+		case 6:
+			drawCircle(quarterX, quarterY, dotSize, g);
+			drawCircle(quarterX, centerY, dotSize, g);
+			drawCircle(quarterX, quarterX * 3, dotSize, g);
+			drawCircle(quarterX * 3, quarterY, dotSize, g);
+			drawCircle(quarterX * 3, centerY, dotSize, g);
+			drawCircle(quarterX * 3, quarterX * 3, dotSize, g);
+			break;
+		}
+	}
+	 
+	private static void drawCircle(int centerX, int centerY, int radius, Graphics2D g){
+		g.fillOval(centerX - (radius/2), centerY - (radius/2), radius, radius);
 	}
 	
 	public static Vector<Vertex> box(float width, float length, float height){

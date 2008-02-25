@@ -62,7 +62,7 @@ public class World implements Runnable{
 	
 	public void run(){	
 		FPSAnimator animator = new FPSAnimator(canvas, fpsCap);
-	    animator.setRunAsFastAsPossible( true );
+	    animator.setRunAsFastAsPossible(true);
 	    animator.start();
 	}
 	

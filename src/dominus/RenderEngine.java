@@ -83,7 +83,7 @@ public class RenderEngine implements GLEventListener{
         //rotateT+= 0.01f; 
         
         Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(0,0,20));
+        point1.pointLight(gl, new Vertex(-20,-20,20));
         
         //Light point2 = new Light(2);
         //point1.pointLight(gl, new Vertex(0,0,10));
@@ -99,16 +99,16 @@ public class RenderEngine implements GLEventListener{
 	}
 	
 	public void mouseMoveCamera(){
-		int edge = 20;
+		int edge = 10;
 		float speed = 0.25f;
 		
-		if (world.input.x > (world.renderer.width - edge * 2))
+		if (world.input.x > (world.renderer.width - edge))
 			world.renderer.moveCamera(-speed, speed);
 		
 		if (world.input.x < edge)
 			world.renderer.moveCamera(speed, -speed);
 		
-		if (world.input.y > (world.renderer.height - edge * 3))
+		if (world.input.y > (world.renderer.height - edge * 3) - 20)
 			world.renderer.moveCamera(speed, speed);
 		
 		if (world.input.y < edge)
