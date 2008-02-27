@@ -89,20 +89,21 @@ public class World implements Runnable{
         */
 		
 		addLineDominoes(2, NORTH);
-		addLineDominoes(4, EAST);
-		addLineDominoes(6, SOUTH);
-		addLineDominoes(6, WEST);
-		addLineDominoes(3, SOUTH);
-		addLineDominoes(6, EAST);
+		addLineDominoes(3, EAST);
+		addLineDominoes(4, SOUTH);
+		addLineDominoes(5, WEST);
+		addLineDominoes(6, NORTH);
+		addLineDominoes(7, EAST);
+		addLineDominoes(8, SOUTH);
+		addLineDominoes(9, WEST);
+		addLineDominoes(10, SOUTH);
 		addLineDominoes(9, EAST);
-		addLineDominoes(5, NORTH);
-		addLineDominoes(4, WEST);
-		addLineDominoes(3, SOUTH);
-		
-		// addCurveDominoes(10, 0);
-		
-		// addCurveDominoes(20, 90);
-        
+		addLineDominoes(8, NORTH);
+		addLineDominoes(7, WEST);
+		addLineDominoes(6, SOUTH);
+		addLineDominoes(5, EAST);
+		addLineDominoes(4, NORTH);
+		addLineDominoes(3, WEST);
 		
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
