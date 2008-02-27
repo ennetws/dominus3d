@@ -43,6 +43,9 @@ public class Element3D extends Element {
 	
 	public boolean alive = true;
 	
+	private int direction;
+	
+	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
 	}
@@ -506,6 +509,14 @@ public class Element3D extends Element {
 	public Vertex getVertexIndex(int i) {
 		
 		return vertices.get(i);
+	}
+	
+	public void setDirection(int dir) {
+		direction = dir;
+	}
+	
+	public int getDirection() {
+		return direction;
 	}
 	
 }
