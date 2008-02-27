@@ -1,5 +1,6 @@
 package dominus;
 /**
+ * 
  * Utiltily class to manage coordinates in 2D and 3D.
  * @author ibraheem
  *
