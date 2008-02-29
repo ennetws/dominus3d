@@ -98,7 +98,7 @@ class MessageBox extends ElementGUI{
 	}
 	
 	public void action(){
-		
+		this.visible = false;
 	}
 }
 

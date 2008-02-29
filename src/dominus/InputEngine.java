@@ -21,6 +21,7 @@ public class InputEngine{
 	public boolean MouseButtonPressed;
 	public int MouseButtonNumber;
 	public boolean MouseDragged;
+	public boolean MouseReleased;
 	
 	public InputEngine(World world){
 		mouse = new Mouse(world);
@@ -51,6 +52,8 @@ class Mouse extends MouseInputAdapter{
 	public void mouseReleased(MouseEvent e){
 		world.input.MouseButtonPressed = false;
 		world.input.MouseDragged = false;
+		world.input.MouseReleased = true;
+		
 		world.renderer.ui.manage();
 		
 		world.renderer.ui.writeLine("Button Released.");
@@ -111,11 +114,11 @@ class Keyboard extends KeyAdapter{
 	        break;  
 	        
 		case KeyEvent.VK_PAGE_UP:
-			world.get("Domino1").rotateX(5);
+			world.get("LoadedObj2").rotateX(5);
             break;   
             
 		case KeyEvent.VK_F:
-			world.get("Domino0").rotateX(5);
+			world.get("LoadedObj2").rotateX(5);
             break;
             
 		case KeyEvent.VK_PAGE_DOWN:

@@ -41,8 +41,8 @@ public class World implements Runnable{
 	public static final int EAST = 270;
 	public static final int NE = 335;
 	
-	public int startX = 0;
-	public int startY = 0;
+	public int startX = -15;
+	public int startY = -15;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -88,34 +88,30 @@ public class World implements Runnable{
         superObject.add(e);
         */
 		
-		addLineDominoes(2, NORTH);
-		addLineDominoes(3, EAST);
-		addLineDominoes(4, SOUTH);
-		addLineDominoes(5, WEST);
-		addLineDominoes(6, NORTH);
-		addLineDominoes(7, EAST);
-		addLineDominoes(8, SOUTH);
-		addLineDominoes(9, WEST);
-		addLineDominoes(10, SOUTH);
-		addLineDominoes(9, EAST);
-		addLineDominoes(8, NORTH);
-		addLineDominoes(7, WEST);
-		addLineDominoes(6, SOUTH);
-		addLineDominoes(5, EAST);
-		addLineDominoes(4, NORTH);
-		addLineDominoes(3, WEST);
+		addLineDominoes(20, SOUTH);
+		addLineDominoes(20, WEST);
+		addLineDominoes(20, NORTH);
+		addLineDominoes(10, EAST);
 		
+		addLineDominoes(10, SOUTH);
+
+		addLineDominoes(4, WEST);
+		addLineDominoes(4, SOUTH);
+
+		addCurveDominoes(10,  90);
+
+
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
         e.moveTo(new Vertex(-20,-20,0));
         superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/teapot.obj", "", "LoadedObj2",0.4f, renderer.gl);
-        e.moveTo(new Vertex(-5,5,0));
-        //superObject.add(e);
+        e = Element3D.loadObj("media/objects/floor.obj", "media/textures/floor.jpg", "Floor",1, renderer.gl);
+        e.moveTo(new Vertex(0,0,0));
+        superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/metal_floor.obj", "media/textures/metal.jpg", "LoadedObj3",10, renderer.gl);
-        e.moveTo(new Vertex(-5,-5,0));
+        e = Element3D.loadObj("media/objects/rim.obj", "media/textures/rim.jpg", "Rim",1, renderer.gl);
+        e.moveTo(new Vertex(0,0,0));
         superObject.add(e);
         
 	//#########################################        
@@ -139,7 +135,6 @@ public class World implements Runnable{
 		float x = 0;
 		float y = 0;
 		
-		
 		if (dominoes.size() > 1){
 			x = dominoes.get(dominoes.size()-1).center.x;
 			y = dominoes.get(dominoes.size()-1).center.y;
@@ -152,8 +147,6 @@ public class World implements Runnable{
 		
 		for (int i = 0; i < number; i++){
         	e = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
-        	
-        	
         	
 			switch(direction){
 				case NORTH:	

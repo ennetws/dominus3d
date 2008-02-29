@@ -61,9 +61,6 @@ public class UI {
 		contentPanel.add(new MessageBox("MsgBox1",contentPanel, "Welcome :)",
 				"Press 'Space' to start, 'r' to reset", width, height,gl));
 		
-		get("MsgBox1").x = 10;
-		get("MsgBox1").y = 230;
-		
         try{
             sampleImage = ImageIO.read(new File("media/texture.png"));
         }catch(Exception e){
@@ -174,6 +171,11 @@ public class UI {
 					eleGUI.setStyle(ElementGUI.PRESSED);
 				else
 					eleGUI.setStyle(ElementGUI.HOVER);
+				
+				if (world.input.MouseReleased){
+					world.input.MouseReleased = false;
+					eleGUI.action();
+				}
 			}
 		}		
 	}

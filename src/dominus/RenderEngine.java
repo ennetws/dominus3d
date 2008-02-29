@@ -56,8 +56,8 @@ public class RenderEngine implements GLEventListener{
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
-        currentCamera.lookFrom(new Vertex(15,15,20));
-        currentCamera.lookAt(new Vertex(-10,-10,0));
+        currentCamera.lookFrom(new Vertex(20,20,20));
+        currentCamera.lookAt(new Vertex(-5,-5,0));
         
         // Create the user interface manager
         ui = new UI (width, height, gl, glu, this.world);
@@ -83,7 +83,7 @@ public class RenderEngine implements GLEventListener{
         //rotateT+= 0.01f; 
         
         Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(-20,-20,20));
+        point1.pointLight(gl, new Vertex(3,3,8));
         
         //Light point2 = new Light(2);
         //point1.pointLight(gl, new Vertex(0,0,10));
@@ -100,7 +100,7 @@ public class RenderEngine implements GLEventListener{
 	
 	public void mouseMoveCamera(){
 		int edge = 10;
-		float speed = 0.25f;
+		float speed = 0.10f;
 		
 		if (world.input.x > (world.renderer.width - edge))
 			world.renderer.moveCamera(-speed, speed);

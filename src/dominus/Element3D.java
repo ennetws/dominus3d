@@ -26,6 +26,7 @@ public class Element3D extends Element {
 	
 	private Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
+	private Vector<Vertex> normals = new Vector<Vertex>();
 	
 	public Vertex center;
 	public Vertex rotate;
@@ -111,6 +112,7 @@ public class Element3D extends Element {
 	private void renderAllVertices(){
 		Iterator<Vertex> i = vertices.iterator();
 		Iterator<Vertex> texCoord = texCoordinates.iterator();
+		Iterator<Vertex> norm = normals.iterator();
 		
 		while (i.hasNext()){
 			Vertex v = i.next();
@@ -118,9 +120,15 @@ public class Element3D extends Element {
 			if (texCoord.hasNext() && texture != null){
 				Vertex uv = texCoord.next();
 				
-				gl.glTexCoord2f(uv.x,
-								uv.y);
+				gl.glTexCoord2f(uv.x, uv.y);
 			}
+			
+			//gl.glEnable(GL_NORMALIZE);
+			
+			if (norm.hasNext()){
+				Vertex n = norm.next();
+				gl.glNormal3f(n.x, n.y, n.z);
+			}	
 			
 			gl.glVertex3f(v.x, v.y, v.z);
 		}
@@ -136,7 +144,7 @@ public class Element3D extends Element {
     	
     	gl.glBegin(polyType);
     	
-        gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
+        //gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
         
         renderAllVertices();
     	
@@ -197,10 +205,10 @@ public class Element3D extends Element {
 	
 	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
-		Element3D e = Element3D.createBox(id, 1.0f, 0.5f, 2.5f, gl);
+		Element3D e = Element3D.loadObj("media/objects/dom02.obj", "", id, 1 , gl);
     	
 		createDominoTexture(e);
-		e.setShadeMode(GL_FLAT);
+		//e.setShadeMode(GL_FLAT);
 		
 		return e;
 	}
@@ -417,6 +425,7 @@ public class Element3D extends Element {
 			String textureFile, String iden, float size, GL gl){
 
 		Element3D e = loadObjFile(iden, gl, fileName, textureFile, size);
+		
 		e.texture = loadTexture(textureFile);
 		
 		return e;
@@ -427,8 +436,11 @@ public class Element3D extends Element {
 			Element3D e = new Element3D(iden, gl);
 			Vector<Vertex> vertices = new Vector<Vertex>();
 			Vector<Vertex> texCoord = new Vector<Vertex>();
+			Vector<Vertex> normals = new Vector<Vertex>();
+			
 			Vector<Vertex> finalVertices = new Vector<Vertex>();
 			Vector<Vertex> finalTexCoord = new Vector<Vertex>();	
+			Vector<Vertex> finalNormals = new Vector<Vertex>();	
 			
 			StringTokenizer st;
 			String type;
@@ -458,6 +470,14 @@ public class Element3D extends Element {
 							Float.valueOf(st.nextToken()),0));
 				}
 				
+				if (type.equals("vn")){
+					float x = Float.valueOf(st.nextToken()) * size;
+					float y = Float.valueOf(st.nextToken()) * size;
+					float z = Float.valueOf(st.nextToken()) * size;
+					
+					normals.add(new Vertex(x,z,y));
+				}
+				
 				if (type.equals("f")){
 					int faceType = st.countTokens();
 					
@@ -468,6 +488,8 @@ public class Element3D extends Element {
 						
 						if (texCoord.size() > 0)
 							finalTexCoord.add(texCoord.get(Integer.valueOf(num.nextToken())-1));
+						
+						finalNormals.add(normals.get(Integer.valueOf(num.nextToken())-1));
 					}
 				}
 				
@@ -477,6 +499,7 @@ public class Element3D extends Element {
 			data.close();
 			e.vertices = finalVertices;
 			e.texCoordinates = finalTexCoord;
+			e.normals = finalNormals;
 			
 			return e;
 		}catch(Exception e){
