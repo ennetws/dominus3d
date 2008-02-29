@@ -41,8 +41,8 @@ public class World implements Runnable{
 	public static final int EAST = 270;
 	public static final int NE = 335;
 	
-	public int startX = -15;
-	public int startY = -15;
+	public int startX = 0;
+	public int startY = 0;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -88,17 +88,9 @@ public class World implements Runnable{
         superObject.add(e);
         */
 		
-		addLineDominoes(20, SOUTH);
-		addLineDominoes(20, WEST);
-		addLineDominoes(20, NORTH);
-		addLineDominoes(10, EAST);
+		addLineDominoes(5, WEST);
+		addLineDominoes(5, NORTH);
 		
-		addLineDominoes(10, SOUTH);
-
-		addLineDominoes(4, WEST);
-		addLineDominoes(4, SOUTH);
-
-		addCurveDominoes(10,  90);
 
 
         // Create Axis object
@@ -128,6 +120,8 @@ public class World implements Runnable{
 	public void addLineDominoes(int number, int direction){
 		Element3D e;
 		
+		Vertex v;
+		
 		int dirFrom;
 		
 		boolean capFlag;
@@ -154,16 +148,30 @@ public class World implements Runnable{
 					e.setDirection(NORTH);
 					
 					if (capFlag == true) {
+						
 						capFlag = false;
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
 						
-						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
+						// dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
+						
+				
+						
+						v = addDominoCap(dirFrom, NORTH, x, y);
+						
+						x = v.x;
+						y = v.y;
+						
+						e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));	
+						e.rotate.z = NORTH;
 						
 					}
+					else
+					{
 					
-					
-					e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));	
-					e.rotate.z = NORTH;
+						e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));	
+						e.rotate.z = NORTH;
+						
+					}
 					
 		        break;
 		        	
@@ -268,6 +276,34 @@ public class World implements Runnable{
 			return WEST;
 		}
 			
+	}
+	
+	public Vertex addDominoCap(int dirFrom, int dirTo, float x, float y) {
+		
+		Element3D e1, e2;
+		
+		e1 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
+		e2 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
+		
+		
+		if (dirFrom == WEST && dirTo == NORTH) {
+			
+			
+			
+			e1.moveTo(new Vertex(x + 1.5f, y, 0));
+			e1.rotateZ(NW + 15);
+			
+			e2.moveTo(new Vertex(x + 1.5f, y - 1.5f, 0));
+			e2.rotateZ(NW);
+		}
+		
+		dominoes.add(e1);
+    	superObject.add(e1);
+		
+    	dominoes.add(e2);
+    	superObject.add(e2);
+		
+    	return e2.center;
 	}
 	
 	public void addCurveDominoes(float radius, float angle){
