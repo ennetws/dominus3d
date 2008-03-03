@@ -88,10 +88,16 @@ public class World implements Runnable{
         superObject.add(e);
         */
 		
+		addLineDominoes(2, SOUTH);
+		addLineDominoes(3, EAST);
+		addLineDominoes(4, NORTH);
+		addLineDominoes(4, WEST);
+
+		addLineDominoes(10, SOUTH);
 		addLineDominoes(5, WEST);
 		addLineDominoes(5, NORTH);
-		
-
+		addLineDominoes(3, EAST);
+		addLineDominoes(4, SOUTH);
 
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
@@ -151,11 +157,7 @@ public class World implements Runnable{
 						
 						capFlag = false;
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
-						
-						// dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
-						
-				
-						
+					
 						v = addDominoCap(dirFrom, NORTH, x, y);
 						
 						x = v.x;
@@ -182,8 +184,14 @@ public class World implements Runnable{
 					if (capFlag == true) {
 						capFlag = false;
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
+					
+						v = addDominoCap(dirFrom, SOUTH, x, y);
 						
-						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, SOUTH);
+						x = v.x;
+						y = v.y;
+						
+						e.moveTo(new Vertex(x,((i + 1) *1.5f) + y,0));	
+						e.rotate.z = SOUTH;
 						
 					}
 					
@@ -200,8 +208,14 @@ public class World implements Runnable{
 					if (capFlag == true) {
 						capFlag = false;
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
+					
+						v = addDominoCap(dirFrom, EAST, x, y);
 						
-						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, EAST);
+						x = v.x;
+						y = v.y;
+						
+						e.moveTo(new Vertex(x + ((i + 1) * -1.5f), y,0));	
+						e.rotate.z = EAST;
 						
 					}
 					
@@ -219,8 +233,14 @@ public class World implements Runnable{
 					if (capFlag == true) {
 						capFlag = false;
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
+					
+						v = addDominoCap(dirFrom, WEST, x, y);
 						
-						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, WEST);
+						x = v.x;
+						y = v.y;
+						
+						e.moveTo(new Vertex(x + ((i + 1) *1.5f),y,0));	
+						e.rotate.z = WEST;
 						
 					}
 					
@@ -285,17 +305,89 @@ public class World implements Runnable{
 		e1 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
 		e2 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
 		
+		renderer.ui.writeLine("dirFr: " + dirFrom + " dirTo: " + dirTo);
 		
 		if (dirFrom == WEST && dirTo == NORTH) {
 			
-			
-			
-			e1.moveTo(new Vertex(x + 1.5f, y, 0));
-			e1.rotateZ(NW + 15);
+			e1.moveTo(new Vertex(x + 1.0f, y - 0.5f, 0));
+			e1.rotateZ(NW);
 			
 			e2.moveTo(new Vertex(x + 1.5f, y - 1.5f, 0));
-			e2.rotateZ(NW);
+			e2.rotateZ(NW - 20);
+			
 		}
+		else if (dirFrom == EAST && dirTo == NORTH) {
+			
+			e1.moveTo(new Vertex(x - 1.0f, y - 0.5f, 0));
+			e1.rotateZ(NE - 20);
+			
+			e2.moveTo(new Vertex(x - 1.5f, y - 1.5f, 0));
+			e2.rotateZ(NE);
+			
+		}
+		else if (dirFrom == EAST && dirTo == SOUTH) {
+			
+			
+			e1.moveTo(new Vertex(x - 1.0f, y + 0.5f, 0));
+			e1.rotateZ(SE);
+			
+			e2.moveTo(new Vertex(x - 1.5f, y + 1.5f, 0));
+			e2.rotateZ(SE - 20);
+			
+		}
+		else if (dirFrom == WEST && dirTo == SOUTH) {
+			
+			
+			e1.moveTo(new Vertex(x + 1.0f, y + 0.5f, 0));
+			e1.rotateZ(SW);
+			
+			e2.moveTo(new Vertex(x + 1.5f, y + 1.5f, 0));
+			e2.rotateZ(SW + 20);
+			
+		}
+		else if (dirFrom == NORTH && dirTo == EAST) {
+			
+			
+			e1.moveTo(new Vertex(x - 0.5f, y - 1.0f, 0));
+			e1.rotateZ(NE - 20);
+			
+			e2.moveTo(new Vertex(x - 1.5f, y - 1.5f, 0));
+			e2.rotateZ(NE - 40);
+			
+		}
+		else if (dirFrom == NORTH && dirTo == WEST) {
+			
+			
+			e1.moveTo(new Vertex(x + 0.5f, y - 1.0f, 0));
+			e1.rotateZ(NW);
+			
+			e2.moveTo(new Vertex(x + 1.5f, y - 1.5f, 0));
+			e2.rotateZ(NW + 20);
+			
+		}
+		else if (dirFrom == SOUTH && dirTo == WEST) {
+			
+			
+			
+			e1.moveTo(new Vertex(x + 0.5f, y + 1.5f, 0));
+			e1.rotateZ(SW + 30);
+			
+			e2.moveTo(new Vertex(x + 1.5f, y + 2.5f, 0));
+			e2.rotateZ(SW - 20);
+			
+		}
+		else if (dirFrom == SOUTH && dirTo == EAST) {
+			
+			
+			
+			e1.moveTo(new Vertex(x - 0.5f, y + 1.5f, 0));
+			e1.rotateZ(SE - 20);
+			
+			e2.moveTo(new Vertex(x - 1.5f, y + 2.5f, 0));
+			e2.rotateZ(SE + 20);
+			
+		}
+		
 		
 		dominoes.add(e1);
     	superObject.add(e1);
