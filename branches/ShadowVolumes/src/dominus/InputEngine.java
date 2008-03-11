@@ -90,19 +90,23 @@ class Keyboard extends KeyAdapter{
 			break;
 		
 		case KeyEvent.VK_LEFT:
-			world.get("Domino1").moveX(0.25f);
+
+			world.renderer.defaultLightPos.moveX(1);
 			break;
 			
 		case KeyEvent.VK_RIGHT:
-			world.get("Domino1").moveX(-0.25f);
+
+			world.renderer.defaultLightPos.moveX(-1);
             break;
             
 		case KeyEvent.VK_UP:
-			world.get("Domino1").moveY(-0.25f);
+
+			world.renderer.defaultLightPos.moveY(-1);
             break;
             
 		case KeyEvent.VK_DOWN:
-			world.get("Domino1").moveY(0.25f);
+
+			world.renderer.defaultLightPos.moveY(1);
             break;
             
 		case KeyEvent.VK_HOME:
@@ -131,6 +135,9 @@ class Keyboard extends KeyAdapter{
 	        
 		case KeyEvent.VK_SPACE:
 			world.physics.simulationRunning = !world.physics.simulationRunning;
+			break;
+		case KeyEvent.VK_S:
+			world.shadowOn = !(world.shadowOn);
 			break;
 		}
 	}

@@ -147,4 +147,8 @@ public class Element2D extends Element {
 		
 		return false;
 	}
+	
+	public void renderShadow(){
+		
+	}
 }

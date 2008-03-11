@@ -28,6 +28,9 @@ public class Element3D extends Element {
 	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
 	private Vector<Vertex> normals = new Vector<Vertex>();
 	
+	private Vector<Face> sourceFaces = new Vector<Face>();
+	private Vector<Face> faces = new Vector<Face>();
+	
 	public Vertex center;
 	public Vertex rotate;
 	public float scale = 1;
@@ -46,6 +49,8 @@ public class Element3D extends Element {
 	
 	private int direction;
 	
+	public Vertex lightPos = null;
+	public boolean castShadow = true;
 	
 	public Element3D(String iden, GL gl){
 		this(iden, null, gl);
@@ -109,7 +114,7 @@ public class Element3D extends Element {
 		}
 	}
 	
-	private void renderAllVertices(){
+	public void renderAllVertices(){
 		Iterator<Vertex> i = vertices.iterator();
 		Iterator<Vertex> texCoord = texCoordinates.iterator();
 		Iterator<Vertex> norm = normals.iterator();
@@ -136,19 +141,227 @@ public class Element3D extends Element {
 	
 	public void renderWireframe(){
 		gl.glPushMatrix();
-
 		placeElement();
+    	gl.glDisable(GL_LIGHTING);
+    	gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    	gl.glBegin(polyType);
+        //gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
+        renderAllVertices();
+		gl.glEnd();
+		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		gl.glEnable(GL_LIGHTING);
+		gl.glPopMatrix();
+	}
 	
+	public void renderFlat(){
+		gl.glPushMatrix();
+		placeElement();
+    	gl.glDisable(GL_LIGHTING);
+    	gl.glBegin(polyType);
+        gl.glColor4f(1.0f, 1.0f, 0.0f, transperncy); 
+        renderAllVertices();
+		gl.glEnd();
+		gl.glEnable(GL_LIGHTING);
+		gl.glPopMatrix();
+	}
+	
+	public float[] getTransformMatrix(){
+		float[] matrix = new float[16];
+		
+		gl.glPushMatrix();
+		gl.glLoadIdentity();	
+		
+		gl.glTranslatef(center.x, center.y, center.z);
+
+		gl.glRotatef(rotate.x, 1, 0, 0);
+		gl.glRotatef(rotate.y, 0, 1, 0);
+		gl.glRotatef(rotate.z, 0, 0, 1);
+		
+		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrix, 0);
+		gl.glPopMatrix();
+		
+		return matrix;
+	}
+	
+	private Vertex transformedVertex(Vertex v, float[] m){
+		float X, Y, Z;
+		
+		X = v.x;	Y = v.y;	Z = v.z;
+		
+		Vertex result = new Vertex(0,0,0);
+		
+		result.x = X * m[0] + Y * m[4] + Z * m[8] + m[12];
+		result.y = X * m[1] + Y * m[5] + Z * m[9] + m[13];
+		result.z = X * m[2] + Y * m[6] + Z * m[10] + m[14];
+		
+		return result;
+	}
+	
+	public void setLightPos(Vertex v){
+		Iterator<Element> i = child.listIterator();
+		
+		lightPos = v;
+		
+		// Set for all children elements
+		while (i.hasNext()){
+			Element3D e = (Element3D)i.next();
+			
+			e.lightPos = v;
+		}
+	}
+	
+	public void calculateLitFaces(){
+		Iterator<Face> f = faces.iterator();
+
+		while (f.hasNext()){
+			Face face = f.next();
+
+			if (lightPos != null)
+				face.faces(lightPos);
+			
+			//if (face.visible)
+			//	renderFace(face);
+		}
+	}
+	
+	public void renderShadow(){
+		transformFaces();
+		calculateLitFaces();
+		
+		Vector<Edge> contour = findShadowEdges();
+		renderShadowVolume (contour);
+		
+		//renderEdgeList(contour);	
+	}
+	
+	public void renderShadowVolume(Vector<Edge> contour){
+		Iterator<Edge> i = contour.iterator();
+		
+		while(i.hasNext()){
+			Edge e1 = i.next();
+			
+			Edge e2 = e1.extrudeFromPoint(lightPos, 10);
+			
+			gl.glPushMatrix();
+			gl.glDisable( GL_LIGHTING );
+			gl.glBegin(GL_QUADS);
+			
+			gl.glVertex3f(e1.v2.x, e1.v2.y, e1.v2.z);
+			gl.glVertex3f(e1.v1.x, e1.v1.y, e1.v1.z);
+
+			gl.glVertex3f(e2.v1.x, e2.v1.y, e2.v1.z);
+			gl.glVertex3f(e2.v2.x, e2.v2.y, e2.v2.z);
+			
+			gl.glEnd();
+			gl.glPopMatrix();
+		}
+	}
+	
+	public Vector<Edge> findShadowEdges(){
+		Vector<Edge> contour = new Vector<Edge>();
+		
+		Iterator<Face> i = faces.iterator();
+
+		int tag = 1;
+		
+		while (i.hasNext()){
+			Face f1 = i.next();
+			
+			Iterator<Face> j = faces.iterator();
+			
+			while (j.hasNext()){
+				Face f2 = j.next();
+				
+				if (f1.equals(f2))
+					break;
+				
+				Edge e = Face.sharedEdge(f1, f2);
+				
+				if (e != null && e.tag == 0 && f1.visible != f2.visible){
+					e.tag = tag++;
+					contour.add(e);
+				}
+			}
+		}
+		
+		for (int c = 0 ; c < contour.size() ; c++)
+			contour.get(c).tag = 0;
+		
+		return contour;
+	}
+
+	public void transformFaces(){
+		Iterator<Face> f = sourceFaces.iterator();
+		
+		float[] m = getTransformMatrix();
+		
+		int cur = 0;
+		
+		faces.removeAllElements();
+		
+		while (f.hasNext()){
+			Face face = f.next();
+			Face destFace = new Face();
+			
+			// calculate edges
+			for (int i = 0 ; i < 4 ; i++){
+				destFace.e[i] = new Edge (
+						transformedVertex(face.e[i].v1, m),
+						transformedVertex(face.e[i].v2, m));
+			}
+			
+			// apply to vertices
+			destFace.recalcFace();
+			
+			faces.add(destFace);
+		}
+	}
+	
+	public void renderEdgeList(Vector<Edge> el){
+		Iterator<Edge> e = el.iterator();
+		
+		gl.glPushMatrix();
+    	gl.glDisable(GL_LIGHTING);
+    	gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    	
+    	gl.glBegin(GL_LINES);
+    		
+		while (e.hasNext()){
+			Edge edge = e.next();
+
+			gl.glColor3f(1, 1, 0);
+			gl.glVertex3f(edge.v1.x, edge.v1.y, edge.v1.z);
+			gl.glVertex3f(edge.v2.x, edge.v2.y, edge.v2.z);
+		}
+			
+		gl.glEnd();
+			
+		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		gl.glEnable(GL_LIGHTING);
+		gl.glPopMatrix();
+	}
+	
+	public void renderFace(Face f){
+		gl.glPushMatrix();
     	gl.glDisable(GL_LIGHTING);
     	gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     	
     	gl.glBegin(polyType);
     	
-        //gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy); 
-        
-        renderAllVertices();
-    	
+		for (int i = 0 ; i < 4 ; i++){
+	    	Vertex v = f.e[i].v1;
+
+			gl.glColor3f(1, 0, 0);
+			gl.glVertex3f(v.x, v.y, v.z);
+
+			v = f.e[i].v2;
+
+			gl.glColor3f(1, 0, 0);
+			gl.glVertex3f(v.x, v.y, v.z);
+		}
+		
 		gl.glEnd();
+		
 		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		gl.glEnable(GL_LIGHTING);
 		gl.glPopMatrix();
@@ -441,6 +654,7 @@ public class Element3D extends Element {
 			Vector<Vertex> finalVertices = new Vector<Vertex>();
 			Vector<Vertex> finalTexCoord = new Vector<Vertex>();	
 			Vector<Vertex> finalNormals = new Vector<Vertex>();	
+			Vector<Face> finalFaces = new Vector<Face>();
 			
 			StringTokenizer st;
 			String type;
@@ -481,16 +695,27 @@ public class Element3D extends Element {
 				if (type.equals("f")){
 					int faceType = st.countTokens();
 					
+					Vertex faceVerts[] = new Vertex[4];
+					
 					for(int i = 0 ; i < faceType; i++){
 						StringTokenizer num = new StringTokenizer(st.nextToken(), "/");
-
-						finalVertices.add(vertices.get(Integer.valueOf(num.nextToken())-1));
 						
+						Vertex currVertex = vertices.get(Integer.valueOf(num.nextToken())-1);
+						faceVerts[i] = new Vertex(currVertex);
+						
+						// Vertex locations
+						finalVertices.add(currVertex);
+						
+						// Texture Coordinates
 						if (texCoord.size() > 0)
 							finalTexCoord.add(texCoord.get(Integer.valueOf(num.nextToken())-1));
 						
+						// Face normals
 						finalNormals.add(normals.get(Integer.valueOf(num.nextToken())-1));
 					}
+					
+					if (faceVerts[3] != null)
+						finalFaces.add(new Face(faceVerts));
 				}
 				
 				line = data.readLine();
@@ -500,6 +725,7 @@ public class Element3D extends Element {
 			e.vertices = finalVertices;
 			e.texCoordinates = finalTexCoord;
 			e.normals = finalNormals;
+			e.sourceFaces = finalFaces;
 			
 			return e;
 		}catch(Exception e){
@@ -542,4 +768,9 @@ public class Element3D extends Element {
 		return direction;
 	}
 	
+	public static void renderDummyBox(Vertex v, GL gl){
+		Element3D e = createBox("Dummy", 0.25f,0.25f,0.25f,gl);
+		e.center = v;
+		e.renderFlat();
+	}
 }

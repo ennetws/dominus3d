@@ -27,7 +27,7 @@ public class World implements Runnable{
 	public InputEngine input;
 	private JFrame window;
 
-	private Element3D superObject;
+	public Element3D superObject;
 	
 	public int fpsCap = 80;
 
@@ -43,6 +43,8 @@ public class World implements Runnable{
 	
 	public int startX = 0;
 	public int startY = 0;
+	
+	public boolean shadowOn = false;
 	
 	public World(JFrame w, int width, int height){
 		renderer = new RenderEngine(width, height, this);
@@ -91,11 +93,9 @@ public class World implements Runnable{
 		addLineDominoes(5, WEST);
 		addLineDominoes(5, NORTH);
 		
-
-
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
-        e.moveTo(new Vertex(-20,-20,0));
+        e.moveTo(new Vertex(-10,-10,0));
         superObject.add(e);
         
         e = Element3D.loadObj("media/objects/floor.obj", "media/textures/floor.jpg", "Floor",1, renderer.gl);
@@ -105,6 +105,14 @@ public class World implements Runnable{
         e = Element3D.loadObj("media/objects/rim.obj", "media/textures/rim.jpg", "Rim",1, renderer.gl);
         e.moveTo(new Vertex(0,0,0));
         superObject.add(e);
+        
+        e = Element3D.loadObj("media/objects/shadowTester.obj", "", "shadowTester",1, renderer.gl);
+        e.moveTo(new Vertex(0,0,6));
+        e.castShadow = true;
+        superObject.add(e);
+        
+        //Setup shadow option
+        superObject.setLightPos(this.renderer.defaultLightPos);
         
 	//#########################################        
 	}
@@ -153,8 +161,6 @@ public class World implements Runnable{
 						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
 						
 						// dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
-						
-				
 						
 						v = addDominoCap(dirFrom, NORTH, x, y);
 						
@@ -283,13 +289,9 @@ public class World implements Runnable{
 		Element3D e1, e2;
 		
 		e1 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
-		e2 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
-		
+		e2 = Element3D.createDomino("Domino"+dominoes.size()+1, renderer.gl);
 		
 		if (dirFrom == WEST && dirTo == NORTH) {
-			
-			
-			
 			e1.moveTo(new Vertex(x + 1.5f, y, 0));
 			e1.rotateZ(NW + 15);
 			
