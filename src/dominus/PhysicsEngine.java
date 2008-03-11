@@ -224,7 +224,7 @@ class BoundingBox{
 		bound[6] = new Vertex(-width,length,e.height);
 		bound[7] = new Vertex(-width,-length,e.height);
 		
-		getRotationMatrix(e);
+		m = getRotationMatrix(e);
 		
 		center.moveZ(e.height / 2);
 		transformVertex(center);
@@ -233,7 +233,8 @@ class BoundingBox{
 			transformVertex(bound[i]);
 	}
 
-	public void getRotationMatrix(Element3D e){
+	public float[] getRotationMatrix(Element3D e){
+		float[] matrix = new float[16];
 		GL gl = e.gl;
 		gl.glPushMatrix();
 		gl.glLoadIdentity();	
@@ -244,16 +245,16 @@ class BoundingBox{
 		gl.glRotatef(e.rotate.y, 0, 1, 0);
 		gl.glRotatef(e.rotate.z, 0, 0, 1);
 		
-		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, m, 0);
+		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrix, 0);
 		gl.glPopMatrix();
+		
+		return matrix;
 	}
 	
 	void transformVertex(Vertex v){
 		float X, Y, Z;
 		
-		X = v.x;	
-		Y = v.y;	
-		Z = v.z;
+		X = v.x;	Y = v.y;	Z = v.z;
 		
 		v.x = X * m[0] + Y * m[4] + Z * m[8] + m[12];
 		v.y = X * m[1] + Y * m[5] + Z * m[9] + m[13];

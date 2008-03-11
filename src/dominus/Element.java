@@ -68,6 +68,7 @@ public abstract class Element {
 	}
 	
 	public abstract void render();
+	public abstract void renderShadow();
 	
 	public void setVisible(boolean b){
 		this.visible = b;
@@ -84,6 +85,21 @@ public abstract class Element {
 			while (i.hasNext()){
 				Element e = (Element)i.next();
 				e.renderAll();
+			}
+		}
+	}
+	
+	public void renderAllShadow(){
+		if (visible){
+			// Render this element
+			this.renderShadow();
+			
+			Iterator<Element> i = child.listIterator();
+			
+			// Render all children elements
+			while (i.hasNext()){
+				Element e = (Element)i.next();
+				e.renderAllShadow();
 			}
 		}
 	}

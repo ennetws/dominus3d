@@ -24,6 +24,7 @@ public class RenderEngine implements GLEventListener{
 	public int height;
 	
 	private Camera currentCamera;
+	public Vertex defaultLightPos = new Vertex(-5,-5,8);
 	
 	public UI ui;
 	
@@ -73,6 +74,7 @@ public class RenderEngine implements GLEventListener{
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
       
+        // clear buffers
         gl.glClear(GL_COLOR_BUFFER_BIT);
         gl.glClear(GL_DEPTH_BUFFER_BIT);
         
@@ -82,14 +84,68 @@ public class RenderEngine implements GLEventListener{
         //gl.glRotatef(rotateT, 0.0f, 0.0f, 1.0f);
         //rotateT+= 0.01f; 
         
-        Light point1 = new Light(1);
-        point1.pointLight(gl, new Vertex(3,3,8));
-        
-        //Light point2 = new Light(2);
-        //point1.pointLight(gl, new Vertex(0,0,10));
-        
-        // Render all objects
-        world.render(gl);
+        Light point1 = new Light(2);
+        //Light.ambientLight(gl);
+        Element3D.renderDummyBox(defaultLightPos, gl);
+
+        if (world.shadowOn){
+        	/*
+        		Stencil Shadow Volume
+        		http://www.codesampler.com/oglsrc/oglsrc_8.htm
+        	*/
+        		
+            gl.glClear(GL_STENCIL_BUFFER_BIT);
+            
+            // disable writing of frame buffer color components
+            gl.glColorMask( false, false, false, false );
+            
+            // Initialize the depth buffer
+            world.superObject.renderAll();
+            
+            // Set the appropriate states for creating a stencil for shadowing.
+            gl.glEnable( GL_CULL_FACE );
+            gl.glEnable( GL_STENCIL_TEST );
+            gl.glDepthMask( false );
+            gl.glStencilFunc( GL_ALWAYS, 0, 0 );
+            
+            // Render the shadow volume and increment the stencil every where a front
+            // facing polygon is rendered.
+            gl.glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+            gl.glCullFace( GL_BACK );
+            world.superObject.renderAllShadow();
+    
+            gl.glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+            gl.glCullFace( GL_FRONT );
+            world.superObject.renderAllShadow();
+            
+            // When done, set the states back to something more typical.
+            gl.glDepthMask( true );
+            gl.glDepthFunc( GL_LEQUAL );
+            gl.glColorMask( true, true, true, true );
+            gl.glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+            gl.glCullFace( GL_BACK );
+            gl.glDisable( GL_CULL_FACE );
+            
+            // Render the shadowed part...
+            gl.glStencilFunc( GL_EQUAL, 1, 1 );
+            point1.turnOff(gl);
+            gl.glEnable(GL_LIGHTING);
+            world.render(gl);
+
+            // Render the lit part...
+            gl.glStencilFunc( GL_EQUAL, 0, 1 );
+            point1.pointLight(gl, defaultLightPos);
+            world.render(gl);
+
+            // When done, set the states back to something more typical.
+            gl.glDepthFunc( GL_LEQUAL );
+            gl.glDisable( GL_STENCIL_TEST);
+            
+        }else{
+        	// Render all objects
+        	point1.pointLight(gl, defaultLightPos);
+        	world.render(gl);
+        }
  
         // Calculate Frames Per Second
         calcFPS();
