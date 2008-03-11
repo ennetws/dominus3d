@@ -104,6 +104,15 @@ public abstract class Element {
 		}
 	}
 	
+	public void removeAllChildren(String childId){
+		for (int i = 0; i < child.size(); i++){
+			Element e = child.get(i);
+			
+			if (e.id.startsWith(childId))
+				child.remove(i);
+		}
+	}
+	
 	public String toString(){
 		return id;
 	}

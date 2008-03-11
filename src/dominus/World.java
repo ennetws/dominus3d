@@ -91,7 +91,6 @@ public class World implements Runnable{
         */
 		
 		addLineDominoes(5, WEST);
-		addLineDominoes(5, NORTH);
 		
         // Create Axis object
         e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);

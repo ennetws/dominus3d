@@ -121,10 +121,6 @@ class Keyboard extends KeyAdapter{
 			world.get("LoadedObj2").rotateX(5);
             break;   
             
-		case KeyEvent.VK_F:
-			world.get("LoadedObj2").rotateX(5);
-            break;
-            
 		case KeyEvent.VK_PAGE_DOWN:
 			world.get("Domino1").rotateY(5);
             break;  
@@ -138,6 +134,23 @@ class Keyboard extends KeyAdapter{
 			break;
 		case KeyEvent.VK_S:
 			world.shadowOn = !(world.shadowOn);
+			break;
+			
+		case KeyEvent.VK_T:
+			world.addLineDominoes(3, world.NORTH);
+			break;
+		case KeyEvent.VK_G:
+			world.addLineDominoes(3, world.SOUTH);
+			break;
+		case KeyEvent.VK_H:
+			world.addLineDominoes(3, world.EAST);
+			break;
+		case KeyEvent.VK_F:
+			world.addLineDominoes(3, world.WEST);
+			break;
+		case KeyEvent.VK_C:
+			world.dominoes.removeAllElements();
+			world.superObject.removeAllChildren("Domino");
 			break;
 		}
 	}

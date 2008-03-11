@@ -420,7 +420,12 @@ public class Element3D extends Element {
 	public static Element3D createDomino(String id, GL gl) {
 		Element3D e = Element3D.loadObj("media/objects/dom02.obj", "", id, 1 , gl);
     	
-		createDominoTexture(e);
+		try{
+			createDominoTexture(e);
+		}catch(Exception ec){
+			
+		}
+		
 		//e.setShadeMode(GL_FLAT);
 		
 		return e;
