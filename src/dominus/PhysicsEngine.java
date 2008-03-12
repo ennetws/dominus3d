@@ -38,12 +38,18 @@ public class PhysicsEngine {
 		collisionSolver();
 	}
 	
-	// run the simulation of dominoes
 	public void run() {
 		// abandoned part of the project
 		//collisionSolver();
 
 		if (simulationRunning){
+			if (world.renderer.fps < 65){
+				speed = 65.0f / world.renderer.fps;
+				
+				if (speed > 2)
+					speed = 2;
+			}
+			
 			Element3D first = world.dominoes.get(0);
 			
 			if (first.alive){
@@ -51,7 +57,6 @@ public class PhysicsEngine {
 				first.rotate.y += rotation * speed * Math.sin(Math.toRadians(first.rotate.z));
 			}			
 			
-			// get each domino in the world and rotate when it's its turn to fall
 			for (int i = 0; i < world.dominoes.size(); i++) {
 				Element3D d = world.dominoes.get(i);
 				
@@ -83,7 +88,6 @@ public class PhysicsEngine {
 		}
 	}
 	
-	// abandoned for project. looking into other collision detection techniques
 	private void collisionSolver() {
 		Element3D e;
 		BoundingBox b1, b2;
@@ -107,7 +111,6 @@ public class PhysicsEngine {
 		}
 	}
 	
-	
 	void printMatrix(float[] m){
 		int cur = 0;
 		
@@ -119,7 +122,6 @@ public class PhysicsEngine {
 		}
 	}
 	
-	// using OpenGL, draw line for bounding box
 	public void drawLine(Vertex v1, Vertex v2, float[] color){
 		GL gl = world.renderer.gl;
 			
@@ -134,7 +136,6 @@ public class PhysicsEngine {
 		gl.glEnd();
 	}
 
-	// intersection testing for bounding box collisions
 	private boolean intersect(BoundingBox a, BoundingBox b, GL gl){
 		if (a.center.equals(b.center))
 			return true;
@@ -157,6 +158,11 @@ public class PhysicsEngine {
 			}
 		}				
 	    
+		/*for (int i = 0; i < 8 ; i++)
+			drawLine(a.bound[i], a.center, red);
+		
+		for (int i = 0; i < 8 ; i++)
+			drawLine(b.bound[i], b.center, red);*/
 		
 		Vertex aX = new Vertex(a.center);	aX.x = av.x;
 		Vertex aY = new Vertex(a.center);	aY.y = av.y;
@@ -201,8 +207,6 @@ public class PhysicsEngine {
 	}
 }
 
-
-// BoundingBox is used for bounding box collision tests. A domino's bounding box will be the same size as the domino
 class BoundingBox{
 	private String id;
 
