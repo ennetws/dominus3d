@@ -1,7 +1,5 @@
 package dominus;
 
-import static javax.media.opengl.GL.GL_FLAT;
-
 import com.sun.opengl.util.*;
 
 import javax.media.opengl.*;
@@ -27,8 +25,11 @@ public class World implements Runnable{
 	public InputEngine input;
 	private JFrame window;
 
-	public Element3D superObject;
+	public GL gl;
+	public GLAutoDrawable gLDrawable;
 	
+	public Element3D superObject;
+
 	public int fpsCap = 80;
 
 	public Vector<Element3D> dominoes = new Vector<Element3D>();
@@ -43,6 +44,8 @@ public class World implements Runnable{
 	
 	public int startX = 0;
 	public int startY = 0;
+	
+	public boolean contextReady = false;
 	
 	public boolean shadowOn = false;
 	
@@ -73,47 +76,30 @@ public class World implements Runnable{
 	}
 	
 	public void render(GL gl){
+		//Setup shadow option
+		superObject.setLightPos(this.renderer.defaultLightPos);
+		
         superObject.renderAll();
         physics.run();
 	}
 	
-	public void loadWorld(){
+	public void loadWorld(GLAutoDrawable gld){
+		gLDrawable = gld;
+		gl = gld.getGL();
+		
 		superObject = new Element3D("SuperObject", null, renderer.gl);
 
-	//## Sample Objects ##########################
 		Element3D e;
-        
-		/*
-        e = Element3D.createGrid("Grid", 8, 1.0f, renderer.gl);
-        e.setTransperncy(0.5f);
-        e.setWireframe(true);
-        superObject.add(e);
-        */
-		
+
 		addLineDominoes(5, WEST);
-		
-        // Create Axis object
-        e = Element3D.createAxis("MainAxis", 3.0f, renderer.gl);
-        e.moveTo(new Vertex(-10,-10,0));
-        superObject.add(e);
         
-        e = Element3D.loadObj("media/objects/floor.obj", "media/textures/floor.jpg", "Floor",1, renderer.gl);
+        e = Element3D.loadObj("media/objects/floor.obj", "media/textures/floor.jpg", "Floor",1.5f, renderer.gl);
         e.moveTo(new Vertex(0,0,0));
-        superObject.add(e);
+        add(e);
         
-        e = Element3D.loadObj("media/objects/rim.obj", "media/textures/rim.jpg", "Rim",1, renderer.gl);
+        e = Element3D.loadObj("media/objects/rim.obj", "media/textures/rim.jpg", "Rim",1.5f, renderer.gl);
         e.moveTo(new Vertex(0,0,0));
-        superObject.add(e);
-        
-        e = Element3D.loadObj("media/objects/shadowTester.obj", "", "shadowTester",1, renderer.gl);
-        e.moveTo(new Vertex(0,0,6));
-        e.castShadow = true;
-        superObject.add(e);
-        
-        //Setup shadow option
-        superObject.setLightPos(this.renderer.defaultLightPos);
-        
-	//#########################################        
+        add(e);
 	}
 	
 	public void add(Element3D e){
@@ -127,10 +113,7 @@ public class World implements Runnable{
 	public void addLineDominoes(int number, int direction){
 		Element3D e;
 		
-		Vertex v;
-		
 		int dirFrom;
-		
 		boolean capFlag;
 		
 		float x = 0;
@@ -147,99 +130,75 @@ public class World implements Runnable{
 		}
 		
 		for (int i = 0; i < number; i++){
-        	e = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
+        	e = Element3D.createDomino("Domino"+(dominoes.size()+1), renderer.gl);
+        	
+        	if (dominoes.size()>1)
+        		dirFrom = dominoes.get(dominoes.size()-1).getDirection();
+        	else
+        		dirFrom = 0;
+        	
+        	// avoid trivial collisions
+        	if (dirFrom == NORTH && direction == SOUTH ||
+        			dirFrom == SOUTH && direction == NORTH ||
+        			dirFrom == EAST && direction == WEST ||
+        			dirFrom == WEST && direction == EAST)
+        		return;
         	
 			switch(direction){
 				case NORTH:	
-					
 					e.setDirection(NORTH);
-					
+
 					if (capFlag == true) {
-						
 						capFlag = false;
-						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
-						
-						// dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
-						
-						v = addDominoCap(dirFrom, NORTH, x, y);
-						
-						x = v.x;
-						y = v.y;
-						
-						e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));	
-						e.rotate.z = NORTH;
-						
-					}
-					else
-					{
-					
-						e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));	
-						e.rotate.z = NORTH;
-						
+						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, NORTH);
 					}
 					
+					e.moveTo(new Vertex(x,((i + 1) *-1.5f) + y,0));
+					e.rotate.z = NORTH;
 		        break;
 		        	
 				case SOUTH:
-					
 					e.setDirection(SOUTH);
 					
 					if (capFlag == true) {
 						capFlag = false;
-						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
-						
 						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, SOUTH);
-						
 					}
 					
 					e.moveTo(new Vertex(x,((i + 1) *1.5f) + y,0));
 					e.rotate.z = SOUTH;
-					
-					
 		        break;
 				
 				case EAST:
-					
 					e.setDirection(EAST);
 					
 					if (capFlag == true) {
 						capFlag = false;
-						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
-						
 						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, EAST);
-						
 					}
 					
 					e.moveTo(new Vertex(x + ((i + 1) * -1.5f),y,0));
 					e.rotate.z = EAST;
-					
-					
-					
 		        break;
 		        	
-				case WEST:
-					
+				case WEST:			
 					e.setDirection(WEST);
 					
 					if (capFlag == true) {
 						capFlag = false;
-						dirFrom = dominoes.get(dominoes.size()-1).getDirection();
-						
-						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, WEST);
-						
+						dominoes.get(dominoes.size()-1).rotate.z = capDirection(dirFrom, WEST);		
 					}
 					
 					e.moveTo(new Vertex(x + ((i + 1) *1.5f),y,0));
 					e.rotate.z = WEST;
-					
-					
 		        break;        	
 			}
-			
 			
         	dominoes.add(e);
         	superObject.add(e);
 		}	
+		
+		renderer.ui.writeLine("Added: " + number + " pieces ("+direction+")");
 	}
 	
 	public int capDirection(int dirFrom, int dirTo) {
@@ -288,7 +247,7 @@ public class World implements Runnable{
 		Element3D e1, e2;
 		
 		e1 = Element3D.createDomino("Domino"+dominoes.size(), renderer.gl);
-		e2 = Element3D.createDomino("Domino"+dominoes.size()+1, renderer.gl);
+		e2 = Element3D.createDomino("Domino"+(dominoes.size()+1), renderer.gl);
 		
 		if (dirFrom == WEST && dirTo == NORTH) {
 			e1.moveTo(new Vertex(x + 1.5f, y, 0));
@@ -307,24 +266,28 @@ public class World implements Runnable{
     	return e2.center;
 	}
 	
-	public void addCurveDominoes(float radius, float angle){
+	public void addCurveDominoes(float radius){
 		Element3D e;
 		
 		float x = 0;
 		float y = 0;
 		
-		float angleZ = 90 + angle;
-		
+		int number = (int)radius;
+		float dirFrom = 0;
+	
 		if (dominoes.size() > 1){
 			x = dominoes.get(dominoes.size()-1).center.x;
 			y = dominoes.get(dominoes.size()-1).center.y;
+			
+			dirFrom = dominoes.get(dominoes.size()-1).rotate.z;
 		}
 		
-		int number = (int)radius;
+		float angle = dirFrom % 90;
 		
+		float angleZ = 90 + angle;
 		float angleStep = (angle + 90) / number;
 		
-		for (int i = 1; i < number + 1; i++){
+		for (int i = 1; i < (number + 1) / 2; i++){
 			angle += angleStep;
 			angleZ += angleStep;
 			

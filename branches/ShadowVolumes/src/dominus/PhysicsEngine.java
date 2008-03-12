@@ -42,7 +42,10 @@ public class PhysicsEngine {
 	public void run() {
 		// abandoned part of the project
 		//collisionSolver();
-
+		
+		if (world.dominoes.size() < 1)
+			return;
+			
 		if (simulationRunning){
 			Element3D first = world.dominoes.get(0);
 			

@@ -22,7 +22,7 @@ public class Element2D extends Element {
 	public int width, height, zIndex;
 		
 	private Vertex[] corner = new Vertex[4];
-	
+
 	private TextureRenderer texRenderer;
 
 	public Element2D(String iden, int width, int height, int x, int y, GL gl){
@@ -43,7 +43,6 @@ public class Element2D extends Element {
 		this.y = y;
 		
 		// Create a rectangular shaped polygon
-		
 		this.corner[0] = new Vertex(0,0,0.0f);
 		this.corner[1] = new Vertex(0,height,0.0f);
 		this.corner[2] = new Vertex(width,height,0.0f);
