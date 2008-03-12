@@ -23,12 +23,15 @@ public class InputEngine{
 	public boolean MouseDragged;
 	public boolean MouseReleased;
 	
+	// take in input from mouse or keyboard
 	public InputEngine(World world){
 		mouse = new Mouse(world);
 		keyboard = new Keyboard(world);
 	}
 }
 
+
+// Mouse handles all mouse input (movement and button)
 class Mouse extends MouseInputAdapter{
 	private World world;
 	
@@ -68,6 +71,8 @@ class Mouse extends MouseInputAdapter{
 	}
 }
 
+
+// Keyboard class takes in all keyboard input 
 class Keyboard extends KeyAdapter{
 	private World world;
 	

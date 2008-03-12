@@ -10,56 +10,67 @@ public class Vertex{
 	public float y;
 	public float z;
 	
+	// default all new vertex objects to (0,0,0)
 	public Vertex(){
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 	}
 	
+	// overload default constructor
 	public Vertex(float x, float y, float z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 	
+	// copy constructor
 	public Vertex(Vertex v){
 		this.x = v.x;
 		this.y = v.y;
 		this.z = v.z;
 	}
 	
+	// update vertex
 	public void set(float x, float y, float z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 	
+	// move x component of vertex
 	public void moveX(float offset){
 		x += offset;
 	}
 	
+	// move y component of vertex
 	public void moveY(float offset){
 		y += offset;
 	}
 	
+	// move z component of vertex
 	public void moveZ(float offset){
 		z += offset;
 	}
 	
+	// distance calculations
 	public float distanceTo(Vertex v){
 		return (float) Math.sqrt(((x - v.x) * (x - v.x))+
 								 ((y - v.y) * (y - v.y))+
 								 ((z - v.z) * (z - v.z)));
 	}
 	
+	// output to string
 	public String toString(){
 		return "x: " + x + "\t, y: " + y +  "\t, z: " + z;
 	}
 	
+	// dot product
 	public final float dot(Vertex v1){
 		return (this.x*v1.x + this.y*v1.y + this.z*v1.z);
 	}
 	
+	// test if vertex is equal
 	public boolean equals(Vertex v){
 		if (v.x == x && v.y == y && v.z == z)
 			return true;
@@ -68,6 +79,8 @@ public class Vertex{
 	}
 }
 
+
+// an edge is two vertices 
 class Edge{
 	public Vertex v1;
 	public Vertex v2;
@@ -81,6 +94,7 @@ class Edge{
 		this.v2 = v2;
 	}
 	
+	// test edges for equality
 	public boolean equals(Edge e){
 		if (v1.equals(e.v1) && v2.equals(e.v2)
 			|| v1.equals(e.v2) && v2.equals(e.v1))
@@ -89,6 +103,7 @@ class Edge{
 		return false;
 	}
 	
+	// return an edge from a specific vertex. used mainly for shadows. 
 	public Edge extrudeFromPoint(Vertex p, float amount){
 		Edge result = new Edge();
 		
@@ -106,6 +121,7 @@ class Edge{
 	}
 }
 
+// a face is a collection of edges
 class Face{
 	public Edge[] e = new Edge[4];
 	public Vertex[] v = new Vertex [4];

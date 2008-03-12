@@ -49,6 +49,7 @@ public class World implements Runnable {
 
 	public boolean shadowOn = false;
 
+	// World constructor will hold renderer, physics, canvas, and all listeners
 	public World(JFrame w, int width, int height) {
 		renderer = new RenderEngine(width, height, this);
 		input = new InputEngine(this);
@@ -83,6 +84,8 @@ public class World implements Runnable {
 		physics.run();
 	}
 
+	
+	// builds the world. superObject holds all dominoes 
 	public void loadWorld(GLAutoDrawable gld) {
 		gLDrawable = gld;
 		gl = gld.getGL();
@@ -104,14 +107,18 @@ public class World implements Runnable {
 		add(e);
 	}
 
+	// adds element to superObject. most likely a domino
 	public void add(Element3D e) {
 		superObject.add(e);
 	}
 
+	// returns Element3D object
 	public Element3D get(String id) {
 		return (Element3D) superObject.getChild(id);
 	}
 
+	// builds a line of "number" dominoes in a certain direction
+	// when changing directions, a 2 domino cap (corner) is also added
 	public void addLineDominoes(int number, int direction) {
 		Element3D e;
 
@@ -124,6 +131,7 @@ public class World implements Runnable {
 		float x = 0;
 		float y = 0;
 
+		// if there is more than one domino, get the direction of the last set domino for capping
 		if (dominoes.size() > 1) {
 			x = dominoes.get(dominoes.size() - 1).center.x;
 			y = dominoes.get(dominoes.size() - 1).center.y;
@@ -143,23 +151,27 @@ public class World implements Runnable {
     			dirFrom == WEST && direction == EAST)
     		return;
     	
-
+    	// build line
 		for (int i = 0; i < number; i++) {
 			e = Element3D.createDomino("Domino" + dominoes.size(), renderer.gl);
 
 			switch (direction) {
 			case NORTH:
 
+				// set direction of domino
 				e.setDirection(NORTH);
 
+				// build cap if needed
 				if (capFlag == true) {
 					capFlag = false;
 
 					v = addDominoCap(dirFrom, NORTH, x, y);
-
+					
+					// get the position of the ending cap piece
 					x = v.x;
 					y = v.y;
 
+					// move new domino to location and rotate to respected direction
 					e.moveTo(new Vertex(x, ((i + 1) * -1.5f) + y, 0));
 					e.rotate.z = NORTH;
 
@@ -180,7 +192,7 @@ public class World implements Runnable {
 					capFlag = false;
 
 					v = addDominoCap(dirFrom, SOUTH, x, y);
-
+					
 					x = v.x;
 					y = v.y;
 
@@ -244,36 +256,8 @@ public class World implements Runnable {
 		}
 	}
 
-	public int capDirection(int dirFrom, int dirTo) {
-
-		if (dirFrom == NORTH && dirTo == WEST) {
-			return NW;
-		} else if (dirFrom == EAST && dirTo == NORTH) {
-			return NE;
-		} else if (dirFrom == NORTH && dirTo == EAST) {
-			return NE;
-		} else if (dirFrom == WEST && dirTo == NORTH) {
-			return NW;
-		} else if (dirFrom == SOUTH && dirTo == WEST) {
-			return SW;
-		} else if (dirFrom == EAST && dirTo == SOUTH) {
-			return SE;
-		} else if (dirFrom == SOUTH && dirTo == EAST) {
-			return SE;
-		} else if (dirFrom == WEST && dirTo == SOUTH) {
-			return SW;
-		} else if ((dirFrom == NORTH && dirTo == NORTH)) {
-			return NORTH;
-		} else if ((dirFrom == SOUTH && dirTo == SOUTH)) {
-			return SOUTH;
-		} else if ((dirFrom == EAST && dirTo == EAST)) {
-			return EAST;
-		} else {
-			return WEST;
-		}
-
-	}
-
+	// add the two domino cap (corner) based on the dir coming from, and going to.
+	//return the center vertex of the second domino piece so a future line can be built
 	public Vertex addDominoCap(int dirFrom, int dirTo, float x, float y) {
 		if (dirFrom == dirTo)
 			return new Vertex(x, y, 0);
@@ -360,6 +344,8 @@ public class World implements Runnable {
 		return e2.center;
 	}
 
+	// add a curved set of dominoes. very sophisticated - aka: buggy. 
+	// need to base curve on the direction of the last set domino
 	public void addCurveDominoes(float radius) {
 		Element3D e;
 

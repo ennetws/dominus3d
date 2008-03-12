@@ -40,6 +40,7 @@ public class RenderEngine implements GLEventListener{
 	
 	public float defaultRotSpeed = 1.01f;
 
+	
 	public RenderEngine(int width, int height, World world){
 		this.width = width;
 		this.height = height;
@@ -47,6 +48,8 @@ public class RenderEngine implements GLEventListener{
 		this.world = world;
 	}
 	
+	
+	// init all GL functions, set cameras, init 2d UI, and load world
 	public void init(GLAutoDrawable gLDrawable){
 		gl = gLDrawable.getGL();
         
@@ -77,6 +80,7 @@ public class RenderEngine implements GLEventListener{
         world.loadWorld(gLDrawable);
 	}
 	
+	// render scene
 	public void display(GLAutoDrawable drawable){
         gl = drawable.getGL();
       
@@ -94,6 +98,8 @@ public class RenderEngine implements GLEventListener{
         point1.turnOff(gl);
         //Light.ambientLight(gl);
 
+        
+        // choose between normal or shadowed rendering pipeline
         if (world.shadowOn){
         	/*
         		Stencil Shadow Volume
@@ -161,6 +167,7 @@ public class RenderEngine implements GLEventListener{
         ui.render();
 	}
 	
+	// move the mouse to the edge of the window to move camera
 	public void mouseMoveCamera(){
 		int edge = 20;
 		float speed = 0.06f;
@@ -228,6 +235,7 @@ public class RenderEngine implements GLEventListener{
 		}
 	}
 	
+	// move camera to x, y coords
 	public void moveCamera(float x, float y){
 		currentCamera.lookAt.moveX(x);
 		currentCamera.lookAt.moveY(y);
@@ -244,6 +252,8 @@ public class RenderEngine implements GLEventListener{
 			int x, int y, int width, int height){
 	}
 	
+	
+	// fps for display
 	public void calcFPS(){
 		fpsCounter++;
 		
