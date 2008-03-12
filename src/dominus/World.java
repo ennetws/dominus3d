@@ -2,6 +2,10 @@ package dominus;
 
 import com.sun.opengl.util.*;
 
+import java.io.*;
+import java.net.URL;
+import java.applet.AudioClip;
+
 import javax.media.opengl.*;
 import javax.swing.*;
 import java.util.Vector;
@@ -48,6 +52,10 @@ public class World implements Runnable {
 	public boolean contextReady = false;
 
 	public boolean shadowOn = false;
+	
+	// Sounds
+	Vector<AudioClip> clickSounds = new Vector<AudioClip>();
+	AudioClip createSound;
 
 	// World constructor will hold renderer, physics, canvas, and all listeners
 	public World(JFrame w, int width, int height) {
@@ -105,6 +113,31 @@ public class World implements Runnable {
 				"media/textures/rim.jpg", "Rim", 1.5f, renderer.gl);
 		e.moveTo(new Vertex(0, 0, 0));
 		add(e);
+		
+		// Load sound effects
+		String path = "media/sounds/clicks";
+		File dir = new File(path);
+		int numOfFiles = dir.list().length;
+		
+		for (int i = 0 ; i < numOfFiles; i++){
+			clickSounds.add(loadSoundFile(path + "/" + dir.list()[i]));
+		}
+		
+		createSound = loadSoundFile("media/sounds/create.wav");
+	}
+	
+	public AudioClip loadSoundFile(String fileName){
+		File file = new File(fileName);
+		URL url = null;
+		
+		try{
+			url = file.toURI().toURL();
+		}catch(Exception ex){
+			System.out.println(ex.getMessage());
+			return null;
+		}
+		
+		return java.applet.Applet.newAudioClip(url);
 	}
 
 	// adds element to superObject. most likely a domino
@@ -253,6 +286,9 @@ public class World implements Runnable {
 
 			dominoes.add(e);
 			superObject.add(e);
+			
+			if (createSound != null)
+				createSound.play();
 		}
 	}
 

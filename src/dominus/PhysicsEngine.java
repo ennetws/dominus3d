@@ -1,6 +1,7 @@
 package dominus;
 
 import javax.media.opengl.GL;
+import java.util.Random;
 
 /**
  * PhysicsEngine contains all physic related methods (gravity, collision, projectile motion, etc)
@@ -64,6 +65,7 @@ public class PhysicsEngine {
 				if ((Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 24) 
 						&& (i+1) < world.dominoes.size())
 				{
+					
 					Element3D nextD = world.dominoes.get(i+1);
 					
 					if (nextD.alive){
@@ -75,10 +77,19 @@ public class PhysicsEngine {
 				
 				// Limit Rotations
 				if (Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 60){
-					if ((i) !=  world.dominoes.size()-1)
+					if ((i) !=  world.dominoes.size()-1){
+						int random = Math.abs(new Random().nextInt() 
+										% world.clickSounds.size());
+						
+						if (d.alive == true)
+							world.clickSounds.get(random).play();
+						
 						d.alive = false;
-					else if(Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 70)
+					}
+					else if(Math.abs(d.rotate.x) + Math.abs(d.rotate.y) > 70){
+						
 						d.alive = false;
+					}
 				}
 			}
 	
