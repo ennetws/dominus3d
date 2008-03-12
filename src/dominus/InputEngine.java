@@ -76,10 +76,33 @@ class Keyboard extends KeyAdapter{
 	}
 	
 	public void keyPressed(KeyEvent e) {
-
-		world.renderer.ui.writeLine("Key pressed="+ e.getKeyChar());
+		if (!world.contextReady){
+			world.gLDrawable.getContext().makeCurrent();
+		}
+			
+		//world.renderer.ui.writeLine("Key pressed="+ e.getKeyChar());
 		
 		switch (e.getKeyCode()) {
+
+		// Move light
+		case KeyEvent.VK_F:
+			world.renderer.defaultLightPos.moveX(1);	break;
+		case KeyEvent.VK_H:
+			world.renderer.defaultLightPos.moveX(-1);   break;        
+		case KeyEvent.VK_T:
+			world.renderer.defaultLightPos.moveY(-1);   break;
+		case KeyEvent.VK_G:
+			world.renderer.defaultLightPos.moveY(1);    break;
+		case KeyEvent.VK_PAGE_UP:
+			world.renderer.defaultLightPos.moveZ(1);	break;
+		case KeyEvent.VK_PAGE_DOWN:
+			world.renderer.defaultLightPos.moveZ(1);	break;
+	        
+		// Simulation key
+		case KeyEvent.VK_SPACE:
+			world.physics.simulationRunning = !world.physics.simulationRunning;	break;
+			
+		// Reset simulation
 		case KeyEvent.VK_R:
 			for (int i = 0; i < world.dominoes.size(); i++){
 				Element3D ele = world.dominoes.get(i);
@@ -87,50 +110,46 @@ class Keyboard extends KeyAdapter{
 				ele.rotate.y = 0;
 				ele.alive = true;
 			}
-			break;
+		break;
 		
-		case KeyEvent.VK_LEFT:
-			world.get("Domino1").moveX(0.25f);
-			break;
+		// Camera work
+		case KeyEvent.VK_V:
+			world.renderer.currentCamera.lookFrom(new Vertex(20,20,20));
+			world.renderer.currentCamera.lookAt(new Vertex(0,0,0));
+		break;
+		case KeyEvent.VK_Z:
+			world.renderer.rotatingBack = false;
+			world.renderer.rotating = true;
+			world.renderer.rotDirection = -1;
+			world.renderer.rotSpeed = world.renderer.defaultRotSpeed;
+		break;
+		case KeyEvent.VK_X:
+			world.renderer.rotatingBack = false;
+			world.renderer.rotating = true;
+			world.renderer.rotDirection = 1;
+			world.renderer.rotSpeed = world.renderer.defaultRotSpeed;
+		break;
+				
+		// Turn on/off shadows
+		case KeyEvent.VK_S:
+			world.shadowOn = !(world.shadowOn);				break;
 			
-		case KeyEvent.VK_RIGHT:
-			world.get("Domino1").moveX(-0.25f);
-            break;
-            
+		// Create dominoes
 		case KeyEvent.VK_UP:
-			world.get("Domino1").moveY(-0.25f);
-            break;
-            
+			world.addLineDominoes(3, World.NORTH);			break;
 		case KeyEvent.VK_DOWN:
-			world.get("Domino1").moveY(0.25f);
-            break;
-            
-		case KeyEvent.VK_HOME:
-			world.get("Domino1").moveZ(0.25f);
-	        break;  
-	        
-		case KeyEvent.VK_INSERT:
-			world.get("Domino1").moveZ(-0.25f);
-	        break;  
-	        
-		case KeyEvent.VK_PAGE_UP:
-			world.get("LoadedObj2").rotateX(5);
-            break;   
-            
-		case KeyEvent.VK_F:
-			world.get("LoadedObj2").rotateX(5);
-            break;
-            
-		case KeyEvent.VK_PAGE_DOWN:
-			world.get("Domino1").rotateY(5);
-            break;  
-            
-		case KeyEvent.VK_END:
-			world.get("Domino1").rotateZ(5);
-	        break;    
-	        
-		case KeyEvent.VK_SPACE:
-			world.physics.simulationRunning = !world.physics.simulationRunning;
+			world.addLineDominoes(3, World.SOUTH);			break;
+		case KeyEvent.VK_RIGHT:
+			world.addLineDominoes(3, World.EAST);			break;
+		case KeyEvent.VK_LEFT:
+			world.addLineDominoes(3, World.WEST);			break;
+		case KeyEvent.VK_ENTER:
+			world.addCurveDominoes(10);						break;
+		
+		// Clear all dominoes
+		case KeyEvent.VK_C:
+			world.dominoes.removeAllElements();
+			world.superObject.removeAllChildren("Domino");
 			break;
 		}
 	}

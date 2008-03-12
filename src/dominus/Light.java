@@ -58,4 +58,17 @@ public class Light {
         else
         	gl.glDisable(lightNumber);
 	}
+	
+	public static void ambientLight(GL gl){
+	    float lightPosition[] = {0, 0, -10, 1.0f};
+
+        gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPosition, 0);
+        gl.glEnable(GL_LIGHT0);
+	}
+	
+	public void turnOff(GL gl){
+        int lightNumber = GL_LIGHT0 + lightNum;
+        
+		gl.glDisable(lightNumber);
+	}
 }

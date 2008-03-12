@@ -1,7 +1,5 @@
 package dominus;
 
-import java.util.*;
-
 import javax.media.opengl.GL;
 
 /**
@@ -14,8 +12,8 @@ import javax.media.opengl.GL;
 public class PhysicsEngine {
 
 	private World world;
-	private float gravity;
-	private float friction;
+	//private float gravity;
+	//private float friction;
 	public Element3D[] domCollision;
 	
 	public float[] red = {1.0f,0, 0};
@@ -35,8 +33,9 @@ public class PhysicsEngine {
 
 	public PhysicsEngine(World world) {
 		this.world = world;
-		gravity = -9.8f;
-		friction = 1;		
+		//gravity = -9.8f;
+		//friction = 1;		
+		collisionSolver();
 	}
 	
 	public void run() {
