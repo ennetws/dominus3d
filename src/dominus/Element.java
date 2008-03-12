@@ -109,7 +109,7 @@ public abstract class Element {
 			Element e = child.get(i);
 			
 			if (e.id.startsWith(childId))
-				child.remove(i);
+				child.remove(i--);
 		}
 	}
 	

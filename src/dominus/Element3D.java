@@ -218,9 +218,6 @@ public class Element3D extends Element {
 
 			if (lightPos != null)
 				face.faces(lightPos);
-			
-			//if (face.visible)
-			//	renderFace(face);
 		}
 	}
 	
@@ -240,10 +237,10 @@ public class Element3D extends Element {
 		while(i.hasNext()){
 			Edge e1 = i.next();
 			
-			Edge e2 = e1.extrudeFromPoint(lightPos, 10);
+			Edge e2 = e1.extrudeFromPoint(lightPos, 5);
 			
 			gl.glPushMatrix();
-			gl.glDisable( GL_LIGHTING );
+			gl.glDisable(GL_LIGHTING);
 			gl.glBegin(GL_QUADS);
 			
 			gl.glVertex3f(e1.v2.x, e1.v2.y, e1.v2.z);
@@ -419,19 +416,13 @@ public class Element3D extends Element {
 	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
 		Element3D e = Element3D.loadObj("media/objects/dom02.obj", "", id, 1 , gl);
-    	
-		try{
-			createDominoTexture(e);
-		}catch(Exception ec){
-			
-		}
-		
-		//e.setShadeMode(GL_FLAT);
-		
+
+		createDominoTexture(e);
+
 		return e;
 	}
 	
-	private static void createDominoTexture(Element3D e){
+	public static void createDominoTexture(Element3D e){
 		TextureRenderer texRenderer = new TextureRenderer(128,128,true);
 		Graphics2D g = texRenderer.createGraphics();
 		
@@ -745,8 +736,8 @@ public class Element3D extends Element {
 				return null;
 			
 			Texture t = TextureIO.newTexture(new File(textureFile), false);
-            //t.setTexParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            //t.setTexParameteri(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            t.setTexParameteri(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            t.setTexParameteri(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			return t;
 		}catch(Exception e){
 			System.out.println(e.getMessage());

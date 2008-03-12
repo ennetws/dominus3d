@@ -32,7 +32,7 @@ public class UI {
 	public int width, height;
 	
 	private Element2D consoleBox;
-	Font consoleFont = new Font("SansSerif", Font.PLAIN, 12);
+	Font consoleFont = new Font("SansSerif", Font.PLAIN, 13);
 	private int consoleNumLines = 4;
 	public String[] console = new String[consoleNumLines];
 	
@@ -90,7 +90,7 @@ public class UI {
 	        g.drawImage(sampleImage, 0, 0, 256, 256, null);
 	     
 	        e.redrawTexture();
-	        e.setTransperncy(0.5f);
+	        e.setTransperncy(0.4f);
 	        
 	        drawOnce = false;
 		}
@@ -98,7 +98,11 @@ public class UI {
 		// Draw FPS
 		textEngine.beginRendering(width, height);
 		textEngine.setColor(0.75f, 0.75f, 0.75f, 1.0f);
-		textEngine.draw("FPS: " + world.renderer.fps , 0, height-10);  
+		textEngine.draw("FPS: " + world.renderer.fps , 5, height - 15);  
+		textEngine.draw("Arrow keys generate pieces.", 5, height - 29);
+		textEngine.draw("Other Keys: r, c, space, z, x, s.", 5, height - 48);
+		
+		
 		textEngine.endRendering();
         
         // End of SAMPLE CODE ########################
