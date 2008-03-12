@@ -153,8 +153,10 @@ class Keyboard extends KeyAdapter{
 		
 		// Clear all dominoes
 		case KeyEvent.VK_C:
-			world.dominoes.removeAllElements();
-			world.superObject.removeAllChildren("Domino");
+			if(!world.physics.simulationRunning){
+				world.dominoes.removeAllElements();
+				world.superObject.removeAllChildren("Domino");
+			}
 			break;
 		}
 	}

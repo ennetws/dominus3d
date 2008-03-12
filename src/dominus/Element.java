@@ -12,14 +12,13 @@ import javax.media.opengl.GL;
  * 	id			A textual identifier to identify distinct objects
  *  visible		Specify if an element should be rendered
  *  parent		Helps create hierarchical objects
- *  child		Part of the hierarchical model
+ *  child		Part of the hierarchical model (holds all the children)
  * 
  * @author cherz
  * @author ibraheem
  */
 
 public abstract class Element {
-	
 	protected String id;
 	protected boolean visible;
 	protected float transperncy;
@@ -34,11 +33,19 @@ public abstract class Element {
 	}
 	
 	public Element(String iden, Element parent, GL gl){
-		this.id = iden;
-		this.visible = true;
+		this.id 		= iden;
+		this.visible 	= true;
 		this.transperncy = 1.0f;
-		this.parent = parent;
-		this.gl = gl;
+		this.parent 	= parent;
+		this.gl 		= gl;
+	}
+	
+	public String toString(){
+		return id;
+	}
+	
+	public Element getParent(){
+		return parent;
 	}
 	
 	public void add(Element e){
@@ -46,8 +53,8 @@ public abstract class Element {
 		child.add(e);
 	}
 	
-	public Element getParent(){
-		return parent;
+	public void setTransperncy(float t){
+		transperncy = t;
 	}
 	
 	public Element getChild(String iden){
@@ -66,10 +73,7 @@ public abstract class Element {
 			return result;
 		}
 	}
-	
-	public abstract void render();
-	public abstract void renderShadow();
-	
+
 	public void setVisible(boolean b){
 		this.visible = b;
 	}
@@ -104,6 +108,7 @@ public abstract class Element {
 		}
 	}
 	
+	// Remove all children with IDs staring with 'childId'
 	public void removeAllChildren(String childId){
 		for (int i = 0; i < child.size(); i++){
 			Element e = child.get(i);
@@ -113,11 +118,6 @@ public abstract class Element {
 		}
 	}
 	
-	public String toString(){
-		return id;
-	}
-	
-	public void setTransperncy(float t){
-		transperncy = t;
-	}
+	public abstract void render();
+	public abstract void renderShadow();	// Specific to Element3D
 }

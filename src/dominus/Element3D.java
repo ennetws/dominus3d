@@ -22,7 +22,6 @@ import static javax.media.opengl.GL.*;
  *
  */
 public class Element3D extends Element {
-
 	private Vector<Vertex> vertices = new Vector<Vertex>();
 	private Vector<Vertex> texCoordinates = new Vector<Vertex>();
 	private Vector<Vertex> normals = new Vector<Vertex>();
@@ -38,16 +37,17 @@ public class Element3D extends Element {
 	public float width;
 	public float height;
 
-	private Texture texture = null;
-
+	// Default values for 3D objects
 	private int polyType = GL_QUADS;
 	private int shadeMode = GL_SMOOTH;
 	private boolean wireFrame = false;
+	private Texture texture = null;
 
+	// Used for simulation, if its alive it will move
 	public boolean alive = true;
-
 	private int direction;
 
+	// Shadow settings
 	public Vertex lightPos = null;
 	public boolean castShadow = true;
 
@@ -58,8 +58,73 @@ public class Element3D extends Element {
 	public Element3D(String iden, Element3D parent, GL gl) {
 		super(iden, parent, gl);
 
+		// Position in the center of the world
 		center = new Vertex(0, 0, 0);
 		rotate = new Vertex(0, 0, 0);
+	}
+
+	public void moveTo(Vertex v) {
+		center = v;
+	}
+
+	public void rotateTo(Vertex v) {
+		rotate = v;
+	}
+
+	public void scaleTo(float s) {
+		scale = s;
+	}
+
+	public void moveX(float x) {
+		center.x += x;
+	}
+
+	public void moveY(float y) {
+		center.y += y;
+	}
+
+	public void moveZ(float z) {
+		center.z += z;
+	}
+
+	public void rotateX(float angle) {
+		rotate.x += angle;
+	}
+
+	public void rotateY(float angle) {
+		rotate.y += angle;
+	}
+
+	public void rotateZ(float angle) {
+		rotate.z += angle;
+	}
+
+	public void setPolyType(int pType) {
+		polyType = pType;
+	}
+
+	public void setShadeMode(int mode) {
+		shadeMode = mode;
+	}
+
+	public void setWireframe(boolean b) {
+		wireFrame = b;
+	}
+
+	public int getNumVertices() {
+		return vertices.size();
+	}
+
+	public Vertex getVertexIndex(int i) {
+		return vertices.get(i);
+	}
+
+	public void setDirection(int dir) {
+		direction = dir;
+	}
+
+	public int getDirection() {
+		return direction;
 	}
 
 	public void placeElement() {
@@ -73,8 +138,7 @@ public class Element3D extends Element {
 			parentZ = ((Element3D) parent).center.z;
 		}
 
-		gl.glTranslatef(center.x + parentX, center.y + parentY, center.z
-				+ parentZ);
+		gl.glTranslatef(center.x + parentX, center.y + parentY, center.z+ parentZ);
 
 		gl.glRotatef(rotate.x, 1, 0, 0);
 		gl.glRotatef(rotate.y, 0, 1, 0);
@@ -102,11 +166,12 @@ public class Element3D extends Element {
 
 		gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy);
 		gl.glShadeModel(shadeMode);
+		
+		// Render vertices
 		gl.glBegin(GL_QUADS);
-
-		renderAllVertices();
-
+			renderAllVertices();
 		gl.glEnd();
+		
 		gl.glPopMatrix();
 
 		if (texture != null) {
@@ -119,22 +184,25 @@ public class Element3D extends Element {
 		Iterator<Vertex> texCoord = texCoordinates.iterator();
 		Iterator<Vertex> norm = normals.iterator();
 
+		// Loop through all the vertices
 		while (i.hasNext()) {
 			Vertex v = i.next();
 
+			// Setup the texture coordinates
 			if (texCoord.hasNext() && texture != null) {
 				Vertex uv = texCoord.next();
 
 				gl.glTexCoord2f(uv.x, uv.y);
 			}
 
-			//gl.glEnable(GL_NORMALIZE);
-
+			// Setup the normals
 			if (norm.hasNext()) {
 				Vertex n = norm.next();
 				gl.glNormal3f(n.x, n.y, n.z);
 			}
+			//gl.glEnable(GL_NORMALIZE);
 
+			// Draw the vertex
 			gl.glVertex3f(v.x, v.y, v.z);
 		}
 	}
@@ -145,8 +213,8 @@ public class Element3D extends Element {
 		gl.glDisable(GL_LIGHTING);
 		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		gl.glBegin(polyType);
-		//gl.glColor4f(1.0f, 1.0f, 1.0f, transperncy);
-		renderAllVertices();
+			gl.glColor4f(1.0f, 1.0f, 0.0f, transperncy);
+			renderAllVertices();
 		gl.glEnd();
 		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		gl.glEnable(GL_LIGHTING);
@@ -159,68 +227,16 @@ public class Element3D extends Element {
 		gl.glDisable(GL_LIGHTING);
 		gl.glBegin(polyType);
 		gl.glColor4f(1.0f, 1.0f, 0.0f, transperncy);
-		renderAllVertices();
+			renderAllVertices();
 		gl.glEnd();
 		gl.glEnable(GL_LIGHTING);
 		gl.glPopMatrix();
 	}
-
-	public float[] getTransformMatrix() {
-		float[] matrix = new float[16];
-
-		gl.glPushMatrix();
-		gl.glLoadIdentity();
-
-		gl.glTranslatef(center.x, center.y, center.z);
-
-		gl.glRotatef(rotate.x, 1, 0, 0);
-		gl.glRotatef(rotate.y, 0, 1, 0);
-		gl.glRotatef(rotate.z, 0, 0, 1);
-
-		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrix, 0);
-		gl.glPopMatrix();
-
-		return matrix;
-	}
-
-	private Vertex transformedVertex(Vertex v, float[] m) {
-		float X, Y, Z;
-
-		X = v.x;
-		Y = v.y;
-		Z = v.z;
-
-		Vertex result = new Vertex(0, 0, 0);
-
-		result.x = X * m[0] + Y * m[4] + Z * m[8] + m[12];
-		result.y = X * m[1] + Y * m[5] + Z * m[9] + m[13];
-		result.z = X * m[2] + Y * m[6] + Z * m[10] + m[14];
-
-		return result;
-	}
-
-	public void setLightPos(Vertex v) {
-		Iterator<Element> i = child.listIterator();
-
-		lightPos = v;
-
-		// Set for all children elements
-		while (i.hasNext()) {
-			Element3D e = (Element3D) i.next();
-
-			e.lightPos = v;
-		}
-	}
-
-	public void calculateLitFaces() {
-		Iterator<Face> f = faces.iterator();
-
-		while (f.hasNext()) {
-			Face face = f.next();
-
-			if (lightPos != null)
-				face.faces(lightPos);
-		}
+	
+	public static void renderDummyBox(Vertex v, GL gl) {
+		Element3D e = createBox("Dummy", 0.25f, 0.25f, 0.25f, gl);
+		e.center = v;
+		e.renderFlat();
 	}
 
 	public void renderShadow() {
@@ -253,6 +269,62 @@ public class Element3D extends Element {
 
 			gl.glEnd();
 			gl.glPopMatrix();
+		}
+	}
+
+	public float[] getTransformMatrix() {
+		float[] matrix = new float[16];
+
+		gl.glPushMatrix();
+		gl.glLoadIdentity();
+
+		gl.glTranslatef(center.x, center.y, center.z);
+
+		gl.glRotatef(rotate.x, 1, 0, 0);
+		gl.glRotatef(rotate.y, 0, 1, 0);
+		gl.glRotatef(rotate.z, 0, 0, 1);
+
+		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrix, 0);
+		gl.glPopMatrix();
+
+		return matrix;
+	}
+
+	private Vertex transformedVertex(Vertex v, float[] m) {
+		float X = v.x;
+		float Y = v.y;
+		float Z = v.z;
+
+		Vertex result = new Vertex();
+
+		result.x = X * m[0] + Y * m[4] + Z * m[8] + m[12];
+		result.y = X * m[1] + Y * m[5] + Z * m[9] + m[13];
+		result.z = X * m[2] + Y * m[6] + Z * m[10] + m[14];
+
+		return result;
+	}
+
+	public void setLightPos(Vertex v) {
+		Iterator<Element> i = child.listIterator();
+
+		lightPos = v;
+
+		// Set for all children elements
+		while (i.hasNext()) {
+			Element3D e = (Element3D) i.next();
+
+			e.lightPos = v;
+		}
+	}
+
+	public void calculateLitFaces() {
+		Iterator<Face> f = faces.iterator();
+
+		while (f.hasNext()) {
+			Face face = f.next();
+
+			if (lightPos != null)
+				face.faces(lightPos);
 		}
 	}
 
@@ -313,92 +385,6 @@ public class Element3D extends Element {
 		}
 	}
 
-	public void renderEdgeList(Vector<Edge> el) {
-		Iterator<Edge> e = el.iterator();
-
-		gl.glPushMatrix();
-		gl.glDisable(GL_LIGHTING);
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		gl.glBegin(GL_LINES);
-
-		while (e.hasNext()) {
-			Edge edge = e.next();
-
-			gl.glColor3f(1, 1, 0);
-			gl.glVertex3f(edge.v1.x, edge.v1.y, edge.v1.z);
-			gl.glVertex3f(edge.v2.x, edge.v2.y, edge.v2.z);
-		}
-
-		gl.glEnd();
-
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		gl.glEnable(GL_LIGHTING);
-		gl.glPopMatrix();
-	}
-
-	public void renderFace(Face f) {
-		gl.glPushMatrix();
-		gl.glDisable(GL_LIGHTING);
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-		gl.glBegin(polyType);
-
-		for (int i = 0; i < 4; i++) {
-			Vertex v = f.e[i].v1;
-
-			gl.glColor3f(1, 0, 0);
-			gl.glVertex3f(v.x, v.y, v.z);
-
-			v = f.e[i].v2;
-
-			gl.glColor3f(1, 0, 0);
-			gl.glVertex3f(v.x, v.y, v.z);
-		}
-
-		gl.glEnd();
-
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		gl.glEnable(GL_LIGHTING);
-		gl.glPopMatrix();
-	}
-
-	public void moveTo(Vertex v) {
-		center = v;
-	}
-
-	public void rotateTo(Vertex v) {
-		rotate = v;
-	}
-
-	public void scaleTo(float s) {
-		scale = s;
-	}
-
-	public void moveX(float x) {
-		center.x += x;
-	}
-
-	public void moveY(float y) {
-		center.y += y;
-	}
-
-	public void moveZ(float z) {
-		center.z += z;
-	}
-
-	public void rotateX(float angle) {
-		rotate.x += angle;
-	}
-
-	public void rotateY(float angle) {
-		rotate.y += angle;
-	}
-
-	public void rotateZ(float angle) {
-		rotate.z += angle;
-	}
-
 	public static Element3D createGrid(String id, float length, float spacing,
 			GL gl) {
 		Element3D e = new Element3D(id, gl);
@@ -416,7 +402,6 @@ public class Element3D extends Element {
 		return e;
 	}
 
-	// TODO: have domino create dots
 	public static Element3D createDomino(String id, GL gl) {
 		Element3D e = Element3D.loadObj("media/objects/dom02.obj", "", id, 1,
 				gl);
@@ -470,7 +455,7 @@ public class Element3D extends Element {
 
 		Vector<Vertex> v = e.texCoordinates;
 
-		// Unused faces
+		// Unused faces texture
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
@@ -484,19 +469,19 @@ public class Element3D extends Element {
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
 
-		// Front
+		// Front texture
 		v.add(new Vertex(1, 0, 0));
 		v.add(new Vertex(1, 1, 0));
 		v.add(new Vertex(0, 1, 0));
 		v.add(new Vertex(0, 0, 0));
 
-		// Not used
+		// Not used texture coordinates
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
 		v.add(new Vertex(0, 0, 0));
 
-		// Back
+		// Back texture
 		v.add(new Vertex(1, 0, 0));
 		v.add(new Vertex(1, 1, 0));
 		v.add(new Vertex(0, 1, 0));
@@ -557,7 +542,21 @@ public class Element3D extends Element {
 		g.fillOval(centerX - (radius / 2), centerY - (radius / 2), radius,
 				radius);
 	}
+	
+	public static Element3D createBox(String id, float width, float length,
+			float height, GL gl) {
 
+		Element3D e = new Element3D(id, gl);
+
+		e.vertices = Element3D.box(width, length, height);
+
+		e.width = width;
+		e.length = length;
+		e.height = height;
+
+		return e;
+	}
+	
 	public static Vector<Vertex> box(float width, float length, float height) {
 		Vector<Vertex> v = new Vector<Vertex>();
 
@@ -597,20 +596,6 @@ public class Element3D extends Element {
 		return v;
 	}
 
-	public static Element3D createBox(String id, float width, float length,
-			float height, GL gl) {
-
-		Element3D e = new Element3D(id, gl);
-
-		e.vertices = Element3D.box(width, length, height);
-
-		e.width = width;
-		e.length = length;
-		e.height = height;
-
-		return e;
-	}
-
 	public static Element3D createAxis(String id, float length, GL gl) {
 		Element3D e = new Element3D(id, gl);
 
@@ -630,18 +615,6 @@ public class Element3D extends Element {
 		e.add(z);
 
 		return e;
-	}
-
-	public void setPolyType(int pType) {
-		polyType = pType;
-	}
-
-	public void setShadeMode(int mode) {
-		shadeMode = mode;
-	}
-
-	public void setWireframe(boolean b) {
-		wireFrame = b;
 	}
 
 	public static Element3D loadObj(String fileName, String textureFile,
@@ -767,30 +740,5 @@ public class Element3D extends Element {
 			System.out.println(e.getMessage());
 			return null;
 		}
-	}
-
-	public int getNumVertices() {
-
-		return vertices.size();
-
-	}
-
-	public Vertex getVertexIndex(int i) {
-
-		return vertices.get(i);
-	}
-
-	public void setDirection(int dir) {
-		direction = dir;
-	}
-
-	public int getDirection() {
-		return direction;
-	}
-
-	public static void renderDummyBox(Vertex v, GL gl) {
-		Element3D e = createBox("Dummy", 0.25f, 0.25f, 0.25f, gl);
-		e.center = v;
-		e.renderFlat();
 	}
 }

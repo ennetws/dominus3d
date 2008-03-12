@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dominus;
 
 import java.awt.*;
@@ -18,7 +15,6 @@ import com.sun.opengl.util.j2d.TextRenderer;
  * buttons, cursor, labels, etc.
  * 
  * @author ibraheem
- *
  */
 
 public class UI {
@@ -26,11 +22,14 @@ public class UI {
 	private GLU glu;
 	private World world;
 	
-	private Element2D contentPanel;
-	private Element2D currentElement;
-	private TextRenderer textEngine;
 	public int width, height;
 	
+	private Element2D contentPanel;
+	private Element2D currentElement;
+	
+	private TextRenderer textEngine;
+	
+	// The console box's stuff
 	private Element2D consoleBox;
 	Font consoleFont = new Font("SansSerif", Font.PLAIN, 13);
 	private int consoleNumLines = 4;
@@ -79,11 +78,11 @@ public class UI {
 		
 		drawConsole();
 		
-        // SAMPLE CODE ##############################
-		
+        // SAMPLE CODE
         // PNG Image loading
 		Element2D e = get("ImageBox");
-
+		
+		// This should be done in something link 'UI.load()'
 		if(drawOnce){
 	        Graphics2D g = e.getGraphicsWithAlpha();
 	        
@@ -101,11 +100,8 @@ public class UI {
 		textEngine.draw("FPS: " + world.renderer.fps , 5, height - 15);  
 		textEngine.draw("Arrow keys generate pieces.", 5, height - 29);
 		textEngine.draw("Other Keys: r, c, space, z, x, s.", 5, height - 48);
-		
-		
+
 		textEngine.endRendering();
-        
-        // End of SAMPLE CODE ########################
 	}
 	
 	public Element2D get(String id){
@@ -113,17 +109,18 @@ public class UI {
 	}
 	
 	public void clearConsole(){
-		for (int i = 0; i < consoleNumLines; i++){
+		for (int i = 0; i < consoleNumLines; i++)
 			console[i] = "";
-		}
 	}
 	
 	public void setupConsole(Element2D con){
 		Graphics2D g = con.getGraphicsWithAlpha();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		g.setColor(Color.black);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.9f));
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.fillRoundRect(0, 0, width, con.height, 20, 20);		
+		
 		con.redrawTexture();
 	}
 	
@@ -134,8 +131,8 @@ public class UI {
 		textEngine.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		for(int i = 0; i < consoleNumLines; i++)
-			textEngine.draw(console[i], 10, 
-					(height-consoleBox.y) - (consoleFont.getSize() * (i) + 15));
+			textEngine.draw(console[i], 10,(height-consoleBox.y) - 
+					(consoleFont.getSize() * (i) + 15));
 		   
 		textEngine.endRendering();
 	}
@@ -152,7 +149,7 @@ public class UI {
 	}
 	
 	public void manage(){
-		// Optimize
+		// Optimize: by skipping if the mouse is already on element
 		if (currentElement != null){
 			if (currentElement instanceof ElementGUI){
 				ElementGUI eleGUI = (ElementGUI)currentElement;
@@ -163,8 +160,10 @@ public class UI {
 			}
 		}
 		
+		// Get the element with the mouse's on top
 		currentElement = (Element2D) contentPanel.isInside(world.input.x, world.input.y+32);
 		
+		// Manage interactions (buggy)
 		if (currentElement != null){
 			writeLine(currentElement.id);
 			

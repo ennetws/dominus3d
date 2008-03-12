@@ -2,6 +2,13 @@ package dominus;
 
 import javax.swing.*;
 
+/**
+ * This class is used to start an instance of our World.
+ * 
+ * @author ibraheem
+ *
+ */
+
 public class Driver {
 
 	public static void main(String[] args)

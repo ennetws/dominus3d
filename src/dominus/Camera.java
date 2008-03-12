@@ -4,9 +4,9 @@ import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 
 /**
- * This class represent cameras.
+ * This class represents cameras.
  * 
- * @author Ibraheem
+ * @author ibraheem
  *
  */
 
@@ -24,15 +24,13 @@ public class Camera {
 	public Camera(GL gl, GLU glu, int width, int height){
         this.glu = glu;
         
+        // Default values
 		fovAngle = 50.0f;
-
-        if (height <= 0)
-        	height = 1;
-
         aspectRatio = (float)width / (float)height;
         nearZ = 1.0f;
         farZ = 1000.0f;
         
+        // These locations are used by the 'gluLookAt' method
         lookAt = new Vertex(0,0,0);
         lookFrom = new Vertex(5,5,5);
 	}

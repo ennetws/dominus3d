@@ -12,7 +12,8 @@ import javax.media.opengl.GL;
 
 /**
  * This class is an extension to Element2D that allows
- * for user interaction and predefined actions.
+ * for user interaction and predefined actions. Much of the
+ * functionality is still missing (low priority).
  * 
  * @author ibraheem
  *
@@ -47,6 +48,7 @@ public abstract class ElementGUI extends Element2D{
 	}
 }
 
+// Hard coded message box element
 class MessageBox extends ElementGUI{
 	
 	private static final int mBoxWidth = 250;
@@ -60,33 +62,36 @@ class MessageBox extends ElementGUI{
 			String boxMessage, int width, int height, GL gl){
 		super(iden, parent, mBoxWidth + shadowHeight, mBoxHeight + shadowHeight, 0, 0, gl);
 
-		this.title = boxTitle;
-		this.message = boxMessage;
+		this.title 		= boxTitle;
+		this.message 	= boxMessage;
 		
-		this.width = mBoxWidth + shadowHeight;
-		this.height = mBoxHeight + shadowHeight;
-		this.x = (width/2) - (mBoxWidth/2);
-		this.y = (mBoxHeight/2) + (mBoxHeight/2);
-		
+		this.x 			= (width/2) - (mBoxWidth/2);
+		this.y 			= (mBoxHeight/2) + (mBoxHeight/2);
+		this.width 		= mBoxWidth + shadowHeight;
+		this.height 	= mBoxHeight + shadowHeight;
+
 		Graphics2D g = getGraphicsWithAlpha();
 		
-		g.setFont(ElementGUI.DefaultFont);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		// Draw black box at the back
 		g.setColor(Color.black);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.25f));
 		g.fillRoundRect(shadowHeight, shadowHeight, mBoxWidth, mBoxHeight, 20, 20);		
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f));
 		g.fillRoundRect(0, 0, mBoxWidth, mBoxHeight, 20, 20);		
 		g.fillRoundRect(0, 0, mBoxWidth, 30, 20, 20);		
-	
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 		
+		// Setup type
+		g.setFont(ElementGUI.DefaultFont);
+
+		// Draw title
 		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(title,g);
-		
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(title, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 20);
 		
+		// Draw message
 		textBounds = g.getFontMetrics().getStringBounds(message,g);
 		g.setColor(Color.white);
 		g.drawString(message, (mBoxWidth / 2) - (int)textBounds.getCenterX(), 60);
@@ -98,10 +103,12 @@ class MessageBox extends ElementGUI{
 	}
 	
 	public void action(){
+		// Default for now...
 		this.visible = false;
 	}
 }
 
+//Hard coded button element
 class Button extends ElementGUI{
 
 	private static final int buttonWidth = 60;
@@ -119,22 +126,23 @@ class Button extends ElementGUI{
 	public void drawNormal(){
 		Graphics2D g = getGraphicsWithAlpha();
 		
-		g.setFont(ElementGUI.DefaultFont);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
+		// Draw the button's background
 		g.setColor(new Color(0.2f,0.2f,0.2f));
 		g.fillRoundRect(0, 0, buttonWidth, buttonHeight, 9, 9);
 		g.setColor(new Color(0.05f,0.05f,0.05f));
 		g.fillRoundRect(1, 1, buttonWidth-2, buttonHeight-2, 9, 9);
-		
 		GradientPaint gradient = new GradientPaint(0, 0, 
 									new Color(0.3f,0.3f,0.3f), 0, buttonHeight, 
 									new Color(0.2f,0.2f,0.2f));
 		g.setPaint(gradient);
 		g.fillRoundRect(2, 2, buttonWidth-4, buttonHeight-4, 9, 9);
-	
 		g.setPaint(null);
 		g.setColor(Color.white);
+
+		// Draw the button's lablel
+		g.setFont(ElementGUI.DefaultFont);
 
 		Rectangle2D textBounds = g.getFontMetrics().getStringBounds(label,g);
 		g.drawString(label, (buttonWidth / 2) - (int)textBounds.getCenterX(), 
@@ -188,7 +196,8 @@ class Button extends ElementGUI{
 	}
 	
 	public void action(){
-		
+		// default for now...
+		parent.visible = false;
 	}
 	
 	public void setStyle(int style){

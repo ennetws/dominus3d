@@ -10,10 +10,10 @@ import com.sun.opengl.util.j2d.TextureRenderer;
 import static javax.media.opengl.GL.*;
 
 /**
- * 2D element class for menus, text, object selection, etc.
+ * 2D elements class for menus, text, object selection, etc.
  * 
  * @author cherz
- *
+ * @author ibraheem
  */
 
 public class Element2D extends Element {
@@ -23,6 +23,7 @@ public class Element2D extends Element {
 		
 	private Vertex[] corner = new Vertex[4];
 
+	// This is used to generate textures using Graphics2D
 	private TextureRenderer texRenderer;
 
 	public Element2D(String iden, int width, int height, int x, int y, GL gl){
@@ -77,7 +78,6 @@ public class Element2D extends Element {
         texRenderer.drawOrthoRect(x + parentX, y + parentY, 0, 0, width, height);
 
         tex.disable();
-        
         gl.glDisable(GL_BLEND);
     }
 	
@@ -91,8 +91,9 @@ public class Element2D extends Element {
         
 		AffineTransform t = g.getTransform();
 		
-		t.translate( 0 , height );
-		t.scale( 1.0, -1.0 );
+		// This is necessary since OpenGL uses a different x,y origin
+		t.translate(0 , height);
+		t.scale(1.0, -1.0);
 		
 		g.setTransform(t);
 		
@@ -107,6 +108,7 @@ public class Element2D extends Element {
 		texRenderer.markDirty(0, 0, width, height);
 	}
 	
+	// This returns a 2D element from a point on the screen.
 	public Element2D isInside(int pointX, int pointY){
 		for (int i = child.size() - 1; i >= 0; i--){
 			Element2D e = (Element2D) child.get(i);
@@ -131,6 +133,7 @@ public class Element2D extends Element {
 		return null;
 	}
 	
+	// Check if a point is inside the 2D element.
 	public boolean inside(int pointX, int pointY){
 		int parentX, parentY;
         parentX = parentY = 0;
@@ -147,7 +150,7 @@ public class Element2D extends Element {
 		return false;
 	}
 	
+	// Satisfy the abstract method
 	public void renderShadow(){
-		
 	}
 }
