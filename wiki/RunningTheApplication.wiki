@@ -11,7 +11,7 @@ The Java part of the application is platform independent. However, due to the na
 For Windows:
   * Download the '.jar' file.
   * Download the 'JOGL for Windows' zip file.
-  * Extract to...
+  * Install JOGL or run using -Djava.library.path (http://www.felixgers.de/teaching/jogl/JOGLInstall.html)
 
 For MacOSX:
   * Download the '.jar' file.
