@@ -12,6 +12,7 @@ For Windows:
   * Download the '.jar' file.
   * Download the 'JOGL for Windows' zip file.
   * Install JOGL or run using -Djava.library.path (http://www.felixgers.de/teaching/jogl/JOGLInstall.html)
+  * Run the application: java -jar dominus3D.jar
 
 For MacOSX:
   * Download the '.jar' file.
