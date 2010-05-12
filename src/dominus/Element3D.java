@@ -1,6 +1,6 @@
 package dominus;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,7 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
 
-import com.sun.opengl.util.j2d.TextureRenderer;
+import com.sun.opengl.util.awt.TextureRenderer;
 import com.sun.opengl.util.texture.*;
 import static javax.media.opengl.GL.*;
 
@@ -38,8 +38,8 @@ public class Element3D extends Element {
 	public float height;
 
 	// Default values for 3D objects
-	private int polyType = GL_QUADS;
-	private int shadeMode = GL_SMOOTH;
+	private int polyType = GL2.GL_QUADS;
+	private int shadeMode = GL2.GL_SMOOTH;
 	private boolean wireFrame = false;
 	private Texture texture = null;
 
@@ -51,11 +51,11 @@ public class Element3D extends Element {
 	public Vertex lightPos = null;
 	public boolean castShadow = true;
 
-	public Element3D(String iden, GL gl) {
+	public Element3D(String iden, GL2 gl) {
 		this(iden, null, gl);
 	}
 
-	public Element3D(String iden, Element3D parent, GL gl) {
+	public Element3D(String iden, Element3D parent, GL2 gl) {
 		super(iden, parent, gl);
 
 		// Position in the center of the world
@@ -168,7 +168,7 @@ public class Element3D extends Element {
 		gl.glShadeModel(shadeMode);
 		
 		// Render vertices
-		gl.glBegin(GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			renderAllVertices();
 		gl.glEnd();
 		
@@ -210,30 +210,30 @@ public class Element3D extends Element {
 	public void renderWireframe() {
 		gl.glPushMatrix();
 		placeElement();
-		gl.glDisable(GL_LIGHTING);
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		gl.glDisable(GL2.GL_LIGHTING);
+		gl.glPolygonMode(GL_FRONT_AND_BACK, GL2.GL_LINE);
 		gl.glBegin(polyType);
 			gl.glColor4f(1.0f, 1.0f, 0.0f, transperncy);
 			renderAllVertices();
 		gl.glEnd();
-		gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		gl.glEnable(GL_LIGHTING);
+		gl.glPolygonMode(GL_FRONT_AND_BACK, GL2.GL_FILL);
+		gl.glEnable(GL2.GL_LIGHTING);
 		gl.glPopMatrix();
 	}
 
 	public void renderFlat() {
 		gl.glPushMatrix();
 		placeElement();
-		gl.glDisable(GL_LIGHTING);
+		gl.glDisable(GL2.GL_LIGHTING);
 		gl.glBegin(polyType);
 		gl.glColor4f(1.0f, 1.0f, 0.0f, transperncy);
 			renderAllVertices();
 		gl.glEnd();
-		gl.glEnable(GL_LIGHTING);
+		gl.glEnable(GL2.GL_LIGHTING);
 		gl.glPopMatrix();
 	}
 	
-	public static void renderDummyBox(Vertex v, GL gl) {
+	public static void renderDummyBox(Vertex v, GL2 gl) {
 		Element3D e = createBox("Dummy", 0.25f, 0.25f, 0.25f, gl);
 		e.center = v;
 		e.renderFlat();
@@ -258,8 +258,8 @@ public class Element3D extends Element {
 			Edge e2 = e1.extrudeFromPoint(lightPos, 5);
 
 			gl.glPushMatrix();
-			gl.glDisable(GL_LIGHTING);
-			gl.glBegin(GL_QUADS);
+			gl.glDisable(GL2.GL_LIGHTING);
+			gl.glBegin(GL2.GL_QUADS);
 
 			gl.glVertex3f(e1.v2.x, e1.v2.y, e1.v2.z);
 			gl.glVertex3f(e1.v1.x, e1.v1.y, e1.v1.z);
@@ -284,7 +284,7 @@ public class Element3D extends Element {
 		gl.glRotatef(rotate.y, 0, 1, 0);
 		gl.glRotatef(rotate.z, 0, 0, 1);
 
-		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, matrix, 0);
+		gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, matrix, 0);
 		gl.glPopMatrix();
 
 		return matrix;
@@ -386,7 +386,7 @@ public class Element3D extends Element {
 	}
 
 	public static Element3D createGrid(String id, float length, float spacing,
-			GL gl) {
+			GL2 gl) {
 		Element3D e = new Element3D(id, gl);
 
 		for (float y = 0; y < length; y += spacing) {
@@ -402,7 +402,7 @@ public class Element3D extends Element {
 		return e;
 	}
 
-	public static Element3D createDomino(String id, GL gl) {
+	public static Element3D createDomino(String id, GL2 gl) {
 		Element3D e = Element3D.loadObj("media/objects/dom02.obj", "", id, 1,
 				gl);
 
@@ -544,7 +544,7 @@ public class Element3D extends Element {
 	}
 	
 	public static Element3D createBox(String id, float width, float length,
-			float height, GL gl) {
+			float height, GL2 gl) {
 
 		Element3D e = new Element3D(id, gl);
 
@@ -596,7 +596,7 @@ public class Element3D extends Element {
 		return v;
 	}
 
-	public static Element3D createAxis(String id, float length, GL gl) {
+	public static Element3D createAxis(String id, float length, GL2 gl) {
 		Element3D e = new Element3D(id, gl);
 
 		Element3D x = Element3D.createBox("X-Axis", length, 0.2f, 0.2f, gl);
@@ -604,26 +604,26 @@ public class Element3D extends Element {
 		Element3D z = Element3D.createBox("Z-Axis", 0.2f, 0.2f, length, gl);
 
 		x.moveTo(new Vertex(length / 2, 0, 0));
-		x.shadeMode = GL_FLAT;
+		x.shadeMode = GL2.GL_FLAT;
 		e.add(x);
 
 		y.moveTo(new Vertex(0, length / 2, 0));
-		y.shadeMode = GL_FLAT;
+		y.shadeMode = GL2.GL_FLAT;
 		e.add(y);
 
-		z.shadeMode = GL_FLAT;
+		z.shadeMode = GL2.GL_FLAT;
 		e.add(z);
 
 		return e;
 	}
 
 	public static Element3D loadObj(String fileName, String textureFile,
-			String iden, GL gl) {
+			String iden, GL2 gl) {
 		return Element3D.loadObj(fileName, textureFile, iden, 1.0f, gl);
 	}
 
 	public static Element3D loadObj(String fileName, String textureFile,
-			String iden, float size, GL gl) {
+			String iden, float size, GL2 gl) {
 
 		Element3D e = loadObjFile(iden, gl, fileName, textureFile, size);
 
@@ -632,7 +632,7 @@ public class Element3D extends Element {
 		return e;
 	}
 
-	private static Element3D loadObjFile(String iden, GL gl, String fileName,
+	private static Element3D loadObjFile(String iden, GL2 gl, String fileName,
 			String textureFile, float size) {
 		try {
 			Element3D e = new Element3D(iden, gl);

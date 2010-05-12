@@ -6,9 +6,9 @@ import java.awt.Graphics2D;
 import java.io.*;
 import javax.imageio.ImageIO;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.*;
-import com.sun.opengl.util.j2d.TextRenderer;
+import com.sun.opengl.util.awt.TextRenderer;
 
 /**
  * Generates and manages UI elements including message boxes, menus
@@ -18,7 +18,7 @@ import com.sun.opengl.util.j2d.TextRenderer;
  */
 
 public class UI {
-	private GL gl;
+	private GL2 gl;
 	private GLU glu;
 	private World world;
 	
@@ -39,7 +39,7 @@ public class UI {
 	private BufferedImage sampleImage;
 	private boolean drawOnce = true;
 	
-	public UI(int width, int height, GL gl, GLU glu, World world){
+	public UI(int width, int height, GL2 gl, GLU glu, World world){
 		this.gl = gl;
 		this.glu = glu;
 		this.world = world;
@@ -69,10 +69,10 @@ public class UI {
 	
 	public void render(){
 		// Setup 2D projection
-		gl.glMatrixMode (GL.GL_PROJECTION);
+		gl.glMatrixMode (GL2.GL_PROJECTION);
         gl.glLoadIdentity ();
         glu.gluOrtho2D(0, width, height, 0);
-        gl.glMatrixMode (GL.GL_MODELVIEW);
+        gl.glMatrixMode (GL2.GL_MODELVIEW);
         
 		contentPanel.renderAll();
 		

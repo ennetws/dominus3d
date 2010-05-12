@@ -1,6 +1,8 @@
 package dominus;
 
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+
 import java.util.Random;
 
 /**
@@ -134,10 +136,10 @@ public class PhysicsEngine {
 	}
 	
 	public void drawLine(Vertex v1, Vertex v2, float[] color){
-		GL gl = world.renderer.gl;
+		GL2 gl = world.renderer.gl;
 			
 		gl.glLineWidth(1.0f);
-		gl.glDisable(GL.GL_LIGHTING);
+		gl.glDisable(GL2.GL_LIGHTING);
 		gl.glBegin(GL.GL_LINES);
 		
 		gl.glColor3f(color[0], color[1], color[2]);
@@ -251,7 +253,7 @@ class BoundingBox{
 	}
 
 	public void getRotationMatrix(Element3D e){
-		GL gl = e.gl;
+		GL2 gl = e.gl;
 		gl.glPushMatrix();
 		gl.glLoadIdentity();	
 		
@@ -261,7 +263,7 @@ class BoundingBox{
 		gl.glRotatef(e.rotate.y, 0, 1, 0);
 		gl.glRotatef(e.rotate.z, 0, 0, 1);
 		
-		gl.glGetFloatv(GL.GL_MODELVIEW_MATRIX, m, 0);
+		gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, m, 0);
 		gl.glPopMatrix();
 	}
 	

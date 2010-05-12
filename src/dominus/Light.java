@@ -2,7 +2,6 @@ package dominus;
 
 import java.awt.Color;
 import javax.media.opengl.*;
-import static javax.media.opengl.GL.*;
 
 /** Lighting class allows a mixture of ambient and diffuse lighting
  * Light position uses Vertex (x, y, z)
@@ -33,9 +32,9 @@ public class Light {
 	}
 	
 	// single point lighting
-	public void pointLight(GL gl, Vertex v){
+	public void pointLight(GL2 gl, Vertex v){
 
-        int lightNumber = GL_LIGHT0 + lightNum;
+        int lightNumber = GL2.GL_LIGHT0 + lightNum;
         
         lightPos = v;
         lightPosition[0] = lightPos.x;
@@ -46,12 +45,12 @@ public class Light {
         lightDiffuse[1] = lightColor.getGreen()/255;
         lightDiffuse[2] = lightColor.getBlue()/255;
 
-        gl.glLightfv(lightNumber, GL_AMBIENT, lightAmbient, 0);
-        gl.glLightfv(lightNumber, GL_DIFFUSE, lightDiffuse, 0);
+        gl.glLightfv(lightNumber, GL2.GL_AMBIENT, lightAmbient, 0);
+        gl.glLightfv(lightNumber, GL2.GL_DIFFUSE, lightDiffuse, 0);
         //gl.glLightfv(lightNumber, GL_SPECULAR, lightSpecular, 0);
-        gl.glLightfv(lightNumber, GL_POSITION, lightPosition, 0);
+        gl.glLightfv(lightNumber, GL2.GL_POSITION, lightPosition, 0);
 		
-        gl.glEnable(GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHTING);
         
         if (isON)
         	gl.glEnable(lightNumber);
@@ -60,16 +59,16 @@ public class Light {
 	}
 	
 	// set ambient lighting
-	public static void ambientLight(GL gl){
+	public static void ambientLight(GL2 gl){
 	    float lightPosition[] = {0, 0, -10, 1.0f};
 
-        gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPosition, 0);
-        gl.glEnable(GL_LIGHT0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPosition, 0);
+        gl.glEnable(GL2.GL_LIGHT0);
 	}
 	
 	// turn the light off
 	public void turnOff(GL gl){
-        int lightNumber = GL_LIGHT0 + lightNum;
+        int lightNumber = GL2.GL_LIGHT0 + lightNum;
         
 		gl.glDisable(lightNumber);
 	}

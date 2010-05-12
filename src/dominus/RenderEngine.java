@@ -14,7 +14,7 @@ import static javax.media.opengl.GL.*;
 
 public class RenderEngine implements GLEventListener{
 	
-	public GL gl;
+	public GL2 gl;
 	private static final GLU glu = new GLU();
 	
 	private World world;
@@ -51,7 +51,7 @@ public class RenderEngine implements GLEventListener{
 	
 	// init all GL functions, set cameras, init 2d UI, and load world
 	public void init(GLAutoDrawable gLDrawable){
-		gl = gLDrawable.getGL();
+		gl = gLDrawable.getGL().getGL2();
         
         // bgColor contains the background color
         gl.glClearColor(0.15f, 0.15f, 0.15f, 0.0f);
@@ -62,7 +62,7 @@ public class RenderEngine implements GLEventListener{
         gl.glDepthFunc(GL_LEQUAL);
         
         // Set default render settings
-        gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+        gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Set the default camera
         currentCamera = new Camera(gl, glu, width, height);
@@ -82,7 +82,7 @@ public class RenderEngine implements GLEventListener{
 	
 	// render scene
 	public void display(GLAutoDrawable drawable){
-        gl = drawable.getGL();
+        gl = drawable.getGL().getGL2();
       
         // clear buffers
         gl.glClear(GL_COLOR_BUFFER_BIT);
@@ -140,7 +140,7 @@ public class RenderEngine implements GLEventListener{
             // Render the shadowed part...
             gl.glStencilFunc( GL_EQUAL, 1, 1 );
             point1.turnOff(gl);
-            gl.glEnable(GL_LIGHTING);
+            gl.glEnable(GL2.GL_LIGHTING);
             world.render(gl);
 
             // Render the lit part...
@@ -264,5 +264,12 @@ public class RenderEngine implements GLEventListener{
 			fpsEnd = currTime + 1000;
 	        fpsCounter = 0;
 		}
+	}
+
+
+	@Override
+	public void dispose(GLAutoDrawable arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

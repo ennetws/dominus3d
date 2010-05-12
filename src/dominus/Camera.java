@@ -35,14 +35,14 @@ public class Camera {
         lookFrom = new Vertex(5,5,5);
 	}
 	
-	public void set(GL gl){
+	public void set(GL2 gl){
         //set up a perspective projection matrix
-	    gl.glMatrixMode(GL.GL_PROJECTION);
+	    gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(fovAngle, aspectRatio , nearZ, farZ);
         
         // Position the camera
-        gl.glMatrixMode(GL.GL_MODELVIEW);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         glu.gluLookAt(lookFrom.x, lookFrom.y, lookFrom.z, 
         				lookAt.x, lookAt.y, lookAt.z, 

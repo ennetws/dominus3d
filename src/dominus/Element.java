@@ -3,7 +3,7 @@ package dominus;
 import java.util.Vector;
 import java.util.Iterator;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 /**
  * Parent class for 2D and 3D elements.
@@ -26,13 +26,13 @@ public abstract class Element {
 	protected Element parent;
 	protected Vector<Element> child = new Vector<Element>();
 	
-	protected GL gl;
+	protected GL2 gl;
 	
-	public Element(String iden, GL gl){
+	public Element(String iden, GL2 gl){
 		this(iden, null, gl);
 	}
 	
-	public Element(String iden, Element parent, GL gl){
+	public Element(String iden, Element parent, GL2 gl){
 		this.id 		= iden;
 		this.visible 	= true;
 		this.transperncy = 1.0f;

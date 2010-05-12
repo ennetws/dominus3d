@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 
 /**
  * This class is an extension to Element2D that allows
@@ -30,7 +30,7 @@ public abstract class ElementGUI extends Element2D{
 	
 	public static final Font DefaultFont = new Font("LucidaBrightDemiBold", Font.BOLD, 14);
 	
-	public ElementGUI(String iden, Element2D parent, int width, int height, int x, int y, GL gl){
+	public ElementGUI(String iden, Element2D parent, int width, int height, int x, int y, GL2 gl){
 		super(iden, parent, width, height, x, y, gl);
 	}
 	
@@ -59,7 +59,7 @@ class MessageBox extends ElementGUI{
 	private String message;
 	
 	public MessageBox(String iden, Element2D parent, String boxTitle, 
-			String boxMessage, int width, int height, GL gl){
+			String boxMessage, int width, int height, GL2 gl){
 		super(iden, parent, mBoxWidth + shadowHeight, mBoxHeight + shadowHeight, 0, 0, gl);
 
 		this.title 		= boxTitle;
@@ -116,7 +116,7 @@ class Button extends ElementGUI{
 	
 	private String label;
 	
-	public Button(String blabel, Element2D parent, int x, int y, GL gl){
+	public Button(String blabel, Element2D parent, int x, int y, GL2 gl){
 		super(parent.id+"-"+blabel, parent, buttonWidth, buttonHeight , x, y, gl);
 		this.label = blabel;
 		

@@ -7,6 +7,7 @@ import java.net.URL;
 import java.applet.AudioClip;
 
 import javax.media.opengl.*;
+import javax.media.opengl.awt.GLCanvas;
 import javax.swing.*;
 import java.util.Vector;
 

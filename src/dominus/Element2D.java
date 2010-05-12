@@ -4,9 +4,10 @@ import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+
 import com.sun.opengl.util.texture.*;
-import com.sun.opengl.util.j2d.TextureRenderer;
+import com.sun.opengl.util.awt.TextureRenderer;
 import static javax.media.opengl.GL.*;
 
 /**
@@ -26,15 +27,15 @@ public class Element2D extends Element {
 	// This is used to generate textures using Graphics2D
 	private TextureRenderer texRenderer;
 
-	public Element2D(String iden, int width, int height, int x, int y, GL gl){
+	public Element2D(String iden, int width, int height, int x, int y, GL2 gl){
 		this(iden, null, width, height, x, y, gl);
 	}
 
-	public Element2D(String iden, Element2D parent, GL gl){
+	public Element2D(String iden, Element2D parent, GL2 gl){
 		super(iden, parent, gl);
 	}
 	
-	public Element2D(String iden, Element2D parent, int width, int height, int x, int y, GL gl){
+	public Element2D(String iden, Element2D parent, int width, int height, int x, int y, GL2 gl){
 		this(iden, parent, gl);
 		
 		this.width = width;
@@ -64,7 +65,7 @@ public class Element2D extends Element {
         
         Texture tex = texRenderer.getTexture();   
         
-        gl.glDisable(GL_LIGHTING);
+        gl.glDisable(GL2.GL_LIGHTING);
         gl.glEnable(GL_BLEND);
         gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
