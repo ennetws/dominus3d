@@ -1,0 +1,15 @@
+# Introduction #
+
+The Java part of the application is platform independent. However, due to the nature of Java's OpenGL implementation each OS require native libraries in order to run OpenGL applications.
+
+
+# How To Run Dominus3D #
+
+For Windows:
+  * Download the '.jar' file.
+  * Download the 'JOGL for Windows' zip file.
+  * Install JOGL or run using -Djava.library.path (http://www.felixgers.de/teaching/jogl/JOGLInstall.html)
+  * Run the application: java -jar dominus3D.jar
+
+For MacOSX:
+  * Download the '.jar' file.
